@@ -1,0 +1,568 @@
+- generic [ref=f19e4]:
+  - navigation [ref=f19e6]:
+    - generic [ref=f19e7]:
+      - link [ref=f19e9] [cursor=pointer]:
+        - /url: /
+        - img "Intelligent Tracking Management" [ref=f19e10]
+      - generic [ref=f19e12]:
+        - link "Home" [ref=f19e13] [cursor=pointer]:
+          - /url: /home
+          - img [ref=f19e14]: home
+        - link "Dashboard" [ref=f19e16] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=f19e17]: dashboard
+        - link "Unit" [ref=f19e19] [cursor=pointer]:
+          - /url: /unit
+          - img [ref=f19e20]: commute
+        - link "Tracking" [ref=f19e22] [cursor=pointer]:
+          - /url: /tracking
+          - img [ref=f19e23]: public
+        - link "Reports" [ref=f19e25] [cursor=pointer]:
+          - /url: /reports
+          - img [ref=f19e26]: bar_chart
+        - link "Settings" [ref=f19e28] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=f19e29]: settings
+        - link "Administrator" [ref=f19e31] [cursor=pointer]:
+          - /url: /administrator
+          - img [ref=f19e32]: admin_panel_settings
+        - link "Video Telematics" [ref=f19e34] [cursor=pointer]:
+          - /url: /video_telematics
+          - img [ref=f19e35]: video_library
+      - generic [ref=f19e38]:
+        - button [ref=f19e39] [cursor=pointer]:
+          - img [ref=f19e40]: apps
+        - button [ref=f19e41] [cursor=pointer]:
+          - img [ref=f19e42]: dark_mode
+        - button [ref=f19e43] [cursor=pointer]:
+          - img [ref=f19e44]: download
+        - button [ref=f19e45] [cursor=pointer]:
+          - img [ref=f19e46]: notifications_active
+        - button [ref=f19e47] [cursor=pointer]:
+          - img [ref=f19e48]: account_circle
+        - button [ref=f19e49] [cursor=pointer]:
+          - img [ref=f19e50]: translate
+        - button [ref=f19e51] [cursor=pointer]:
+          - img [ref=f19e52]: power_settings_new
+        - button [ref=f19e53] [cursor=pointer]
+  - generic [ref=f19e64]:
+    - generic [ref=f19e69]:
+      - button [ref=f19e70]:
+        - img [ref=f19e71]: chevron_right
+      - generic [ref=f19e72]:
+        - generic [ref=f19e73]:
+          - img [ref=f19e75]: local_shipping
+          - generic [ref=f19e76]:
+            - paragraph [ref=f19e77]: Total Vehicles
+            - paragraph [ref=f19e79]: "35"
+        - generic [ref=f19e81]:
+          - img [ref=f19e83]: play_arrow
+          - generic [ref=f19e84]:
+            - paragraph [ref=f19e85]: Running
+            - generic [ref=f19e86]:
+              - paragraph [ref=f19e87]: "3"
+              - generic [ref=f19e88]: 8.6%
+        - generic [ref=f19e90]:
+          - img [ref=f19e92]: pause
+          - generic [ref=f19e93]:
+            - paragraph [ref=f19e94]: Idle
+            - generic [ref=f19e95]:
+              - paragraph [ref=f19e96]: "14"
+              - generic [ref=f19e97]: 40.0%
+        - generic [ref=f19e99]:
+          - img [ref=f19e101]: stop
+          - generic [ref=f19e102]:
+            - paragraph [ref=f19e103]: Stopped
+            - generic [ref=f19e104]:
+              - paragraph [ref=f19e105]: "7"
+              - generic [ref=f19e106]: 20.0%
+        - generic [ref=f19e108]:
+          - img [ref=f19e110]: signal_cellular_alt
+          - generic [ref=f19e111]:
+            - paragraph [ref=f19e112]: No Data
+            - generic [ref=f19e113]:
+              - paragraph [ref=f19e114]: "11"
+              - generic [ref=f19e115]: 31.4%
+        - generic [ref=f19e117]:
+          - img [ref=f19e119]: battery_charging_full
+          - generic [ref=f19e120]:
+            - paragraph [ref=f19e121]: BMS Enabled
+            - generic [ref=f19e122]:
+              - paragraph [ref=f19e123]: "2"
+              - generic [ref=f19e124]: 5.7%
+        - generic [ref=f19e126]:
+          - img [ref=f19e128]: videocam
+          - generic [ref=f19e129]:
+            - paragraph [ref=f19e130]: Video Enabled
+            - generic [ref=f19e131]:
+              - paragraph [ref=f19e132]: "1"
+              - generic [ref=f19e133]: 2.9%
+        - generic [ref=f19e135]:
+          - img [ref=f19e137]: portable_wifi_off
+          - generic [ref=f19e138]:
+            - paragraph [ref=f19e139]: Expired devices
+            - generic [ref=f19e140]:
+              - paragraph [ref=f19e141]: "0"
+              - generic [ref=f19e142]: "5"
+        - generic [ref=f19e144]:
+          - img [ref=f19e146]: warning
+          - generic [ref=f19e147]:
+            - paragraph [ref=f19e148]: Critical Alerts
+            - generic [ref=f19e149]:
+              - paragraph [ref=f19e150]: "12"
+              - generic [ref=f19e151]: View all
+        - generic [ref=f19e153]:
+          - img [ref=f19e155]: route
+          - generic [ref=f19e156]:
+            - paragraph [ref=f19e157]: Active Trips
+            - generic [ref=f19e158]:
+              - paragraph [ref=f19e159]: "0"
+              - generic [ref=f19e160]: "5"
+        - button "KPI Settings":
+          - img: settings
+    - generic [ref=f19e161]:
+      - complementary [ref=f19e162]:
+        - generic [ref=f19e165]:
+          - generic [ref=f19e167]:
+            - button "Fleet" [ref=f19e168] [cursor=pointer]
+            - button "Groups" [ref=f19e170] [cursor=pointer]
+            - button "Drivers" [ref=f19e171] [cursor=pointer]
+          - generic [ref=f19e172]:
+            - generic [ref=f19e173]:
+              - generic [ref=f19e174]:
+                - textbox "Search..." [ref=f19e175]
+                - img [ref=f19e176]: search
+              - button "Home Settings" [ref=f19e177] [cursor=pointer]:
+                - img [ref=f19e178]: settings
+              - button "GeoLink" [ref=f19e179] [cursor=pointer]:
+                - img [ref=f19e180]: share_location
+            - generic [ref=f19e181]:
+              - button "All (35)" [ref=f19e182] [cursor=pointer]
+              - button "Running (3)" [ref=f19e185] [cursor=pointer]
+              - button "Idle (14)" [ref=f19e188] [cursor=pointer]
+              - button "Stopped (7)" [ref=f19e191] [cursor=pointer]
+              - button "No Data (11)" [ref=f19e194] [cursor=pointer]
+              - button "BMS (2)" [ref=f19e197] [cursor=pointer]
+              - button "Video (1)" [ref=f19e200] [cursor=pointer]
+          - generic [ref=f19e205]:
+            - article [ref=f19e208]:
+              - generic [ref=f19e209]:
+                - checkbox "Actively track GCBL10536MHG14AG04459" [ref=f19e210]
+                - img "vehicle icon" [ref=f19e211]
+                - generic [ref=f19e212]:
+                  - generic [ref=f19e213] [cursor=pointer]: GCBL10536MHG14AG04459
+                  - generic [ref=f19e214]: "869630055206274"
+                - generic [ref=f19e215] [cursor=pointer]: Idle
+              - generic [ref=f19e216]:
+                - generic [ref=f19e217]:
+                  - generic [ref=f19e218]:
+                    - img [ref=f19e219]: location_on
+                    - button "Load address" [ref=f19e220]
+                  - generic [ref=f19e221]:
+                    - img [ref=f19e222]: person
+                    - generic [ref=f19e223]: "Driver: Not assigned"
+                - generic [ref=f19e224]:
+                  - generic [ref=f19e225]: 0 km/h | 0 Km
+                  - generic [ref=f19e226]: 03:09 pm | Just now
+              - generic [ref=f19e227]:
+                - generic [ref=f19e228]:
+                  - img "Ignition" [ref=f19e230]
+                  - generic [ref=f19e231]:
+                    - img "Signal Strength" [ref=f19e232]
+                    - text: "96.30"
+                  - img [ref=f19e234]: gps_fixed
+                - generic [ref=f19e235]:
+                  - button [ref=f19e237] [cursor=pointer]:
+                    - img [ref=f19e238]: near_me
+                  - button "More actions" [ref=f19e240] [cursor=pointer]:
+                    - img [ref=f19e241]: more_vert
+            - article [ref=f19e244]:
+              - generic [ref=f19e245]:
+                - checkbox "Actively track 862360078792707" [ref=f19e246]
+                - img "vehicle icon" [ref=f19e247]
+                - generic [ref=f19e248]:
+                  - generic [ref=f19e249] [cursor=pointer]: "862360078792707"
+                  - generic [ref=f19e250]: "862360078792707"
+                - generic [ref=f19e251] [cursor=pointer]: Stopped
+              - generic [ref=f19e252]:
+                - generic [ref=f19e253]:
+                  - generic [ref=f19e254]:
+                    - img [ref=f19e255]: location_on
+                    - button "Load address" [ref=f19e256]
+                  - generic [ref=f19e257]:
+                    - img [ref=f19e258]: person
+                    - generic [ref=f19e259]: "Driver: Not assigned"
+                - generic [ref=f19e260]:
+                  - generic [ref=f19e261]: 0 km/h | 0 Km
+                  - generic [ref=f19e262]: 03:09 pm | Just now
+              - generic [ref=f19e263]:
+                - generic [ref=f19e264]:
+                  - img "Ignition" [ref=f19e266]
+                  - generic [ref=f19e267]:
+                    - img "Signal Strength" [ref=f19e268]
+                    - text: "59.26"
+                  - img [ref=f19e270]: gps_fixed
+                - generic [ref=f19e271]:
+                  - button [ref=f19e273] [cursor=pointer]:
+                    - img [ref=f19e274]: near_me
+                  - button "More actions" [ref=f19e276] [cursor=pointer]:
+                    - img [ref=f19e277]: more_vert
+            - article [ref=f19e280]:
+              - generic [ref=f19e281]:
+                - checkbox "Actively track GCBL10536MHG26DG07507" [ref=f19e282]
+                - img "vehicle icon" [ref=f19e283]
+                - generic [ref=f19e284]:
+                  - generic [ref=f19e285] [cursor=pointer]: GCBL10536MHG26DG07507
+                  - generic [ref=f19e286]: "869630055269165"
+                - generic [ref=f19e287] [cursor=pointer]: Running
+              - generic [ref=f19e288]:
+                - generic [ref=f19e289]:
+                  - generic [ref=f19e290]:
+                    - img [ref=f19e291]: location_on
+                    - button "Load address" [ref=f19e292]
+                  - generic [ref=f19e293]:
+                    - img [ref=f19e294]: person
+                    - generic [ref=f19e295]: "Driver: Not assigned"
+                - generic [ref=f19e296]:
+                  - generic [ref=f19e297]: 11 km/h | 58.85 Km
+                  - generic [ref=f19e298]: 03:09 pm | Just now
+              - generic [ref=f19e299]:
+                - generic [ref=f19e300]:
+                  - img "Ignition" [ref=f19e302]
+                  - generic [ref=f19e303]:
+                    - img "Signal Strength" [ref=f19e304]
+                    - text: "40.74"
+                  - img [ref=f19e306]: gps_fixed
+                - generic [ref=f19e307]:
+                  - button [ref=f19e309] [cursor=pointer]:
+                    - img [ref=f19e310]: near_me
+                  - button "More actions" [ref=f19e312] [cursor=pointer]:
+                    - img [ref=f19e313]: more_vert
+            - article [ref=f19e316]:
+              - generic [ref=f19e317]:
+                - checkbox "Actively track GCBL10536MHG023EG08923" [ref=f19e318]
+                - img "vehicle icon" [ref=f19e319]
+                - generic [ref=f19e320]:
+                  - generic [ref=f19e321] [cursor=pointer]: GCBL10536MHG023EG08923
+                  - generic [ref=f19e322]: "869630055200350"
+                - generic [ref=f19e323] [cursor=pointer]: Idle
+              - generic [ref=f19e324]:
+                - generic [ref=f19e325]:
+                  - generic [ref=f19e326]:
+                    - img [ref=f19e327]: location_on
+                    - button "Load address" [ref=f19e328]
+                  - generic [ref=f19e329]:
+                    - img [ref=f19e330]: person
+                    - generic [ref=f19e331]: "Driver: Not assigned"
+                - generic [ref=f19e332]:
+                  - generic [ref=f19e333]: 0 km/h | 28.88 Km
+                  - generic [ref=f19e334]: 03:09 pm | Just now
+              - generic [ref=f19e335]:
+                - generic [ref=f19e336]:
+                  - img "Ignition" [ref=f19e338]
+                  - generic [ref=f19e339]:
+                    - img "Signal Strength" [ref=f19e340]
+                    - text: "70.37"
+                  - img [ref=f19e342]: gps_fixed
+                - generic [ref=f19e343]:
+                  - button [ref=f19e345] [cursor=pointer]:
+                    - img [ref=f19e346]: near_me
+                  - button "More actions" [ref=f19e348] [cursor=pointer]:
+                    - img [ref=f19e349]: more_vert
+            - article [ref=f19e352]:
+              - generic [ref=f19e353]:
+                - checkbox "Actively track wailon_fuel" [ref=f19e354]
+                - img "vehicle icon" [ref=f19e355]
+                - generic [ref=f19e356]:
+                  - generic [ref=f19e357] [cursor=pointer]: wailon_fuel
+                  - generic [ref=f19e358]: "862360078810608"
+                - generic [ref=f19e359] [cursor=pointer]: Idle
+              - generic [ref=f19e360]:
+                - generic [ref=f19e361]:
+                  - generic [ref=f19e362]:
+                    - img [ref=f19e363]: location_on
+                    - button "Load address" [ref=f19e364]
+                  - generic [ref=f19e365]:
+                    - img [ref=f19e366]: person
+                    - generic [ref=f19e367]: "Driver: Not assigned"
+                - generic [ref=f19e368]:
+                  - generic [ref=f19e369]: 0 km/h | 1.74 Km
+                  - generic [ref=f19e370]: 03:09 pm | Just now
+              - generic [ref=f19e371]:
+                - generic [ref=f19e372]:
+                  - img "Ignition" [ref=f19e374]
+                  - generic [ref=f19e375]:
+                    - img "Signal Strength" [ref=f19e376]
+                    - text: "74.07"
+                  - img [ref=f19e378]: gps_fixed
+                - generic [ref=f19e379]:
+                  - button [ref=f19e381] [cursor=pointer]:
+                    - img [ref=f19e382]: near_me
+                  - button "More actions" [ref=f19e384] [cursor=pointer]:
+                    - img [ref=f19e385]: more_vert
+            - article [ref=f19e388]:
+              - generic [ref=f19e389]:
+                - checkbox "Actively track 869630055281111" [ref=f19e390]
+                - img "vehicle icon" [ref=f19e391]
+                - generic [ref=f19e392]:
+                  - generic [ref=f19e393] [cursor=pointer]: "869630055281111"
+                  - generic [ref=f19e394]: "869630055281111"
+                - generic [ref=f19e395] [cursor=pointer]: Idle
+              - generic [ref=f19e396]:
+                - generic [ref=f19e397]:
+                  - generic [ref=f19e398]:
+                    - img [ref=f19e399]: location_on
+                    - button "Load address" [ref=f19e400]
+                  - generic [ref=f19e401]:
+                    - img [ref=f19e402]: person
+                    - generic [ref=f19e403]: "Driver: Not assigned"
+                - generic [ref=f19e404]:
+                  - generic [ref=f19e405]: 0 km/h | 19.62 Km
+                  - generic [ref=f19e406]: 03:09 pm | Just now
+              - generic [ref=f19e407]:
+                - generic [ref=f19e408]:
+                  - img "Ignition" [ref=f19e410]
+                  - generic [ref=f19e411]:
+                    - img "Signal Strength" [ref=f19e412]
+                    - text: "70.37"
+                  - img [ref=f19e414]: gps_fixed
+                - generic [ref=f19e415]:
+                  - button [ref=f19e417] [cursor=pointer]:
+                    - img [ref=f19e418]: near_me
+                  - button "More actions" [ref=f19e420] [cursor=pointer]:
+                    - img [ref=f19e421]: more_vert
+            - article [ref=f19e424]:
+              - generic [ref=f19e425]:
+                - checkbox "Actively track GCBL10536MHG26DG07485" [ref=f19e426]
+                - img "vehicle icon" [ref=f19e427]
+                - generic [ref=f19e428]:
+                  - generic [ref=f19e429] [cursor=pointer]: GCBL10536MHG26DG07485
+                  - generic [ref=f19e430]: "869630055215895"
+                - generic [ref=f19e431] [cursor=pointer]: Idle
+              - generic [ref=f19e432]:
+                - generic [ref=f19e433]:
+                  - generic [ref=f19e434]:
+                    - img [ref=f19e435]: location_on
+                    - button "Load address" [ref=f19e436]
+                  - generic [ref=f19e437]:
+                    - img [ref=f19e438]: person
+                    - generic [ref=f19e439]: "Driver: Not assigned"
+                - generic [ref=f19e440]:
+                  - generic [ref=f19e441]: 0 km/h | 80.49 Km
+                  - generic [ref=f19e442]: 03:09 pm | Just now
+              - generic [ref=f19e443]:
+                - generic [ref=f19e444]:
+                  - img "Ignition" [ref=f19e446]
+                  - generic [ref=f19e447]:
+                    - img "Signal Strength" [ref=f19e448]
+                    - text: "96.30"
+                  - img [ref=f19e450]: gps_fixed
+                - generic [ref=f19e451]:
+                  - button [ref=f19e453] [cursor=pointer]:
+                    - img [ref=f19e454]: near_me
+                  - button "More actions" [ref=f19e456] [cursor=pointer]:
+                    - img [ref=f19e457]: more_vert
+            - article [ref=f19e460]:
+              - generic [ref=f19e461]:
+                - checkbox "Actively track GCBL10536MHG18CG06519" [ref=f19e462]
+                - img "vehicle icon" [ref=f19e463]
+                - generic [ref=f19e464]:
+                  - generic [ref=f19e465] [cursor=pointer]: GCBL10536MHG18CG06519
+                  - generic [ref=f19e466]: "869630055236479"
+                - generic [ref=f19e467] [cursor=pointer]: Running
+              - generic [ref=f19e468]:
+                - generic [ref=f19e469]:
+                  - generic [ref=f19e470]:
+                    - img [ref=f19e471]: location_on
+                    - button "Load address" [ref=f19e472]
+                  - generic [ref=f19e473]:
+                    - img [ref=f19e474]: person
+                    - generic [ref=f19e475]: "Driver: Not assigned"
+                - generic [ref=f19e476]:
+                  - generic [ref=f19e477]: 9 km/h | 68.68 Km
+                  - generic [ref=f19e478]: 03:09 pm | Just now
+              - generic [ref=f19e479]:
+                - generic [ref=f19e480]:
+                  - img "Ignition" [ref=f19e482]
+                  - generic [ref=f19e483]:
+                    - img "Signal Strength" [ref=f19e484]
+                    - text: "70.37"
+                  - img [ref=f19e486]: gps_fixed
+                - generic [ref=f19e487]:
+                  - button [ref=f19e489] [cursor=pointer]:
+                    - img [ref=f19e490]: near_me
+                  - button "More actions" [ref=f19e492] [cursor=pointer]:
+                    - img [ref=f19e493]: more_vert
+            - article [ref=f19e496]:
+              - generic [ref=f19e497]:
+                - checkbox "Actively track GCBL10536MHG01DG07317" [ref=f19e498]
+                - img "vehicle icon" [ref=f19e499]
+                - generic [ref=f19e500]:
+                  - generic [ref=f19e501] [cursor=pointer]: GCBL10536MHG01DG07317
+                  - generic [ref=f19e502]: "869630055206076"
+                - generic [ref=f19e503] [cursor=pointer]: Idle
+              - generic [ref=f19e504]:
+                - generic [ref=f19e505]:
+                  - generic [ref=f19e506]:
+                    - img [ref=f19e507]: location_on
+                    - button "Load address" [ref=f19e508]
+                  - generic [ref=f19e509]:
+                    - img [ref=f19e510]: person
+                    - generic [ref=f19e511]: "Driver: Not assigned"
+                - generic [ref=f19e512]:
+                  - generic [ref=f19e513]: 0 km/h | 56.61 Km
+                  - generic [ref=f19e514]: 03:09 pm | Just now
+              - generic [ref=f19e515]:
+                - generic [ref=f19e516]:
+                  - img "Ignition" [ref=f19e518]
+                  - generic [ref=f19e519]:
+                    - img "Signal Strength" [ref=f19e520]
+                    - text: "96.30"
+                  - img [ref=f19e522]: gps_fixed
+                - generic [ref=f19e523]:
+                  - button [ref=f19e525] [cursor=pointer]:
+                    - img [ref=f19e526]: near_me
+                  - button "More actions" [ref=f19e528] [cursor=pointer]:
+                    - img [ref=f19e529]: more_vert
+            - article [ref=f19e532]:
+              - generic [ref=f19e533]:
+                - checkbox "Actively track GCBL10536MHG28GG12907" [ref=f19e534]
+                - img "vehicle icon" [ref=f19e535]
+                - generic [ref=f19e536]:
+                  - generic [ref=f19e537] [cursor=pointer]: GCBL10536MHG28GG12907
+                  - generic [ref=f19e538]: "869630055344885"
+                - generic [ref=f19e539] [cursor=pointer]: Running
+              - generic [ref=f19e540]:
+                - generic [ref=f19e541]:
+                  - generic [ref=f19e542]:
+                    - img [ref=f19e543]: location_on
+                    - button "Load address" [ref=f19e544]
+                  - generic [ref=f19e545]:
+                    - img [ref=f19e546]: person
+                    - generic [ref=f19e547]: "Driver: Not assigned"
+                - generic [ref=f19e548]:
+                  - generic [ref=f19e549]: 31 km/h | 2.43 Km
+                  - generic [ref=f19e550]: 03:09 pm | Just now
+              - generic [ref=f19e551]:
+                - generic [ref=f19e552]:
+                  - img "Ignition" [ref=f19e554]
+                  - generic [ref=f19e555]:
+                    - img "Signal Strength" [ref=f19e556]
+                    - text: "40.74"
+                  - img [ref=f19e558]: gps_fixed
+                - generic [ref=f19e559]:
+                  - button [ref=f19e561] [cursor=pointer]:
+                    - img [ref=f19e562]: near_me
+                  - button "More actions" [ref=f19e564] [cursor=pointer]:
+                    - img [ref=f19e565]: more_vert
+            - article [ref=f19e568]:
+              - generic [ref=f19e569]:
+                - checkbox "Actively track GCBL10536MHG26DG08259" [ref=f19e570]
+                - img "vehicle icon" [ref=f19e571]
+                - generic [ref=f19e572]:
+                  - generic [ref=f19e573] [cursor=pointer]: GCBL10536MHG26DG08259
+                  - generic [ref=f19e574]: "869630055236255"
+                - generic [ref=f19e575] [cursor=pointer]: Idle
+              - generic [ref=f19e576]:
+                - generic [ref=f19e577]:
+                  - generic [ref=f19e578]:
+                    - img [ref=f19e579]: location_on
+                    - button "Bhopal" [ref=f19e580]
+                  - generic [ref=f19e581]:
+                    - img [ref=f19e582]: person
+                    - generic [ref=f19e583]: "Driver: Not assigned"
+                - generic [ref=f19e584]:
+                  - generic [ref=f19e585]: 0 km/h | 0 Km
+                  - generic [ref=f19e586]: 03:09 pm | Just now
+              - generic [ref=f19e587]:
+                - generic [ref=f19e588]:
+                  - img "Ignition" [ref=f19e590]
+                  - generic [ref=f19e591]:
+                    - img "Signal Strength" [ref=f19e592]
+                    - text: "70.37"
+                  - img [ref=f19e594]: gps_fixed
+                - generic [ref=f19e595]:
+                  - button [ref=f19e597] [cursor=pointer]:
+                    - img [ref=f19e598]: near_me
+                  - button "More actions" [ref=f19e600] [cursor=pointer]:
+                    - img [ref=f19e601]: more_vert
+          - generic [ref=f19e604]:
+            - generic [ref=f19e605]:
+              - combobox [ref=f19e606]:
+                - option "All" [selected]
+                - option "25"
+                - option "50"
+                - option "100"
+              - generic [ref=f19e607]: Showing 1 - 35 of 35 vehicles
+            - generic [ref=f19e608]:
+              - button "Previous page" [disabled] [ref=f19e609]:
+                - img [ref=f19e610]: chevron_left
+              - button "Next page" [disabled] [ref=f19e611]:
+                - img [ref=f19e612]: chevron_right
+        - button "Collapse left panel" [ref=f19e614]:
+          - img [ref=f19e615]: chevron_left
+      - generic [ref=f19e616]:
+        - main [ref=f19e617]:
+          - generic [ref=f19e619]:
+            - status:
+              - generic:
+                - progressbar
+                - generic:
+                  - generic: Loading vehicle overview…
+                  - generic: Please wait
+            - generic [ref=f19e622]:
+              - region "Map" [ref=f19e623]
+              - iframe [ref=f19e647]:
+                
+            - generic [ref=f19e648]:
+              - button "Map" [ref=f19e649] [cursor=pointer]
+              - button "Hybrid" [ref=f19e650] [cursor=pointer]
+            - generic [ref=f19e651]:
+              - button [ref=f19e652] [cursor=pointer]:
+                - img [ref=f19e654]: layers
+              - button [ref=f19e656] [cursor=pointer]:
+                - img [ref=f19e657]: directions_car
+              - button [ref=f19e658] [cursor=pointer]:
+                - img [ref=f19e659]: alt_route
+              - button [ref=f19e660] [cursor=pointer]:
+                - img [ref=f19e661]: hexagon
+              - button [ref=f19e662] [cursor=pointer]:
+                - img [ref=f19e663]: location_on
+              - button [ref=f19e664] [cursor=pointer]:
+                - img [ref=f19e665]: notifications_active
+              - button [ref=f19e666] [cursor=pointer]:
+                - img [ref=f19e667]: restart_alt
+              - button [ref=f19e668] [cursor=pointer]:
+                - img [ref=f19e669]: cleaning_services
+              - button [ref=f19e671]:
+                - img [ref=f19e672]: keyboard_arrow_right
+        - button "Expand bottom panel" [ref=f19e674]:
+          - img [ref=f19e675]: keyboard_arrow_up
+      - complementary [ref=f19e676]:
+        - button "Collapse right panel" [ref=f19e678]:
+          - img [ref=f19e679]: chevron_right
+        - generic [ref=f19e685]:
+          - generic [ref=f19e687]:
+            - generic [ref=f19e689]:
+              - heading "Alerts & Notifications" [level=2] [ref=f19e690]
+              - generic [ref=f19e691]: "97"
+            - button [ref=f19e692]:
+              - img [ref=f19e693]: filter_list
+          - generic [ref=f19e695]:
+            - button "Alerts (97)" [ref=f19e696]
+            - button "Acknowledged (0)" [ref=f19e698]
+          - generic [ref=f19e700]:
+            - img [ref=f19e701]: notifications
+            - paragraph [ref=f19e702]: Loading notifications...
+          - generic [ref=f19e704]:
+            - button "View all alerts" [ref=f19e705]
+            - button "Live" [ref=f19e706]
+  - generic [ref=f19e707]:
+    - generic [ref=f19e708]:
+      - button "Standard View" [ref=f19e709]
+      - button "Map Focus" [ref=f19e714]
+      - button "Fleet View" [ref=f19e717]
+      - button "Alert View" [ref=f19e721]
+      - button "Playback View" [ref=f19e725]
+      - button "Command Center" [ref=f19e729]
+    - generic [ref=f19e735]: © 2026 | Trackofy. All rights reserved.

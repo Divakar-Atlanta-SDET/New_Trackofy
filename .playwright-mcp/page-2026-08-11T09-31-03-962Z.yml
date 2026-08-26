@@ -1,0 +1,51 @@
+- generic [ref=f8e5]:
+  - generic [ref=f8e6]: Access the most advanced and powerful tracking platform in the telematics industry
+  - generic [ref=f8e10]:
+    - img "Intelligent Tracking Management" [ref=f8e11]
+    - generic [ref=f8e12]:
+      - generic [ref=f8e16]:
+        - generic [ref=f8e17]:
+          - text: User Name
+          - generic [ref=f8e18]: "*"
+        - textbox "User Name" [ref=f8e19]:
+          - /placeholder: Username
+      - generic [ref=f8e23]:
+        - generic [ref=f8e24]:
+          - generic [ref=f8e25]:
+            - text: Password
+            - generic [ref=f8e26]: "*"
+          - textbox "Password" [ref=f8e27]:
+            - /placeholder: Enter your password
+        - button [ref=f8e29]:
+          - img [ref=f8e30]: visibility_off
+      - generic [ref=f8e34]:
+        - checkbox "I accept Terms & Conditions & Privacy Policy" [checked] [ref=f8e37] [cursor=pointer]
+        - generic [ref=f8e38] [cursor=pointer]:
+          - text: I accept
+          - link "Terms & Conditions" [ref=f8e39]:
+            - /url: /terms-and-conditions
+          - text: "&"
+          - link "Privacy Policy" [ref=f8e40]:
+            - /url: /privacy-policy
+      - button "Log in" [disabled] [ref=f8e41] [cursor=pointer]
+    - generic [ref=f8e42]:
+      - link "Forgot Password?" [ref=f8e43] [cursor=pointer]:
+        - /url: /forgot-password
+      - text: "|"
+      - link "Help Center" [ref=f8e44] [cursor=pointer]:
+        - /url: /help-center
+    - generic [ref=f8e45]: OR
+    - button
+    - generic [ref=f8e48]:
+      - link [ref=f8e49] [cursor=pointer]:
+        - /url: https://play.google.com/store/apps/details?id=com.trackofynew.trackofy2
+        - img "Google Play" [ref=f8e50]
+      - link [ref=f8e51] [cursor=pointer]:
+        - /url: https://apps.apple.com/us/app/trackofy-2-0/id6753867563
+        - img "App Store" [ref=f8e52]
+    - generic [ref=f8e53]:
+      - text: Trackofy Release Version 6.2.0
+      - link "What's New ?" [ref=f8e54] [cursor=pointer]:
+        - /url: /whats-new
+      - text: ·
+    - generic [ref=f8e55]: © 2026 Trackofy. All rights reserved.

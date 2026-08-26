@@ -1,0 +1,205 @@
+- generic [ref=f36e4]:
+  - navigation [ref=f36e6]:
+    - generic [ref=f36e7]:
+      - link [ref=f36e9] [cursor=pointer]:
+        - /url: /
+        - img "Trackofy" [ref=f36e10]
+      - generic [ref=f36e12]:
+        - button [ref=f36e13] [cursor=pointer]:
+          - img [ref=f36e14]: apps
+        - button [ref=f36e15] [cursor=pointer]:
+          - img [ref=f36e16]: dark_mode
+        - button [ref=f36e17] [cursor=pointer]:
+          - img [ref=f36e18]: download
+        - button [ref=f36e19] [cursor=pointer]:
+          - img [ref=f36e20]: notifications_active
+        - button [ref=f36e21] [cursor=pointer]:
+          - img [ref=f36e22]: account_circle
+        - button [ref=f36e23] [cursor=pointer]:
+          - img [ref=f36e24]: translate
+        - button [ref=f36e25] [cursor=pointer]:
+          - img [ref=f36e26]: power_settings_new
+        - button [ref=f36e27] [cursor=pointer]
+  - generic [ref=f36e38]:
+    - generic [ref=f36e43]:
+      - button [ref=f36e44]:
+        - img [ref=f36e45]: chevron_right
+      - generic [ref=f36e46]:
+        - generic [ref=f36e47]:
+          - img [ref=f36e49]: local_shipping
+          - generic [ref=f36e50]:
+            - paragraph [ref=f36e51]: Total Vehicles
+            - paragraph [ref=f36e53]: "0"
+        - generic [ref=f36e55]:
+          - img [ref=f36e57]: play_arrow
+          - generic [ref=f36e58]:
+            - paragraph [ref=f36e59]: Running
+            - generic [ref=f36e60]:
+              - paragraph [ref=f36e61]: "0"
+              - generic [ref=f36e62]: 0%
+        - generic [ref=f36e64]:
+          - img [ref=f36e66]: pause
+          - generic [ref=f36e67]:
+            - paragraph [ref=f36e68]: Idle
+            - generic [ref=f36e69]:
+              - paragraph [ref=f36e70]: "0"
+              - generic [ref=f36e71]: 0%
+        - generic [ref=f36e73]:
+          - img [ref=f36e75]: stop
+          - generic [ref=f36e76]:
+            - paragraph [ref=f36e77]: Stopped
+            - generic [ref=f36e78]:
+              - paragraph [ref=f36e79]: "0"
+              - generic [ref=f36e80]: 0%
+        - generic [ref=f36e82]:
+          - img [ref=f36e84]: signal_cellular_alt
+          - generic [ref=f36e85]:
+            - paragraph [ref=f36e86]: No Data
+            - generic [ref=f36e87]:
+              - paragraph [ref=f36e88]: "0"
+              - generic [ref=f36e89]: 0%
+        - generic [ref=f36e91]:
+          - img [ref=f36e93]: battery_charging_full
+          - generic [ref=f36e94]:
+            - paragraph [ref=f36e95]: BMS Enabled
+            - generic [ref=f36e96]:
+              - paragraph [ref=f36e97]: "0"
+              - generic [ref=f36e98]: 0%
+        - generic [ref=f36e100]:
+          - img [ref=f36e102]: videocam
+          - generic [ref=f36e103]:
+            - paragraph [ref=f36e104]: Video Enabled
+            - generic [ref=f36e105]:
+              - paragraph [ref=f36e106]: "0"
+              - generic [ref=f36e107]: 0%
+        - generic [ref=f36e109]:
+          - img [ref=f36e111]: portable_wifi_off
+          - generic [ref=f36e112]:
+            - paragraph [ref=f36e113]: Expired devices
+            - generic [ref=f36e114]:
+              - paragraph [ref=f36e115]: "0"
+              - generic [ref=f36e116]: "5"
+        - generic [ref=f36e118]:
+          - img [ref=f36e120]: warning
+          - generic [ref=f36e121]:
+            - paragraph [ref=f36e122]: Critical Alerts
+            - generic [ref=f36e123]:
+              - paragraph [ref=f36e124]: "12"
+              - generic [ref=f36e125]: View all
+        - generic [ref=f36e127]:
+          - img [ref=f36e129]: route
+          - generic [ref=f36e130]:
+            - paragraph [ref=f36e131]: Active Trips
+            - generic [ref=f36e132]:
+              - paragraph [ref=f36e133]: "0"
+              - generic [ref=f36e134]: "5"
+        - button "KPI Settings":
+          - img: settings
+    - generic [ref=f36e135]:
+      - complementary [ref=f36e136]:
+        - generic [ref=f36e139]:
+          - generic [ref=f36e141]:
+            - button "Fleet" [ref=f36e142] [cursor=pointer]
+            - button "Groups" [ref=f36e144] [cursor=pointer]
+            - button "Drivers" [ref=f36e145] [cursor=pointer]
+          - generic [ref=f36e146]:
+            - generic [ref=f36e147]:
+              - generic [ref=f36e148]:
+                - textbox "Search..." [ref=f36e149]
+                - img [ref=f36e150]: search
+              - button "Home Settings" [ref=f36e151] [cursor=pointer]:
+                - img [ref=f36e152]: settings
+              - button "GeoLink" [ref=f36e153] [cursor=pointer]:
+                - img [ref=f36e154]: share_location
+            - generic [ref=f36e155]:
+              - button "All (0)" [ref=f36e156] [cursor=pointer]
+              - button "Running (0)" [ref=f36e159] [cursor=pointer]
+              - button "Idle (0)" [ref=f36e162] [cursor=pointer]
+              - button "Stopped (0)" [ref=f36e165] [cursor=pointer]
+              - button "No Data (0)" [ref=f36e168] [cursor=pointer]
+              - button "BMS (0)" [ref=f36e171] [cursor=pointer]
+              - button "Video (0)" [ref=f36e174] [cursor=pointer]
+          - generic [ref=f36e178]:
+            - img [ref=f36e179]: search_off
+            - paragraph [ref=f36e180]: No vehicles found
+            - paragraph [ref=f36e181]: Try changing search or status filter.
+          - generic [ref=f36e183]:
+            - generic [ref=f36e184]:
+              - combobox [ref=f36e185]:
+                - option "All" [selected]
+                - option "25"
+                - option "50"
+                - option "100"
+              - generic [ref=f36e186]: Showing 0 - 0 of 0 vehicles
+            - generic [ref=f36e187]:
+              - button "Previous page" [disabled] [ref=f36e188]:
+                - img [ref=f36e189]: chevron_left
+              - button "Next page" [disabled] [ref=f36e190]:
+                - img [ref=f36e191]: chevron_right
+        - button "Collapse left panel" [ref=f36e193]:
+          - img [ref=f36e194]: chevron_left
+      - generic [ref=f36e195]:
+        - main [ref=f36e196]:
+          - generic [ref=f36e198]:
+            - status [ref=f36e199]:
+              - generic [ref=f36e200]:
+                - progressbar [ref=f36e201]
+                - generic [ref=f36e216]:
+                  - generic [ref=f36e217]: Loading map configuration…
+                  - generic [ref=f36e218]: Please wait
+            - generic [ref=f36e221]:
+              - region "Map" [ref=f36e222]
+              - iframe [ref=f36e240]:
+                
+            - generic [ref=f36e241]:
+              - button "Map" [ref=f36e242] [cursor=pointer]
+              - button "Hybrid" [ref=f36e243] [cursor=pointer]
+            - generic [ref=f36e244]:
+              - button [ref=f36e245] [cursor=pointer]:
+                - img [ref=f36e247]: layers
+              - button [ref=f36e249] [cursor=pointer]:
+                - img [ref=f36e250]: directions_car
+              - button [ref=f36e251] [cursor=pointer]:
+                - img [ref=f36e252]: alt_route
+              - button [ref=f36e253] [cursor=pointer]:
+                - img [ref=f36e254]: hexagon
+              - button [ref=f36e255] [cursor=pointer]:
+                - img [ref=f36e256]: location_on
+              - button [ref=f36e257] [cursor=pointer]:
+                - img [ref=f36e258]: notifications_active
+              - button [ref=f36e259] [cursor=pointer]:
+                - img [ref=f36e260]: restart_alt
+              - button [ref=f36e261] [cursor=pointer]:
+                - img [ref=f36e262]: cleaning_services
+              - button [ref=f36e264]:
+                - img [ref=f36e265]: keyboard_arrow_right
+        - button "Expand bottom panel" [ref=f36e267]:
+          - img [ref=f36e268]: keyboard_arrow_up
+      - complementary [ref=f36e269]:
+        - button "Collapse right panel" [ref=f36e271]:
+          - img [ref=f36e272]: chevron_right
+        - generic [ref=f36e278]:
+          - generic [ref=f36e280]:
+            - generic [ref=f36e282]:
+              - heading "Alerts & Notifications" [level=2] [ref=f36e283]
+              - generic [ref=f36e284]: "97"
+            - button [ref=f36e285]:
+              - img [ref=f36e286]: filter_list
+          - generic [ref=f36e288]:
+            - button "Alerts (97)" [ref=f36e289]
+            - button "Acknowledged (0)" [ref=f36e291]
+          - generic [ref=f36e293]:
+            - img [ref=f36e294]: notifications
+            - paragraph [ref=f36e295]: Loading notifications...
+          - generic [ref=f36e297]:
+            - button "View all alerts" [ref=f36e298]
+            - button "Live" [ref=f36e299]
+  - generic [ref=f36e300]:
+    - generic [ref=f36e301]:
+      - button "Standard View" [ref=f36e302]
+      - button "Map Focus" [ref=f36e307]
+      - button "Fleet View" [ref=f36e310]
+      - button "Alert View" [ref=f36e314]
+      - button "Playback View" [ref=f36e318]
+      - button "Command Center" [ref=f36e322]
+    - generic [ref=f36e328]: © 2026 | . All rights reserved.

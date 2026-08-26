@@ -1,0 +1,208 @@
+- generic [ref=f23e1]:
+  - generic [ref=f23e3]:
+    - navigation [ref=f23e5]:
+      - generic [ref=f23e6]:
+        - link [ref=f23e8] [cursor=pointer]:
+          - /url: /
+          - img "Intelligent Tracking Management" [ref=f23e9]
+        - generic [ref=f23e11]:
+          - link "Home" [ref=f23e12] [cursor=pointer]:
+            - /url: /home
+            - img [ref=f23e13]: home
+          - link "Dashboard" [ref=f23e15] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=f23e16]: dashboard
+          - link "Unit" [ref=f23e18] [cursor=pointer]:
+            - /url: /unit
+            - img [ref=f23e19]: commute
+          - link "Tracking" [ref=f23e21] [cursor=pointer]:
+            - /url: /tracking
+            - img [ref=f23e22]: public
+          - link "Reports" [ref=f23e24] [cursor=pointer]:
+            - /url: /reports
+            - img [ref=f23e25]: bar_chart
+          - link "Settings" [ref=f23e27] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=f23e28]: settings
+          - link "Administrator" [ref=f23e30] [cursor=pointer]:
+            - /url: /administrator
+            - img [ref=f23e31]: admin_panel_settings
+          - link "Video Telematics" [ref=f23e33] [cursor=pointer]:
+            - /url: /video_telematics
+            - img [ref=f23e34]: video_library
+        - generic [ref=f23e37]:
+          - button [ref=f23e38] [cursor=pointer]:
+            - img [ref=f23e39]: apps
+          - button [ref=f23e40] [cursor=pointer]:
+            - img [ref=f23e41]: dark_mode
+          - button [ref=f23e42] [cursor=pointer]:
+            - img [ref=f23e43]: download
+          - button [ref=f23e44] [cursor=pointer]:
+            - img [ref=f23e45]: notifications_active
+          - button [ref=f23e46] [cursor=pointer]:
+            - img [ref=f23e47]: account_circle
+          - button [ref=f23e48] [cursor=pointer]:
+            - img [ref=f23e49]: translate
+          - button [ref=f23e50] [cursor=pointer]:
+            - img [ref=f23e51]: power_settings_new
+          - button [ref=f23e52] [cursor=pointer]
+    - generic [ref=f23e63]:
+      - complementary "Asset Management navigation" [ref=f23e64]:
+        - generic [ref=f23e65]:
+          - generic [ref=f23e66]:
+            - img [ref=f23e68]: inventory_2
+            - generic [ref=f23e69]:
+              - heading "Asset Management" [level=2] [ref=f23e70]
+              - paragraph [ref=f23e71]: Asset workspace settings
+          - button "Collapse Asset Management menu" [ref=f23e72] [cursor=pointer]
+        - generic [ref=f23e77]:
+          - img [ref=f23e78]: search
+          - textbox "Search Asset Management settings" [ref=f23e79]:
+            - /placeholder: Search settings...
+          - generic "Press Ctrl + K to focus search" [ref=f23e80]: Ctrl K
+        - generic [ref=f23e81]: Modules
+        - navigation [ref=f23e84]:
+          - link "Dashboard" [ref=f23e85] [cursor=pointer]:
+            - /url: /asset-management/dashboard
+            - img [ref=f23e87]: dashboard
+          - button "Asset Setup" [ref=f23e90] [cursor=pointer]:
+            - img [ref=f23e92]: settings
+            - img [ref=f23e95]: expand_more
+          - button "Assets" [ref=f23e97] [cursor=pointer]:
+            - img [ref=f23e99]: business_center
+            - img [ref=f23e102]: expand_more
+          - generic [ref=f23e103]:
+            - button "Vehicle Usage" [expanded] [ref=f23e104] [cursor=pointer]:
+              - img [ref=f23e106]: directions_car
+              - img [ref=f23e109]: expand_more
+            - generic [ref=f23e110]:
+              - link "Installations" [ref=f23e114] [cursor=pointer]:
+                - /url: /asset-management/asset-installations
+                - img [ref=f23e115]: build
+              - link "Vehicle Transfers" [ref=f23e119] [cursor=pointer]:
+                - /url: /asset-management/asset-transfers
+                - img [ref=f23e121]: swap_horiz
+              - link "Maintenance" [active] [ref=f23e125] [cursor=pointer]:
+                - /url: /asset-management/asset-maintenance
+                - img [ref=f23e126]: build_circle
+          - button "Asset Records" [ref=f23e129] [cursor=pointer]:
+            - img [ref=f23e131]: inventory_2
+            - img [ref=f23e134]: expand_more
+          - link "Notifications" [ref=f23e135] [cursor=pointer]:
+            - /url: /asset-management/asset-notification
+            - img [ref=f23e137]: notifications
+          - button "Insight" [ref=f23e140] [cursor=pointer]:
+            - img [ref=f23e142]: assessment
+            - img [ref=f23e145]: expand_more
+        - generic [ref=f23e147]:
+          - img [ref=f23e149]: verified_user
+          - generic [ref=f23e150]: Menu access follows assigned permissions
+      - main [ref=f23e151]:
+        - generic [ref=f23e411]:
+          - generic [ref=f23e412]:
+            - generic [ref=f23e413]:
+              - img [ref=f23e415]: build
+              - generic [ref=f23e416]:
+                - generic [ref=f23e417]:
+                  - heading "Asset Maintenance" [level=1] [ref=f23e418]
+                  - generic [ref=f23e419]:
+                    - strong [ref=f23e420]: "3"
+                    - generic [ref=f23e421]: records
+                - paragraph [ref=f23e422]: Manage asset maintenance, service dates and costs
+            - button "New Maintenance" [ref=f23e424] [cursor=pointer]:
+              - img [ref=f23e425]: add
+          - generic [ref=f23e427]:
+            - group "Maintenance table pagination" [ref=f23e430]:
+              - generic [ref=f23e431]:
+                - generic [ref=f23e432]: Rows
+                - combobox "Rows per page" [ref=f23e433] [cursor=pointer]:
+                  - option "5"
+                  - option "10" [selected]
+                  - option "20"
+                  - option "50"
+              - generic [ref=f23e434]: 1–3 / 3
+              - button "First page" [disabled] [ref=f23e435]:
+                - img [ref=f23e436]: first_page
+              - button "Previous page" [disabled] [ref=f23e437]:
+                - img [ref=f23e438]: chevron_left
+              - button "Next page" [disabled] [ref=f23e439]:
+                - img [ref=f23e440]: chevron_right
+              - button "Last page" [disabled] [ref=f23e441]:
+                - img [ref=f23e442]: last_page
+            - generic [ref=f23e443]:
+              - generic [ref=f23e444]:
+                - button [ref=f23e445] [cursor=pointer]:
+                  - img [ref=f23e446]: table_view
+                - button [ref=f23e448] [cursor=pointer]:
+                  - img [ref=f23e449]: description
+                - button [ref=f23e451] [cursor=pointer]:
+                  - img [ref=f23e452]: picture_as_pdf
+                - button [ref=f23e454] [cursor=pointer]:
+                  - img [ref=f23e455]: print
+                - button [ref=f23e457] [cursor=pointer]:
+                  - img [ref=f23e458]: content_copy
+              - generic [ref=f23e459]:
+                - img [ref=f23e460]: search
+                - searchbox "Search maintenance..." [ref=f23e461]
+          - main [ref=f23e462]:
+            - table [ref=f23e464]:
+              - rowgroup [ref=f23e465]:
+                - row [ref=f23e466]:
+                  - columnheader [ref=f23e467] [cursor=pointer]:
+                    - button "SR No." [ref=f23e468]
+                  - columnheader [ref=f23e473] [cursor=pointer]:
+                    - button "Asset" [ref=f23e474]
+                  - columnheader [ref=f23e479] [cursor=pointer]:
+                    - button "Type" [ref=f23e480]
+                  - columnheader [ref=f23e485] [cursor=pointer]:
+                    - button "Service Date" [ref=f23e486]
+                  - columnheader [ref=f23e491] [cursor=pointer]:
+                    - button "Next Due" [ref=f23e492]
+                  - columnheader [ref=f23e497] [cursor=pointer]:
+                    - button "Cost" [ref=f23e498]
+                  - columnheader "Actions" [ref=f23e503]
+              - rowgroup [ref=f23e504]:
+                - row [ref=f23e505]:
+                  - cell "1" [ref=f23e506]
+                  - cell "Delivery Van" [ref=f23e507]
+                  - cell "Brake Maintenance" [ref=f23e508]
+                  - cell "10/08/2026" [ref=f23e509]
+                  - cell "26/08/2026" [ref=f23e510]
+                  - cell "9999.88" [ref=f23e511]
+                  - cell [ref=f23e512]:
+                    - button "Edit maintenance" [ref=f23e514] [cursor=pointer]:
+                      - img [ref=f23e515]: edit
+                - row [ref=f23e516]:
+                  - cell "2" [ref=f23e517]
+                  - cell "test" [ref=f23e518]
+                  - cell "pppp" [ref=f23e519]
+                  - cell "01/08/2026" [ref=f23e520]
+                  - cell "04/08/2026" [ref=f23e521]
+                  - cell "99.00" [ref=f23e522]
+                  - cell [ref=f23e523]:
+                    - button "Edit maintenance" [ref=f23e525] [cursor=pointer]:
+                      - img [ref=f23e526]: edit
+                - row [ref=f23e527]:
+                  - cell "3" [ref=f23e528]
+                  - cell "Bike" [ref=f23e529]
+                  - cell "adf" [ref=f23e530]
+                  - cell "01/08/2026" [ref=f23e531]
+                  - cell "04/08/2026" [ref=f23e532]
+                  - cell "199.89" [ref=f23e533]
+                  - cell [ref=f23e534]:
+                    - button "Edit maintenance" [ref=f23e536] [cursor=pointer]:
+                      - img [ref=f23e537]: edit
+    - generic: © 2026 | Trackofy. All rights reserved.
+  - generic:
+    - generic:
+      - generic:
+        - combobox "Language Translate Widget":
+          - option "Select Language" [selected]
+          - option "Arabic"
+          - option "French"
+          - option "Hindi"
+          - option "Japanese"
+          - option "Korean"
+          - option "Portuguese (Brazil)"
+          - option "Spanish"
+      - text: Powered by

@@ -1,0 +1,269 @@
+- generic [active] [ref=f12e1]:
+  - generic [ref=f12e3]:
+    - navigation [ref=f12e5]:
+      - generic [ref=f12e6]:
+        - link [ref=f12e1066] [cursor=pointer]:
+          - /url: /
+          - img "Intelligent Tracking Management" [ref=f12e1067]
+        - generic [ref=f12e11]:
+          - link "Home" [ref=f12e1068] [cursor=pointer]:
+            - /url: /home
+            - img [ref=f12e13]: home
+          - link "Dashboard" [ref=f12e1069] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=f12e16]: dashboard
+          - link "Unit" [ref=f12e1070] [cursor=pointer]:
+            - /url: /unit
+            - img [ref=f12e19]: commute
+          - link "Tracking" [ref=f12e1071] [cursor=pointer]:
+            - /url: /tracking
+            - img [ref=f12e22]: public
+          - link "Reports" [ref=f12e1072] [cursor=pointer]:
+            - /url: /reports
+            - img [ref=f12e25]: bar_chart
+          - link "Settings" [ref=f12e1073] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=f12e28]: settings
+          - link "Administrator" [ref=f12e1074] [cursor=pointer]:
+            - /url: /administrator
+            - img [ref=f12e31]: admin_panel_settings
+          - link "Video Telematics" [ref=f12e1075] [cursor=pointer]:
+            - /url: /video_telematics
+            - img [ref=f12e34]: video_library
+        - generic [ref=f12e37]:
+          - button [ref=f12e38] [cursor=pointer]:
+            - img [ref=f12e39]: apps
+          - button [ref=f12e40] [cursor=pointer]:
+            - img [ref=f12e41]: dark_mode
+          - button [ref=f12e42] [cursor=pointer]:
+            - img [ref=f12e43]: download
+          - button [ref=f12e44] [cursor=pointer]:
+            - img [ref=f12e45]: notifications_active
+          - button [ref=f12e46] [cursor=pointer]:
+            - img [ref=f12e47]: account_circle
+          - button [ref=f12e48] [cursor=pointer]:
+            - img [ref=f12e49]: translate
+          - button [ref=f12e50] [cursor=pointer]:
+            - img [ref=f12e51]: power_settings_new
+          - button [ref=f12e52] [cursor=pointer]
+    - generic [ref=f12e63]:
+      - complementary "Asset Management navigation" [ref=f12e1076]:
+        - generic [ref=f12e65]:
+          - generic [ref=f12e66]:
+            - img [ref=f12e68]: inventory_2
+            - generic [ref=f12e69]:
+              - heading "Asset Management" [level=2] [ref=f12e1077]
+              - paragraph [ref=f12e71]: Asset workspace settings
+          - button "Collapse Asset Management menu" [ref=f12e1078] [cursor=pointer]
+        - generic [ref=f12e77]:
+          - img [ref=f12e78]: search
+          - textbox "Search Asset Management settings" [ref=f12e1079]:
+            - /placeholder: Search settings...
+          - generic "Press Ctrl + K to focus search" [ref=f12e1080]: Ctrl K
+        - generic [ref=f12e81]: Modules
+        - navigation [ref=f12e84]:
+          - link "Dashboard" [ref=f12e1081] [cursor=pointer]:
+            - /url: /asset-management/dashboard
+            - img [ref=f12e87]: dashboard
+          - button "Asset Setup" [ref=f12e1082] [cursor=pointer]:
+            - img [ref=f12e92]: settings
+            - img [ref=f12e95]: expand_more
+          - generic [ref=f12e96]:
+            - button "Assets" [expanded] [ref=f12e1083] [cursor=pointer]:
+              - img [ref=f12e99]: business_center
+              - img [ref=f12e102]: expand_more
+            - link "All Assets" [ref=f12e1084] [cursor=pointer]:
+              - /url: /asset-management/asset-master
+              - img [ref=f12e459]: inventory
+          - button "Vehicle Usage" [ref=f12e1085] [cursor=pointer]:
+            - img [ref=f12e106]: directions_car
+            - img [ref=f12e109]: expand_more
+          - button "Asset Records" [ref=f12e1086] [cursor=pointer]:
+            - img [ref=f12e113]: inventory_2
+            - img [ref=f12e116]: expand_more
+          - link "Notifications" [ref=f12e1087] [cursor=pointer]:
+            - /url: /asset-management/asset-notification
+            - img [ref=f12e119]: notifications
+          - button "Insight" [ref=f12e1088] [cursor=pointer]:
+            - img [ref=f12e124]: assessment
+            - img [ref=f12e127]: expand_more
+        - generic [ref=f12e129]:
+          - img [ref=f12e131]: verified_user
+          - generic [ref=f12e132]: Menu access follows assigned permissions
+      - main [ref=f12e133]:
+        - generic [ref=f12e464]:
+          - generic [ref=f12e465]:
+            - generic [ref=f12e466]:
+              - img [ref=f12e468]: inventory_2
+              - generic [ref=f12e469]:
+                - generic [ref=f12e470]:
+                  - heading "Assets" [level=1] [ref=f12e1089]
+                  - generic [ref=f12e472]:
+                    - strong [ref=f12e473]: "4"
+                    - generic [ref=f12e474]: assets
+                - paragraph [ref=f12e475]: Manage asset details, assignments, purchase information and documents
+            - button "New Asset" [ref=f12e1090] [cursor=pointer]:
+              - img [ref=f12e478]: add
+          - generic [ref=f12e480]:
+            - group "Driver table pagination" [ref=f12e1091]:
+              - generic [ref=f12e484]:
+                - generic [ref=f12e485]: Rows
+                - combobox "Rows per page" [ref=f12e1092] [cursor=pointer]:
+                  - option "5"
+                  - option "10" [selected]
+                  - option "20"
+                  - option "50"
+              - generic [ref=f12e487]: 1–4 / 4
+              - button "First page" [disabled] [ref=f12e1093]:
+                - img [ref=f12e489]: first_page
+              - button "Previous page" [disabled] [ref=f12e1094]:
+                - img [ref=f12e491]: chevron_left
+              - button "Next page" [disabled] [ref=f12e1095]:
+                - img [ref=f12e493]: chevron_right
+              - button "Last page" [disabled] [ref=f12e1096]:
+                - img [ref=f12e495]: last_page
+            - generic [ref=f12e496]:
+              - generic [ref=f12e497]:
+                - button "Export drivers to Excel" [ref=f12e1097] [cursor=pointer]:
+                  - img [ref=f12e499]: table_view
+                - button "Export drivers to CSV" [ref=f12e1098] [cursor=pointer]:
+                  - img [ref=f12e502]: description
+                - button "Export drivers to PDF" [ref=f12e1099] [cursor=pointer]:
+                  - img [ref=f12e505]: picture_as_pdf
+                - button "Print driver table" [ref=f12e1100] [cursor=pointer]:
+                  - img [ref=f12e508]: print
+                - button "Copy driver table content" [ref=f12e1101] [cursor=pointer]:
+                  - img [ref=f12e511]: content_copy
+              - generic [ref=f12e512]:
+                - img [ref=f12e513]: search
+                - searchbox "Search..." [ref=f12e1102]
+          - main [ref=f12e515]:
+            - table [ref=f12e533]:
+              - rowgroup [ref=f12e534]:
+                - row [ref=f12e1103]:
+                  - columnheader [ref=f12e1104] [cursor=pointer]:
+                    - button "Sr No" [ref=f12e1105]
+                  - columnheader [ref=f12e1106] [cursor=pointer]:
+                    - button "Asset Name" [ref=f12e1107]
+                  - columnheader [ref=f12e1108] [cursor=pointer]:
+                    - button "Type" [ref=f12e1109]
+                  - columnheader [ref=f12e1110] [cursor=pointer]:
+                    - button "Serial No" [ref=f12e1111]
+                  - columnheader [ref=f12e1112] [cursor=pointer]:
+                    - button "Assigned Vehicle" [ref=f12e1113]
+                  - columnheader "Status" [ref=f12e1114]
+                  - columnheader "Alert" [ref=f12e1115]
+                  - columnheader "View" [ref=f12e1116]
+                  - columnheader "Assign" [ref=f12e1117]
+                  - columnheader "Edit" [ref=f12e1118]
+                  - columnheader "Delete" [ref=f12e1119]
+              - rowgroup [ref=f12e576]:
+                - row [ref=f12e1120]:
+                  - cell "1" [ref=f12e1121]
+                  - cell "Delivery Van" [ref=f12e1122]
+                  - cell "Minivan" [ref=f12e1123]
+                  - cell "Van_001" [ref=f12e1124]
+                  - cell "vansaj" [ref=f12e1125]:
+                    - generic [ref=f12e590]:
+                      - img [ref=f12e591]: directions_car
+                      - generic [ref=f12e592]: vansaj
+                  - cell "Available" [ref=f12e1126]
+                  - cell [ref=f12e1127]:
+                    - generic [ref=f12e596]:
+                      - img [ref=f12e597]: warning
+                      - text: Maintenance due in 15 days
+                  - cell [ref=f12e1128]:
+                    - button "View asset" [ref=f12e1129] [cursor=pointer]:
+                      - img [ref=f12e601]: visibility
+                  - cell [ref=f12e1130]:
+                    - button "Assign asset" [ref=f12e1131] [cursor=pointer]:
+                      - img [ref=f12e605]: assignment_ind
+                  - cell [ref=f12e1132]:
+                    - button "Edit asset" [ref=f12e1133] [cursor=pointer]:
+                      - img [ref=f12e609]: edit
+                  - cell [ref=f12e1134]:
+                    - button "Delete asset" [ref=f12e1135] [cursor=pointer]:
+                      - img [ref=f12e613]: delete_outline
+                - row [ref=f12e1136]:
+                  - cell "2" [ref=f12e1137]
+                  - cell "test" [ref=f12e1138]
+                  - cell "volvo" [ref=f12e1139]
+                  - cell "N/A" [ref=f12e1140]
+                  - cell "Not Assigned" [ref=f12e1141]
+                  - cell "N/A" [ref=f12e1142]
+                  - cell [ref=f12e1143]:
+                    - generic [ref=f12e627]:
+                      - img [ref=f12e628]: warning
+                      - text: Service overdue by 7 days
+                  - cell [ref=f12e1144]:
+                    - button "View asset" [ref=f12e1145] [cursor=pointer]:
+                      - img [ref=f12e632]: visibility
+                  - cell [ref=f12e1146]:
+                    - button "Assign asset" [ref=f12e1147] [cursor=pointer]:
+                      - img [ref=f12e636]: assignment_ind
+                  - cell [ref=f12e1148]:
+                    - button "Edit asset" [ref=f12e1149] [cursor=pointer]:
+                      - img [ref=f12e640]: edit
+                  - cell [ref=f12e1150]:
+                    - button "Delete asset" [ref=f12e1151] [cursor=pointer]:
+                      - img [ref=f12e644]: delete_outline
+                - row [ref=f12e1152]:
+                  - cell "3" [ref=f12e1153]
+                  - cell "Bike" [ref=f12e1154]
+                  - cell "Tail Lamp" [ref=f12e1155]
+                  - cell "ABCDqw123" [ref=f12e1156]
+                  - cell "Not Assigned" [ref=f12e1157]
+                  - cell "N/A" [ref=f12e1158]
+                  - cell [ref=f12e1159]:
+                    - generic [ref=f12e658]:
+                      - img [ref=f12e659]: warning
+                      - text: Service overdue by 7 days
+                  - cell [ref=f12e1160]:
+                    - button "View asset" [ref=f12e1161] [cursor=pointer]:
+                      - img [ref=f12e663]: visibility
+                  - cell [ref=f12e1162]:
+                    - button "Assign asset" [ref=f12e1163] [cursor=pointer]:
+                      - img [ref=f12e667]: assignment_ind
+                  - cell [ref=f12e1164]:
+                    - button "Edit asset" [ref=f12e1165] [cursor=pointer]:
+                      - img [ref=f12e671]: edit
+                  - cell [ref=f12e1166]:
+                    - button "Delete asset" [ref=f12e1167] [cursor=pointer]:
+                      - img [ref=f12e675]: delete_outline
+                - row [ref=f12e1168]:
+                  - cell "4" [ref=f12e1169]
+                  - cell "sd" [ref=f12e1170]
+                  - cell "Car" [ref=f12e1171]
+                  - cell "N/A" [ref=f12e1172]
+                  - cell "Not Assigned" [ref=f12e1173]
+                  - cell "N/A" [ref=f12e1174]
+                  - cell [ref=f12e1175]:
+                    - generic [ref=f12e689]:
+                      - img [ref=f12e690]: warning
+                      - text: No alerts
+                  - cell [ref=f12e1176]:
+                    - button "View asset" [ref=f12e1177] [cursor=pointer]:
+                      - img [ref=f12e694]: visibility
+                  - cell [ref=f12e1178]:
+                    - button "Assign asset" [ref=f12e1179] [cursor=pointer]:
+                      - img [ref=f12e698]: assignment_ind
+                  - cell [ref=f12e1180]:
+                    - button "Edit asset" [ref=f12e1181] [cursor=pointer]:
+                      - img [ref=f12e702]: edit
+                  - cell [ref=f12e1182]:
+                    - button "Delete asset" [ref=f12e1183] [cursor=pointer]:
+                      - img [ref=f12e706]: delete_outline
+    - generic: © 2026 | Trackofy. All rights reserved.
+  - generic:
+    - generic:
+      - generic:
+        - combobox "Language Translate Widget":
+          - option "Select Language" [selected]
+          - option "Arabic"
+          - option "French"
+          - option "Hindi"
+          - option "Japanese"
+          - option "Korean"
+          - option "Portuguese (Brazil)"
+          - option "Spanish"
+      - text: Powered by

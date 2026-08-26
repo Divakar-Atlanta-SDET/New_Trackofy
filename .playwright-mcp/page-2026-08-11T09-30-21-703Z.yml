@@ -1,0 +1,55 @@
+- generic [ref=f4e5]:
+  - generic [ref=f4e6]: Access the most advanced and powerful tracking platform in the telematics industry
+  - generic [ref=f4e10]:
+    - img "Intelligent Tracking Management" [ref=f4e11]
+    - generic [ref=f4e12]:
+      - generic [ref=f4e16]:
+        - generic [ref=f4e17]:
+          - text: User Name
+          - generic [ref=f4e18]: "*"
+        - textbox "User Name" [ref=f4e19]:
+          - /placeholder: Username
+      - generic [ref=f4e23]:
+        - generic [ref=f4e24]:
+          - generic [ref=f4e25]:
+            - text: Password
+            - generic [ref=f4e26]: "*"
+          - textbox "Password" [ref=f4e27]:
+            - /placeholder: Enter your password
+        - button [ref=f4e29]:
+          - img [ref=f4e30]: visibility_off
+      - generic [ref=f4e34]:
+        - checkbox "I accept Terms & Conditions & Privacy Policy" [checked] [ref=f4e37] [cursor=pointer]
+        - generic [ref=f4e38] [cursor=pointer]:
+          - text: I accept
+          - link "Terms & Conditions" [ref=f4e39]:
+            - /url: /terms-and-conditions
+          - text: "&"
+          - link "Privacy Policy" [ref=f4e40]:
+            - /url: /privacy-policy
+      - button "Log in" [disabled] [ref=f4e41] [cursor=pointer]
+    - generic [ref=f4e42]:
+      - link "Forgot Password?" [ref=f4e43] [cursor=pointer]:
+        - /url: /forgot-password
+      - text: "|"
+      - link "Help Center" [ref=f4e44] [cursor=pointer]:
+        - /url: /help-center
+    - generic [ref=f4e45]: OR
+    - button [ref=f4e48]:
+      - generic [ref=f4e50]:
+        - button "Sign in with Google. Opens in new tab" [ref=f4e52] [cursor=pointer]:
+          - generic [ref=f4e54]: Sign in with Google
+        - iframe
+    - generic [ref=f4e64]:
+      - link [ref=f4e65] [cursor=pointer]:
+        - /url: https://play.google.com/store/apps/details?id=com.trackofynew.trackofy2
+        - img "Google Play" [ref=f4e66]
+      - link [ref=f4e67] [cursor=pointer]:
+        - /url: https://apps.apple.com/us/app/trackofy-2-0/id6753867563
+        - img "App Store" [ref=f4e68]
+    - generic [ref=f4e69]:
+      - text: Trackofy Release Version 6.2.0
+      - link "What's New ?" [ref=f4e70] [cursor=pointer]:
+        - /url: /whats-new
+      - text: ·
+    - generic [ref=f4e71]: © 2026 Trackofy. All rights reserved.

@@ -1,0 +1,517 @@
+- generic [ref=f12e1]:
+  - generic [ref=f12e3]:
+    - navigation [ref=f12e5]:
+      - generic [ref=f12e6]:
+        - link [ref=f12e707] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f12e11]:
+          - link [ref=f12e709] [cursor=pointer]:
+            - /url: /home
+            - img [ref=f12e13]: home
+            - generic [ref=f12e14]: Home
+          - link [ref=f12e710] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=f12e16]: dashboard
+            - generic [ref=f12e17]: Dashboard
+          - link [ref=f12e711] [cursor=pointer]:
+            - /url: /unit
+            - img [ref=f12e19]: commute
+            - generic [ref=f12e20]: Unit
+          - link [ref=f12e712] [cursor=pointer]:
+            - /url: /tracking
+            - img [ref=f12e22]: public
+            - generic [ref=f12e23]: Tracking
+          - link [ref=f12e713] [cursor=pointer]:
+            - /url: /reports
+            - img [ref=f12e25]: bar_chart
+            - generic [ref=f12e26]: Reports
+          - link [ref=f12e714] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=f12e28]: settings
+            - generic [ref=f12e29]: Settings
+          - link [ref=f12e715] [cursor=pointer]:
+            - /url: /administrator
+            - img [ref=f12e31]: admin_panel_settings
+            - generic [ref=f12e32]: Administrator
+          - link [ref=f12e716] [cursor=pointer]:
+            - /url: /video_telematics
+            - img [ref=f12e34]: video_library
+            - generic [ref=f12e35]: Video Telematics
+        - generic [ref=f12e37]:
+          - button [ref=f12e38] [cursor=pointer]:
+            - img [ref=f12e39]: apps
+          - button [ref=f12e40] [cursor=pointer]:
+            - img [ref=f12e41]: dark_mode
+          - button [ref=f12e42] [cursor=pointer]:
+            - img [ref=f12e43]: download
+          - button [ref=f12e44] [cursor=pointer]:
+            - img [ref=f12e45]: notifications_active
+          - button [ref=f12e46] [cursor=pointer]:
+            - img [ref=f12e47]: account_circle
+          - button [ref=f12e48] [cursor=pointer]:
+            - img [ref=f12e49]: translate
+          - button [ref=f12e50] [cursor=pointer]:
+            - img [ref=f12e51]: power_settings_new
+          - button [ref=f12e52] [cursor=pointer]
+    - generic [ref=f12e63]:
+      - complementary [ref=f12e717]:
+        - generic [ref=f12e65]:
+          - generic [ref=f12e66]:
+            - img [ref=f12e68]: inventory_2
+            - generic [ref=f12e69]:
+              - heading [level=2] [ref=f12e718]: Asset Management
+              - paragraph [ref=f12e71]: Asset workspace settings
+          - button [ref=f12e719] [cursor=pointer]
+        - generic [ref=f12e77]:
+          - img [ref=f12e78]: search
+          - textbox [ref=f12e720]:
+            - /placeholder: Search settings...
+          - generic [ref=f12e721]: Ctrl K
+        - generic [ref=f12e81]: Modules
+        - navigation [ref=f12e84]:
+          - link [ref=f12e722] [cursor=pointer]:
+            - /url: /asset-management/dashboard
+            - img [ref=f12e87]: dashboard
+            - generic [ref=f12e88]: Dashboard
+          - button [ref=f12e723] [cursor=pointer]:
+            - img [ref=f12e92]: settings
+            - generic [ref=f12e93]: Asset Setup
+            - img [ref=f12e95]: expand_more
+          - generic [ref=f12e96]:
+            - button [expanded] [ref=f12e724] [cursor=pointer]:
+              - img [ref=f12e99]: business_center
+              - generic [ref=f12e100]: Assets
+              - img [ref=f12e102]: expand_more
+            - link [ref=f12e725] [cursor=pointer]:
+              - /url: /asset-management/asset-master
+              - img [ref=f12e459]: inventory
+              - generic [ref=f12e460]: All Assets
+          - button [ref=f12e726] [cursor=pointer]:
+            - img [ref=f12e106]: directions_car
+            - generic [ref=f12e107]: Vehicle Usage
+            - img [ref=f12e109]: expand_more
+          - button [ref=f12e727] [cursor=pointer]:
+            - img [ref=f12e113]: inventory_2
+            - generic [ref=f12e114]: Asset Records
+            - img [ref=f12e116]: expand_more
+          - link [ref=f12e728] [cursor=pointer]:
+            - /url: /asset-management/asset-notification
+            - img [ref=f12e119]: notifications
+            - generic [ref=f12e120]: Notifications
+          - button [ref=f12e729] [cursor=pointer]:
+            - img [ref=f12e124]: assessment
+            - generic [ref=f12e125]: Insight
+            - img [ref=f12e127]: expand_more
+        - generic [ref=f12e129]:
+          - img [ref=f12e131]: verified_user
+          - generic [ref=f12e132]: Menu access follows assigned permissions
+      - main [ref=f12e133]:
+        - generic [ref=f12e464]:
+          - generic [ref=f12e465]:
+            - generic [ref=f12e466]:
+              - img [ref=f12e468]: inventory_2
+              - generic [ref=f12e469]:
+                - generic [ref=f12e470]:
+                  - heading [level=1] [ref=f12e730]: Assets
+                  - generic [ref=f12e472]:
+                    - strong [ref=f12e473]: "4"
+                    - generic [ref=f12e474]: assets
+                - paragraph [ref=f12e475]: Manage asset details, assignments, purchase information and documents
+            - button [ref=f12e731] [cursor=pointer]:
+              - img [ref=f12e478]: add
+              - generic [ref=f12e479]: New Asset
+          - generic [ref=f12e480]:
+            - group [ref=f12e732]:
+              - generic [ref=f12e484]:
+                - generic [ref=f12e485]: Rows
+                - combobox [ref=f12e733] [cursor=pointer]
+              - generic [ref=f12e487]: 1–4 / 4
+              - button [disabled] [ref=f12e734]:
+                - img [ref=f12e489]: first_page
+              - button [disabled] [ref=f12e735]:
+                - img [ref=f12e491]: chevron_left
+              - button [disabled] [ref=f12e736]:
+                - img [ref=f12e493]: chevron_right
+              - button [disabled] [ref=f12e737]:
+                - img [ref=f12e495]: last_page
+            - generic [ref=f12e496]:
+              - generic [ref=f12e497]:
+                - button [ref=f12e738] [cursor=pointer]:
+                  - img [ref=f12e499]: table_view
+                - button [ref=f12e739] [cursor=pointer]:
+                  - img [ref=f12e502]: description
+                - button [ref=f12e740] [cursor=pointer]:
+                  - img [ref=f12e505]: picture_as_pdf
+                - button [ref=f12e741] [cursor=pointer]:
+                  - img [ref=f12e508]: print
+                - button [ref=f12e742] [cursor=pointer]:
+                  - img [ref=f12e511]: content_copy
+              - generic [ref=f12e512]:
+                - img [ref=f12e513]: search
+                - searchbox [ref=f12e743]
+          - main [ref=f12e515]:
+            - table [ref=f12e533]:
+              - rowgroup [ref=f12e534]:
+                - row [ref=f12e744]:
+                  - columnheader [ref=f12e745] [cursor=pointer]:
+                    - button [ref=f12e746]:
+                      - generic [ref=f12e538]: Sr No
+                  - columnheader [ref=f12e747] [cursor=pointer]:
+                    - button [ref=f12e748]:
+                      - generic [ref=f12e544]: Asset Name
+                  - columnheader [ref=f12e749] [cursor=pointer]:
+                    - button [ref=f12e750]:
+                      - generic [ref=f12e550]: Type
+                  - columnheader [ref=f12e751] [cursor=pointer]:
+                    - button [ref=f12e752]:
+                      - generic [ref=f12e556]: Serial No
+                  - columnheader [ref=f12e753] [cursor=pointer]:
+                    - button [ref=f12e754]:
+                      - generic [ref=f12e562]: Assigned Vehicle
+                  - columnheader [ref=f12e755]: Status
+                  - columnheader [ref=f12e756]: Alert
+                  - columnheader [ref=f12e757]:
+                    - generic [ref=f12e569]: View
+                  - columnheader [ref=f12e758]:
+                    - generic [ref=f12e571]: Assign
+                  - columnheader [ref=f12e759]:
+                    - generic [ref=f12e573]: Edit
+                  - columnheader [ref=f12e760]:
+                    - generic [ref=f12e575]: Delete
+              - rowgroup [ref=f12e576]:
+                - row [ref=f12e761]:
+                  - cell [ref=f12e762]:
+                    - generic [ref=f12e582]: "1"
+                  - cell [ref=f12e763]:
+                    - generic [ref=f12e584]: Delivery Van
+                  - cell [ref=f12e764]:
+                    - generic [ref=f12e586]: Minivan
+                  - cell [ref=f12e765]:
+                    - generic [ref=f12e588]: Van_001
+                  - cell [ref=f12e766]:
+                    - generic [ref=f12e590]:
+                      - img [ref=f12e591]: directions_car
+                      - generic [ref=f12e592]: vansaj
+                  - cell [ref=f12e767]:
+                    - generic [ref=f12e594]: Available
+                  - cell [ref=f12e768]:
+                    - generic [ref=f12e596]:
+                      - img [ref=f12e597]: warning
+                      - text: Maintenance due in 15 days
+                  - cell [ref=f12e769]:
+                    - button [ref=f12e770] [cursor=pointer]:
+                      - img [ref=f12e601]: visibility
+                  - cell [ref=f12e771]:
+                    - button [ref=f12e772] [cursor=pointer]:
+                      - img [ref=f12e605]: assignment_ind
+                  - cell [ref=f12e773]:
+                    - button [ref=f12e774] [cursor=pointer]:
+                      - img [ref=f12e609]: edit
+                  - cell [ref=f12e775]:
+                    - button [ref=f12e776] [cursor=pointer]:
+                      - img [ref=f12e613]: delete_outline
+                - row [ref=f12e777]:
+                  - cell [ref=f12e778]:
+                    - generic [ref=f12e616]: "2"
+                  - cell [ref=f12e779]:
+                    - generic [ref=f12e618]: test
+                  - cell [ref=f12e780]:
+                    - generic [ref=f12e620]: volvo
+                  - cell [ref=f12e781]:
+                    - generic [ref=f12e622]: N/A
+                  - cell [ref=f12e782]: Not Assigned
+                  - cell [ref=f12e783]:
+                    - generic [ref=f12e625]: N/A
+                  - cell [ref=f12e784]:
+                    - generic [ref=f12e627]:
+                      - img [ref=f12e628]: warning
+                      - text: Service overdue by 7 days
+                  - cell [ref=f12e785]:
+                    - button [ref=f12e786] [cursor=pointer]:
+                      - img [ref=f12e632]: visibility
+                  - cell [ref=f12e787]:
+                    - button [ref=f12e788] [cursor=pointer]:
+                      - img [ref=f12e636]: assignment_ind
+                  - cell [ref=f12e789]:
+                    - button [ref=f12e790] [cursor=pointer]:
+                      - img [ref=f12e640]: edit
+                  - cell [ref=f12e791]:
+                    - button [ref=f12e792] [cursor=pointer]:
+                      - img [ref=f12e644]: delete_outline
+                - row [ref=f12e793]:
+                  - cell [ref=f12e794]:
+                    - generic [ref=f12e647]: "3"
+                  - cell [ref=f12e795]:
+                    - generic [ref=f12e649]: Bike
+                  - cell [ref=f12e796]:
+                    - generic [ref=f12e651]: Tail Lamp
+                  - cell [ref=f12e797]:
+                    - generic [ref=f12e653]: ABCDqw123
+                  - cell [ref=f12e798]: Not Assigned
+                  - cell [ref=f12e799]:
+                    - generic [ref=f12e656]: N/A
+                  - cell [ref=f12e800]:
+                    - generic [ref=f12e658]:
+                      - img [ref=f12e659]: warning
+                      - text: Service overdue by 7 days
+                  - cell [ref=f12e801]:
+                    - button [ref=f12e802] [cursor=pointer]:
+                      - img [ref=f12e663]: visibility
+                  - cell [ref=f12e803]:
+                    - button [ref=f12e804] [cursor=pointer]:
+                      - img [ref=f12e667]: assignment_ind
+                  - cell [ref=f12e805]:
+                    - button [ref=f12e806] [cursor=pointer]:
+                      - img [ref=f12e671]: edit
+                  - cell [ref=f12e807]:
+                    - button [ref=f12e808] [cursor=pointer]:
+                      - img [ref=f12e675]: delete_outline
+                - row [ref=f12e809]:
+                  - cell [ref=f12e810]:
+                    - generic [ref=f12e678]: "4"
+                  - cell [ref=f12e811]:
+                    - generic [ref=f12e680]: sd
+                  - cell [ref=f12e812]:
+                    - generic [ref=f12e682]: Car
+                  - cell [ref=f12e813]:
+                    - generic [ref=f12e684]: N/A
+                  - cell [ref=f12e814]: Not Assigned
+                  - cell [ref=f12e815]:
+                    - generic [ref=f12e687]: N/A
+                  - cell [ref=f12e816]:
+                    - generic [ref=f12e689]:
+                      - img [ref=f12e690]: warning
+                      - text: No alerts
+                  - cell [ref=f12e817]:
+                    - button [ref=f12e818] [cursor=pointer]:
+                      - img [ref=f12e694]: visibility
+                  - cell [ref=f12e819]:
+                    - button [ref=f12e820] [cursor=pointer]:
+                      - img [ref=f12e698]: assignment_ind
+                  - cell [ref=f12e821]:
+                    - button [ref=f12e822] [cursor=pointer]:
+                      - img [ref=f12e702]: edit
+                  - cell [ref=f12e823]:
+                    - button [ref=f12e824] [cursor=pointer]:
+                      - img [ref=f12e706]: delete_outline
+    - generic [ref=f12e154]: © 2026 | Trackofy. All rights reserved.
+  - dialog [active] [ref=f12e828]:
+    - generic [ref=f12e831]:
+      - banner [ref=f12e832]:
+        - generic [ref=f12e835]:
+          - heading "Delivery Van" [level=2] [ref=f12e836]
+          - paragraph [ref=f12e837]: Complete asset information
+        - button "Close asset details" [ref=f12e838] [cursor=pointer]:
+          - img [ref=f12e839]: close
+      - main [ref=f12e840]:
+        - generic [ref=f12e841]:
+          - generic [ref=f12e842]:
+            - generic [ref=f12e843]:
+              - img [ref=f12e845]: directions_car
+              - generic [ref=f12e846]:
+                - paragraph [ref=f12e847]: Currently Installed Vehicle
+                - paragraph [ref=f12e848]: vansaj
+                - generic [ref=f12e849]:
+                  - generic [ref=f12e850]: "Device ID : 4607"
+                  - generic [ref=f12e851]: •
+                  - generic [ref=f12e852]: "Installed : 10 Aug 2026"
+            - generic [ref=f12e853]: Assigned
+          - generic [ref=f12e854]:
+            - generic [ref=f12e855]:
+              - generic [ref=f12e856]:
+                - img [ref=f12e858]: info_outline
+                - heading "Asset Information" [level=3] [ref=f12e859]
+              - generic [ref=f12e860]:
+                - generic [ref=f12e861]:
+                  - generic [ref=f12e862]: "Serial No :"
+                  - generic [ref=f12e863]: Van_001
+                - generic [ref=f12e864]:
+                  - generic [ref=f12e865]: "Model No :"
+                  - generic [ref=f12e866]: H200
+                - generic [ref=f12e867]:
+                  - generic [ref=f12e868]: "Category :"
+                  - generic [ref=f12e869]: Van
+                - generic [ref=f12e870]:
+                  - generic [ref=f12e871]: "Asset Type :"
+                  - generic [ref=f12e872]: Minivan
+                - generic [ref=f12e873]:
+                  - generic [ref=f12e874]: "Brand :"
+                  - generic [ref=f12e875]: Toyota
+                - generic [ref=f12e876]:
+                  - generic [ref=f12e877]: "Vendor :"
+                  - generic [ref=f12e878]: Toyota India
+                - generic [ref=f12e879]:
+                  - generic [ref=f12e880]: "Unit :"
+                  - generic [ref=f12e881]: N/A
+                - generic [ref=f12e882]:
+                  - generic [ref=f12e883]: "Location :"
+                  - generic [ref=f12e884]: N/A
+                - generic [ref=f12e885]:
+                  - generic [ref=f12e886]: "Quantity :"
+                  - generic [ref=f12e887]: "1.00"
+                - generic [ref=f12e888]:
+                  - generic [ref=f12e889]: "Serial Tracked :"
+                  - generic [ref=f12e890]: "No"
+            - generic [ref=f12e891]:
+              - generic [ref=f12e892]:
+                - img [ref=f12e894]: receipt_long
+                - heading "Purchase & Supplier" [level=3] [ref=f12e895]
+              - generic [ref=f12e896]:
+                - generic [ref=f12e897]:
+                  - generic [ref=f12e898]: "Purchase Date :"
+                  - generic [ref=f12e899]: 10 Aug 2026
+                - generic [ref=f12e900]:
+                  - generic [ref=f12e901]: "Purchase Cost :"
+                  - generic [ref=f12e902]: 50,00,000.00
+                - generic [ref=f12e903]:
+                  - generic [ref=f12e904]: "Salvage Value :"
+                  - generic [ref=f12e905]: N/A
+                - generic [ref=f12e906]:
+                  - generic [ref=f12e907]: "Supplier :"
+                  - generic [ref=f12e908]: N/A
+                - generic [ref=f12e909]:
+                  - generic [ref=f12e910]: "Supplier Contact :"
+                  - generic [ref=f12e911]: N/A
+                - generic [ref=f12e912]:
+                  - generic [ref=f12e913]: "Invoice No :"
+                  - generic [ref=f12e914]: H243
+                - generic [ref=f12e915]:
+                  - generic [ref=f12e916]: "PO Number :"
+                  - generic [ref=f12e917]: N/A
+                - generic [ref=f12e918]:
+                  - generic [ref=f12e919]: "Payment Terms :"
+                  - generic [ref=f12e920]: N/A
+          - generic [ref=f12e921]:
+            - generic [ref=f12e922]:
+              - generic [ref=f12e923]:
+                - img [ref=f12e925]: verified
+                - heading "Warranty Details" [level=3] [ref=f12e926]
+              - generic [ref=f12e927]:
+                - generic [ref=f12e928]:
+                  - generic [ref=f12e929]: "Warranty Enabled :"
+                  - generic [ref=f12e930]: "No"
+                - generic [ref=f12e931]:
+                  - generic [ref=f12e932]: "Provider :"
+                  - generic [ref=f12e933]: ram
+                - generic [ref=f12e934]:
+                  - generic [ref=f12e935]: "Warranty No :"
+                  - generic [ref=f12e936]: "2345"
+                - generic [ref=f12e937]:
+                  - generic [ref=f12e938]: "Start Date :"
+                  - generic [ref=f12e939]: 09 Aug 2026
+                - generic [ref=f12e940]:
+                  - generic [ref=f12e941]: "Expiry Date :"
+                  - generic [ref=f12e942]: N/A
+                - generic [ref=f12e943]:
+                  - generic [ref=f12e944]: "Contact :"
+                  - generic [ref=f12e945]: N/A
+                - generic [ref=f12e946]:
+                  - generic [ref=f12e947]: "Coverage :"
+                  - generic [ref=f12e948]: N/A
+            - generic [ref=f12e949]:
+              - generic [ref=f12e950]:
+                - img [ref=f12e952]: build
+                - heading "Maintenance Details" [level=3] [ref=f12e953]
+              - generic [ref=f12e954]:
+                - generic [ref=f12e955]:
+                  - generic [ref=f12e956]: "Type :"
+                  - generic [ref=f12e957]: Brake Maintenance
+                - generic [ref=f12e958]:
+                  - generic [ref=f12e959]: "Vendor :"
+                  - generic [ref=f12e960]: Toyota India
+                - generic [ref=f12e961]:
+                  - generic [ref=f12e962]: "Service Date :"
+                  - generic [ref=f12e963]: 10 Aug 2026
+                - generic [ref=f12e964]:
+                  - generic [ref=f12e965]: "Next Due :"
+                  - generic [ref=f12e966]: 26 Aug 2026
+                - generic [ref=f12e967]:
+                  - generic [ref=f12e968]: "Cost :"
+                  - generic [ref=f12e969]: 9,999.88
+          - generic [ref=f12e970]:
+            - generic [ref=f12e971]:
+              - img [ref=f12e973]: rv_hookup
+              - heading "Vehicle Installation History" [level=3] [ref=f12e974]
+            - table [ref=f12e976]:
+              - rowgroup [ref=f12e977]:
+                - row [ref=f12e978]:
+                  - columnheader "Vehicle" [ref=f12e979]
+                  - columnheader "Installed On" [ref=f12e980]
+                  - columnheader "Removed On" [ref=f12e981]
+                  - columnheader "Action" [ref=f12e982]
+                  - columnheader "Installed By" [ref=f12e983]
+              - rowgroup [ref=f12e984]:
+                - row [ref=f12e985]:
+                  - cell [ref=f12e986]:
+                    - paragraph [ref=f12e987]: RK19910
+                    - paragraph [ref=f12e988]: Device 99616
+                  - cell "10 Aug 2026" [ref=f12e989]
+                  - cell "10 Aug 2026" [ref=f12e990]
+                  - cell "Installed" [ref=f12e991]
+                  - cell "ram" [ref=f12e993]
+                - row [ref=f12e994]:
+                  - cell [ref=f12e995]:
+                    - paragraph [ref=f12e996]: vansaj
+                    - paragraph [ref=f12e997]: Device 4607
+                  - cell "10 Aug 2026" [ref=f12e998]
+                  - cell "N/A" [ref=f12e999]
+                  - cell "Installed" [ref=f12e1000]
+                  - cell "N/A" [ref=f12e1002]
+          - generic [ref=f12e1003]:
+            - generic [ref=f12e1004]:
+              - img [ref=f12e1006]: assignment_ind
+              - heading "Custody Assignments" [level=3] [ref=f12e1007]
+            - table [ref=f12e1009]:
+              - rowgroup [ref=f12e1010]:
+                - row [ref=f12e1011]:
+                  - columnheader "Target Type" [ref=f12e1012]
+                  - columnheader "Target" [ref=f12e1013]
+                  - columnheader "Assigned On" [ref=f12e1014]
+                  - columnheader "Expected Return" [ref=f12e1015]
+              - rowgroup [ref=f12e1016]:
+                - row [ref=f12e1017]:
+                  - cell "No custody assignment data available" [ref=f12e1018]
+          - generic [ref=f12e1019]:
+            - generic [ref=f12e1020]:
+              - generic [ref=f12e1021]:
+                - img [ref=f12e1023]: dashboard_customize
+                - heading "Custom Fields" [level=3] [ref=f12e1024]
+              - generic [ref=f12e1026]:
+                - generic [ref=f12e1027]: "Registration Number :"
+                - generic [ref=f12e1028]: DL01AB1234
+            - generic [ref=f12e1029]:
+              - generic [ref=f12e1030]:
+                - img [ref=f12e1032]: history
+                - heading "Recent Activity" [level=3] [ref=f12e1033]
+              - generic [ref=f12e1034]:
+                - generic [ref=f12e1035]:
+                  - img [ref=f12e1037]: remove_circle_outline
+                  - generic [ref=f12e1038]:
+                    - generic [ref=f12e1039]:
+                      - generic [ref=f12e1040]: REMOVED
+                      - generic [ref=f12e1041]: 10 Aug 2026, 12:24 pm
+                    - paragraph [ref=f12e1042]: Asset removed from vehicle
+                - generic [ref=f12e1043]:
+                  - img [ref=f12e1045]: build_circle
+                  - generic [ref=f12e1046]:
+                    - generic [ref=f12e1047]:
+                      - generic [ref=f12e1048]: INSTALLED
+                      - generic [ref=f12e1049]: 10 Aug 2026, 10:43 am
+                    - paragraph [ref=f12e1050]: Asset installation lifecycle updated
+                - generic [ref=f12e1051]:
+                  - img [ref=f12e1053]: build_circle
+                  - generic [ref=f12e1054]:
+                    - generic [ref=f12e1055]:
+                      - generic [ref=f12e1056]: INSTALLED
+                      - generic [ref=f12e1057]: 10 Aug 2026, 10:41 am
+                    - paragraph [ref=f12e1058]: Asset installation lifecycle updated
+          - generic [ref=f12e1059]:
+            - generic [ref=f12e1060]:
+              - img [ref=f12e1062]: folder_open
+              - heading "Documents" [level=3] [ref=f12e1063]
+            - generic [ref=f12e1064]: No documents available
+  - generic:
+    - generic:
+      - generic:
+        - combobox
+      - text: Powered by
