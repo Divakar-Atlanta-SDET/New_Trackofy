@@ -4,9 +4,9 @@ class ExportComponent:
     def __init__(self, page: Page):
         self.page = page
         
-        self.export_button_excel = page.locator("button[mattooltip$='Export to Excel']")
-        self.export_button_csv = page.locator("button[mattooltip$='Export to CSV']")
-        self.export_button_pdf = page.locator("button[mattooltip$='Export to PDF']")
+        self.export_button_excel = page.get_by_role("button", name="table_view")
+        self.export_button_csv = page.get_by_role("button", name="description")
+        self.export_button_pdf = page.get_by_role("button", name="picture_as_pdf")
         
     def export_to_excel(self):
         self.export_button_excel.click()

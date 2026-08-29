@@ -15,7 +15,7 @@ class CreateInstallationWizard:
         self.asset_required_error = page.locator("mat-error:has-text('Asset is required')")
         self.vehicle_required_error = page.locator("mat-error:has-text('Vehicle is required')")
         self.installation_date_required_error = page.locator("mat-error:has-text('Installed date is required')")
-        self.installed_by_required_error = page.locator("mat-error:has-text('Installed date is required')")
+        self.installed_by_required_error = page.locator("mat-error:has-text('Installed by is required')")
         
         # Button locators
         self.submit_button = page.get_by_role("button", name="Save")
@@ -32,6 +32,12 @@ class CreateInstallationWizard:
         '''Select a vehicle from the dropdown.'''
         self.vehicle_dropdown.click()
         self.page.get_by_role("option", name=vehicle_name).click()
+
+    def open_asset_options(self):
+        self.select_asset_dropdown.click()
+
+    def open_vehicle_options(self):
+        self.vehicle_dropdown.click()
     
     def enter_installed_on_date(self, installed_on_date: str):
         '''Enter the installed on date.'''
@@ -56,6 +62,28 @@ class CreateInstallationWizard:
     def click_close(self):
         '''Click the close button.'''
         self.close_button.click()
+
+    def required_errors(self):
+        """Return the required-field validation locators in form order."""
+        return (
+            self.asset_required_error,
+            self.vehicle_required_error,
+            self.installation_date_required_error,
+            self.installed_by_required_error,
+        )
+
+    def clear_asset(self):
+        """Clear the selected asset when the control supports clearing."""
+        self.select_asset_dropdown.click()
+        self.page.keyboard.press("Escape")
+
+    def fill_required_fields(self, asset_name: str, vehicle_name: str,
+                             installed_on_date: str, installed_by: str):
+        """Fill the required fields without submitting the form."""
+        self.select_asset(asset_name)
+        self.select_vehicle(vehicle_name)
+        self.enter_installed_on_date(installed_on_date)
+        self.enter_installed_by(installed_by)
     
     def create_installation(self, asset_name: str, vehicle_name: str, installed_on_date: str, installed_by: str, remarks: str):
         '''Create a new installation.'''

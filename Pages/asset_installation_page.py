@@ -24,4 +24,11 @@ class AssetInstallationPage:
         
     def search_installation(self, search_term: str):
         '''Search for an installation.'''
-        self.search.search_input.fill(search_term)
+        self.search.search(search_term)
+
+    @property
+    def table_rows(self):
+        return self.page.locator("tbody tr")
+
+    def clear_search(self):
+        self.search.clear_search()
