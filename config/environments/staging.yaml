@@ -3,7 +3,7 @@ api_url: "https://staging.trackofy.com/api" # Not yet implemented in this framew
 
 browser: "chromium"
 
-# headless: true
-headless: false
+headless: true
+# headless: false
 
 timeout: 15000
