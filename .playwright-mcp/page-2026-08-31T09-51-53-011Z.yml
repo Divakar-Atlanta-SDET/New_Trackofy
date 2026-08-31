@@ -1,0 +1,433 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - link [ref=e9] [cursor=pointer]:
+          - /url: /
+          - img "Trackofy" [ref=e10]
+        - generic [ref=e12]:
+          - button [ref=e13] [cursor=pointer]:
+            - img [ref=e14]: apps
+          - button [ref=e15] [cursor=pointer]:
+            - img [ref=e16]: dark_mode
+          - button [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: download
+          - button [ref=e19] [cursor=pointer]:
+            - img [ref=e20]: notifications_active
+          - button [ref=e21] [cursor=pointer]:
+            - img [ref=e22]: account_circle
+          - button [ref=e23] [cursor=pointer]:
+            - img [ref=e24]: translate
+          - button [ref=e25] [cursor=pointer]:
+            - img [ref=e26]: power_settings_new
+          - button [ref=e27] [cursor=pointer]
+    - generic [ref=e38]:
+      - generic [ref=e43]:
+        - button [ref=e44]:
+          - img [ref=e45]: chevron_right
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - img [ref=e50]: directions_car
+              - generic [ref=e51]:
+                - paragraph [ref=e52]: Total Fleet
+                - generic [ref=e53]:
+                  - paragraph [ref=e54]: "39"
+                  - generic [ref=e55]: devices
+            - generic "Active device status breakdown" [ref=e57]:
+              - button "Active Devices 36 92.3% of fleet" [pressed] [ref=e58] [cursor=pointer]:
+                - img [ref=e60]: local_shipping
+                - generic [ref=e61]:
+                  - paragraph [ref=e62]: Active Devices
+                  - generic [ref=e63]:
+                    - paragraph [ref=e64]: "36"
+                    - generic [ref=e65]: 92.3% of fleet
+              - button "Running 2 5.6%" [ref=e67] [cursor=pointer]:
+                - img [ref=e69]: play_arrow
+                - generic [ref=e70]:
+                  - paragraph [ref=e71]: Running
+                  - generic [ref=e72]:
+                    - paragraph [ref=e73]: "2"
+                    - generic [ref=e74]: 5.6%
+              - button "Idle 16 44.4%" [ref=e76] [cursor=pointer]:
+                - img [ref=e78]: pause
+                - generic [ref=e79]:
+                  - paragraph [ref=e80]: Idle
+                  - generic [ref=e81]:
+                    - paragraph [ref=e82]: "16"
+                    - generic [ref=e83]: 44.4%
+              - button "Stopped 4 11.1%" [ref=e85] [cursor=pointer]:
+                - img [ref=e87]: stop
+                - generic [ref=e88]:
+                  - paragraph [ref=e89]: Stopped
+                  - generic [ref=e90]:
+                    - paragraph [ref=e91]: "4"
+                    - generic [ref=e92]: 11.1%
+              - button "No Data 14 38.9%" [ref=e94] [cursor=pointer]:
+                - img [ref=e96]: signal_cellular_alt
+                - generic [ref=e97]:
+                  - paragraph [ref=e98]: No Data
+                  - generic [ref=e99]:
+                    - paragraph [ref=e100]: "14"
+                    - generic [ref=e101]: 38.9%
+            - generic [ref=e102]:
+              - img [ref=e104]: portable_wifi_off
+              - generic [ref=e105]:
+                - paragraph [ref=e106]: Expired Devices
+                - generic [ref=e107]:
+                  - paragraph [ref=e108]: "3"
+                  - generic [ref=e109]: 7.7% of fleet
+          - generic [ref=e110]:
+            - button [ref=e111] [cursor=pointer]:
+              - img [ref=e113]: battery_charging_full
+              - generic [ref=e114]:
+                - paragraph [ref=e115]: BMS Enabled
+                - paragraph [ref=e117]: "2"
+            - button [ref=e119] [cursor=pointer]:
+              - img [ref=e121]: videocam
+              - generic [ref=e122]:
+                - paragraph [ref=e123]: Video Enabled
+                - paragraph [ref=e125]: "1"
+            - generic [ref=e127]:
+              - img [ref=e129]: warning
+              - generic [ref=e130]:
+                - paragraph [ref=e131]: Critical Alerts
+                - generic [ref=e132]: "0"
+            - generic [ref=e135]:
+              - img [ref=e137]: route
+              - generic [ref=e138]:
+                - paragraph [ref=e139]: Active Trips
+                - paragraph [ref=e141]: "0"
+          - button "KPI Settings":
+            - img: settings
+      - generic [ref=e142]:
+        - complementary [ref=e143]:
+          - generic [ref=e146]:
+            - generic [ref=e148]:
+              - button "Fleet" [ref=e149] [cursor=pointer]
+              - button "Groups" [ref=e151] [cursor=pointer]
+              - button "Drivers" [ref=e152] [cursor=pointer]
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]:
+                  - textbox "Search..." [ref=e156]
+                  - img [ref=e157]: search
+                - button "Home Settings" [ref=e158] [cursor=pointer]:
+                  - img [ref=e159]: settings
+                - button "GeoLink" [ref=e160] [cursor=pointer]:
+                  - img [ref=e161]: share_location
+              - generic [ref=e162]:
+                - button "Active (0)" [ref=e163] [cursor=pointer]
+                - button "Running (0)" [ref=e166] [cursor=pointer]
+                - button "Idle (0)" [ref=e169] [cursor=pointer]
+                - button "Stopped (0)" [ref=e172] [cursor=pointer]
+                - button "No Data (0)" [ref=e175] [cursor=pointer]
+                - button "BMS (0)" [ref=e178] [cursor=pointer]
+                - button "Video (0)" [ref=e181] [cursor=pointer]
+            - generic [ref=e185]:
+              - img [ref=e186]: search_off
+              - paragraph [ref=e187]: No vehicles found
+              - paragraph [ref=e188]: Try changing search or status filter.
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - combobox [ref=e192]:
+                  - option "All" [selected]
+                  - option "25"
+                  - option "50"
+                  - option "100"
+                - generic [ref=e193]: Showing 0 - 0 of 0 vehicles
+              - generic [ref=e194]:
+                - button "Previous page" [disabled] [ref=e195]:
+                  - img [ref=e196]: chevron_left
+                - button "Next page" [disabled] [ref=e197]:
+                  - img [ref=e198]: chevron_right
+          - button "Collapse left panel" [ref=e200]:
+            - img [ref=e201]: chevron_left
+        - generic [ref=e202]:
+          - main [ref=e203]:
+            - generic [ref=e205]:
+              - status [ref=e206]:
+                - generic [ref=e207]:
+                  - progressbar [ref=e208]
+                  - generic [ref=e223]:
+                    - generic [ref=e224]: Loading map configuration…
+                    - generic [ref=e225]: Please wait
+              - generic [ref=e230]:
+                - region "Map" [ref=e231]
+                - iframe [ref=e255]:
+                  
+              - generic [ref=e256]:
+                - button "Map" [ref=e257] [cursor=pointer]
+                - button "Hybrid" [ref=e258] [cursor=pointer]
+              - generic [ref=e259]:
+                - button [ref=e260] [cursor=pointer]:
+                  - img [ref=e262]: layers
+                - button [ref=e264] [cursor=pointer]:
+                  - img [ref=e265]: directions_car
+                - button [ref=e266] [cursor=pointer]:
+                  - img [ref=e267]: alt_route
+                - button [ref=e268] [cursor=pointer]:
+                  - img [ref=e269]: hexagon
+                - button [ref=e270] [cursor=pointer]:
+                  - img [ref=e271]: location_on
+                - button [ref=e272] [cursor=pointer]:
+                  - img [ref=e273]: notifications_active
+                - button [ref=e274] [cursor=pointer]:
+                  - img [ref=e275]: restart_alt
+                - button [ref=e276] [cursor=pointer]:
+                  - img [ref=e277]: cleaning_services
+                - button [ref=e279]:
+                  - img [ref=e280]: keyboard_arrow_right
+          - button "Expand bottom panel" [ref=e282]:
+            - img [ref=e283]: keyboard_arrow_up
+        - complementary [ref=e284]:
+          - button "Collapse right panel" [ref=e286]:
+            - img [ref=e287]: chevron_right
+          - generic [ref=e293]:
+            - generic [ref=e295]:
+              - generic [ref=e296]:
+                - generic [ref=e297]:
+                  - heading "Alerts & Notifications" [level=2] [ref=e298]
+                  - generic "Total unread notifications" [ref=e299]: "10"
+                - generic [ref=e300]: Recent notifications from today
+              - button [ref=e302]:
+                - img [ref=e303]: filter_list
+            - generic [ref=e305]:
+              - button "Alerts (20)" [ref=e306]
+              - button "Acknowledged (0)" [ref=e308]
+            - generic [ref=e310]:
+              - article [ref=e311]:
+                - generic [ref=e312]:
+                  - img [ref=e314]: key
+                  - generic [ref=e315]:
+                    - generic [ref=e316]:
+                      - generic [ref=e317]:
+                        - generic [ref=e318]: Ignition
+                        - generic [ref=e319]: GCBL10536MHG21FG10882
+                      - generic [ref=e320]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG21FG10882 Ignition is ON near \"State Highway 8\" at 30/06/2026 09:50" [ref=e322]
+                    - generic [ref=e323]:
+                      - generic [ref=e324]:
+                        - generic [ref=e325]: 03:10 pm
+                        - generic [ref=e326]: •
+                        - generic [ref=e327]: 10 min ago
+                        - generic [ref=e328]: GPS
+                      - generic [ref=e329]:
+                        - button "Acknowledge" [ref=e330]:
+                          - img [ref=e331]: done
+                        - button "View" [ref=e332]:
+                          - img [ref=e333]: visibility
+              - article [ref=e334]:
+                - generic [ref=e335]:
+                  - img [ref=e337]: key
+                  - generic [ref=e338]:
+                    - generic [ref=e339]:
+                      - generic [ref=e340]:
+                        - generic [ref=e341]: Ignition
+                        - generic [ref=e342]: GCBL10536MHG21FG10875
+                      - generic [ref=e343]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG21FG10875 Ignition is ON near \"Gobindarampur, West Bengal, India\" at 30/06/2026 09:52" [ref=e345]
+                    - generic [ref=e346]:
+                      - generic [ref=e347]:
+                        - generic [ref=e348]: 03:10 pm
+                        - generic [ref=e349]: •
+                        - generic [ref=e350]: 10 min ago
+                        - generic [ref=e351]: GPS
+                      - generic [ref=e352]:
+                        - button "Acknowledge" [ref=e353]:
+                          - img [ref=e354]: done
+                        - button "View" [ref=e355]:
+                          - img [ref=e356]: visibility
+              - article [ref=e357]:
+                - generic [ref=e358]:
+                  - img [ref=e360]: key
+                  - generic [ref=e361]:
+                    - generic [ref=e362]:
+                      - generic [ref=e363]:
+                        - generic [ref=e364]: Ignition
+                        - generic [ref=e365]: GCBL10536MHG10AG04371
+                      - generic [ref=e366]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG10AG04371 Ignition is ON near \"CVMJ+GG7, Sangam Marg, Prayagraj, Uttar Pradesh 211006, India\" at 30/06/2026 09:52" [ref=e368]
+                    - generic [ref=e369]:
+                      - generic [ref=e370]:
+                        - generic [ref=e371]: 03:10 pm
+                        - generic [ref=e372]: •
+                        - generic [ref=e373]: 10 min ago
+                        - generic [ref=e374]: GPS
+                      - generic [ref=e375]:
+                        - button "Acknowledge" [ref=e376]:
+                          - img [ref=e377]: done
+                        - button "View" [ref=e378]:
+                          - img [ref=e379]: visibility
+              - article [ref=e380]:
+                - generic [ref=e381]:
+                  - img [ref=e383]: key
+                  - generic [ref=e384]:
+                    - generic [ref=e385]:
+                      - generic [ref=e386]:
+                        - generic [ref=e387]: Ignition
+                        - generic [ref=e388]: "864688053444797"
+                      - generic [ref=e389]: Info
+                    - generic "Dear Customer, your vehicle 864688053444797 Ignition is ON near \"8VVX+926, Prayagraj, Uttar Pradesh 211010, India\" at 25/06/2026 12:39" [ref=e391]
+                    - generic [ref=e392]:
+                      - generic [ref=e393]:
+                        - generic [ref=e394]: 03:10 pm
+                        - generic [ref=e395]: •
+                        - generic [ref=e396]: 10 min ago
+                        - generic [ref=e397]: GPS
+                      - generic [ref=e398]:
+                        - button "Acknowledge" [ref=e399]:
+                          - img [ref=e400]: done
+                        - button "View" [ref=e401]:
+                          - img [ref=e402]: visibility
+              - article [ref=e403]:
+                - generic [ref=e404]:
+                  - img [ref=e406]: key
+                  - generic [ref=e407]:
+                    - generic [ref=e408]:
+                      - generic [ref=e409]:
+                        - generic [ref=e410]: Ignition
+                        - generic [ref=e411]: GCBL10536MHG21FG10862
+                      - generic [ref=e412]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG21FG10862 Ignition is ON near \" West Bengal 741153, India\" at 30/06/2026 09:52" [ref=e414]
+                    - generic [ref=e415]:
+                      - generic [ref=e416]:
+                        - generic [ref=e417]: 03:10 pm
+                        - generic [ref=e418]: •
+                        - generic [ref=e419]: 10 min ago
+                        - generic [ref=e420]: GPS
+                      - generic [ref=e421]:
+                        - button "Acknowledge" [ref=e422]:
+                          - img [ref=e423]: done
+                        - button "View" [ref=e424]:
+                          - img [ref=e425]: visibility
+              - article [ref=e426]:
+                - generic [ref=e427]:
+                  - img [ref=e429]: key
+                  - generic [ref=e430]:
+                    - generic [ref=e431]:
+                      - generic [ref=e432]:
+                        - generic [ref=e433]: Ignition
+                        - generic [ref=e434]: GCBL10536MHG30GG13133
+                      - generic [ref=e435]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG30GG13133 Ignition is ON near \"Tufanganj - II, West Bengal, India\" at 31/08/2026 15:10" [ref=e437]
+                    - generic [ref=e438]:
+                      - generic [ref=e439]:
+                        - generic [ref=e440]: 03:10 pm
+                        - generic [ref=e441]: •
+                        - generic [ref=e442]: 10 min ago
+                        - generic [ref=e443]: GPS
+                      - generic [ref=e444]:
+                        - button "Acknowledge" [ref=e445]:
+                          - img [ref=e446]: done
+                        - button "View" [ref=e447]:
+                          - img [ref=e448]: visibility
+              - article [ref=e449]:
+                - generic [ref=e450]:
+                  - img [ref=e452]: key
+                  - generic [ref=e453]:
+                    - generic [ref=e454]:
+                      - generic [ref=e455]:
+                        - generic [ref=e456]: Ignition
+                        - generic [ref=e457]: GCBL10536MHG28GG12907
+                      - generic [ref=e458]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG28GG12907 Ignition is ON near \"R64H+4R Rajnagar Srinathgram, West Bengal, India\" at 31/08/2026 15:10" [ref=e460]
+                    - generic [ref=e461]:
+                      - generic [ref=e462]:
+                        - generic [ref=e463]: 03:10 pm
+                        - generic [ref=e464]: •
+                        - generic [ref=e465]: 10 min ago
+                        - generic [ref=e466]: GPS
+                      - generic [ref=e467]:
+                        - button "Acknowledge" [ref=e468]:
+                          - img [ref=e469]: done
+                        - button "View" [ref=e470]:
+                          - img [ref=e471]: visibility
+              - article [ref=e472]:
+                - generic [ref=e473]:
+                  - img [ref=e475]: key
+                  - generic [ref=e476]:
+                    - generic [ref=e477]:
+                      - generic [ref=e478]:
+                        - generic [ref=e479]: Ignition
+                        - generic [ref=e480]: GCBL10536MHG26HG14547
+                      - generic [ref=e481]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG26HG14547 Ignition is ON near \"X9GC 8XW, Ramganga Main Rd, Dakshin Raypur, Raipur, West Bengal 743349, India\" at 31/08/2026 15:10" [ref=e483]
+                    - generic [ref=e484]:
+                      - generic [ref=e485]:
+                        - generic [ref=e486]: 03:10 pm
+                        - generic [ref=e487]: •
+                        - generic [ref=e488]: 10 min ago
+                        - generic [ref=e489]: GPS
+                      - generic [ref=e490]:
+                        - button "Acknowledge" [ref=e491]:
+                          - img [ref=e492]: done
+                        - button "View" [ref=e493]:
+                          - img [ref=e494]: visibility
+              - article [ref=e495]:
+                - generic [ref=e496]:
+                  - img [ref=e498]: key
+                  - generic [ref=e499]:
+                    - generic [ref=e500]:
+                      - generic [ref=e501]:
+                        - generic [ref=e502]: Ignition
+                        - generic [ref=e503]: GCBL10536MHG26DG08259
+                      - generic [ref=e504]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG26DG08259 Ignition is ON near \"NH34 Purba Chandpur West Bengal 732212 India\" at 31/08/2026 15:10" [ref=e506]
+                    - generic [ref=e507]:
+                      - generic [ref=e508]:
+                        - generic [ref=e509]: 03:10 pm
+                        - generic [ref=e510]: •
+                        - generic [ref=e511]: 10 min ago
+                        - generic [ref=e512]: GPS
+                      - generic [ref=e513]:
+                        - button "Acknowledge" [ref=e514]:
+                          - img [ref=e515]: done
+                        - button "View" [ref=e516]:
+                          - img [ref=e517]: visibility
+              - article [ref=e518]:
+                - generic [ref=e519]:
+                  - img [ref=e521]: key
+                  - generic [ref=e522]:
+                    - generic [ref=e523]:
+                      - generic [ref=e524]:
+                        - generic [ref=e525]: Ignition
+                        - generic [ref=e526]: GCBL10536MHG26DG08318
+                      - generic [ref=e527]: Info
+                    - generic "Dear Customer, your vehicle GCBL10536MHG26DG08318 Ignition is ON near \"Tufanganj - I, West Bengal, India\" at 31/08/2026 15:09" [ref=e529]
+                    - generic [ref=e530]:
+                      - generic [ref=e531]:
+                        - generic [ref=e532]: 03:10 pm
+                        - generic [ref=e533]: •
+                        - generic [ref=e534]: 10 min ago
+                        - generic [ref=e535]: GPS
+                      - generic [ref=e536]:
+                        - button "Acknowledge" [ref=e537]:
+                          - img [ref=e538]: done
+                        - button "View" [ref=e539]:
+                          - img [ref=e540]: visibility
+            - generic [ref=e542]:
+              - button "View all alerts" [ref=e543]
+              - button "Live" [ref=e544]
+    - generic [ref=e545]:
+      - generic [ref=e546]:
+        - button "Standard View" [ref=e547]
+        - button "Map Focus" [ref=e552]
+        - button "Fleet View" [ref=e555]
+        - button "Alert View" [ref=e559]
+        - button "Playback View" [ref=e563]
+        - button "Command Center" [ref=e567]
+      - generic [ref=e573]: © 2026 | . All rights reserved.
+  - generic:
+    - generic:
+      - generic:
+        - combobox "Language Translate Widget":
+          - option "Select Language" [selected]
+          - option "Arabic"
+          - option "French"
+          - option "Hindi"
+          - option "Japanese"
+          - option "Korean"
+          - option "Portuguese (Brazil)"
+          - option "Spanish"
+      - text: Powered by

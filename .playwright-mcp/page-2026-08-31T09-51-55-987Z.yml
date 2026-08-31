@@ -1,0 +1,88 @@
+- generic [ref=f4e4]:
+  - navigation [ref=f4e6]:
+    - generic [ref=f4e7]:
+      - link [ref=f4e9] [cursor=pointer]:
+        - /url: /
+        - img "Intelligent Tracking Management" [ref=f4e10]
+      - generic [ref=f4e12]:
+        - button [ref=f4e13] [cursor=pointer]:
+          - img [ref=f4e14]: apps
+        - button [ref=f4e15] [cursor=pointer]:
+          - img [ref=f4e16]: dark_mode
+        - button [ref=f4e17] [cursor=pointer]:
+          - img [ref=f4e18]: download
+        - button [ref=f4e19] [cursor=pointer]:
+          - img [ref=f4e20]: notifications_active
+        - button [ref=f4e21] [cursor=pointer]:
+          - img [ref=f4e22]: account_circle
+        - button [ref=f4e23] [cursor=pointer]:
+          - img [ref=f4e24]: translate
+        - button [ref=f4e25] [cursor=pointer]:
+          - img [ref=f4e26]: power_settings_new
+        - button [ref=f4e27] [cursor=pointer]
+  - generic [ref=f4e40]:
+    - main [ref=f4e41]:
+      - generic [ref=f4e43]:
+        - status [ref=f4e44]:
+          - generic [ref=f4e45]:
+            - progressbar [ref=f4e46]
+            - generic [ref=f4e61]:
+              - generic [ref=f4e62]: Loading map configuration…
+              - generic [ref=f4e63]: Please wait
+        - generic [ref=f4e68]:
+          - region "Map" [ref=f4e69]
+          - iframe [ref=f4e104]:
+            
+        - generic [ref=f4e105]:
+          - button "Map" [ref=f4e106] [cursor=pointer]
+          - button "Hybrid" [ref=f4e107] [cursor=pointer]
+    - generic [ref=f4e108]:
+      - button "Collapse bottom panel" [ref=f4e110]:
+        - img [ref=f4e111]: keyboard_arrow_down
+      - generic [ref=f4e113]:
+        - generic [ref=f4e114]:
+          - generic [ref=f4e115]:
+            - button "Live Tracking" [ref=f4e116]:
+              - img [ref=f4e117]: location_on
+            - button "Playback Tracking" [ref=f4e120]:
+              - img [ref=f4e121]: history
+          - generic [ref=f4e124]:
+            - generic [ref=f4e125]:
+              - generic [ref=f4e126]: Selected Vehicles
+              - generic [ref=f4e127]: 0 /4
+            - generic [ref=f4e128]: No vehicles selected
+        - generic [ref=f4e133]:
+          - generic [ref=f4e135]:
+            - img [ref=f4e137]: location_on
+            - generic [ref=f4e138]:
+              - generic [ref=f4e139]: Live Tracking
+              - paragraph [ref=f4e140]: Configure vehicles and route appearance for live tracking.
+          - generic [ref=f4e141]:
+            - generic [ref=f4e145] [cursor=pointer]:
+              - generic [ref=f4e146]: Split Screen
+              - combobox "Split Screen" [ref=f4e147]:
+                - generic [ref=f4e148]: "No"
+            - generic [ref=f4e159] [cursor=pointer]:
+              - generic: Select Vehicle
+              - combobox "Select Vehicle" [ref=f4e160]
+            - generic [ref=f4e168]:
+              - generic [ref=f4e169]: Color
+              - textbox [ref=f4e171] [cursor=pointer]: "#087ea4"
+              - generic [ref=f4e172]: "#087EA4"
+            - generic [ref=f4e173]:
+              - generic [ref=f4e174]: Thickness
+              - slider [ref=f4e177] [cursor=pointer]: "3"
+              - generic [ref=f4e178]: 3 px
+            - button "Reset" [ref=f4e179]:
+              - img [ref=f4e180]: restart_alt
+            - button "Start Tracking" [disabled]:
+              - img: play_arrow
+  - generic [ref=f4e184]:
+    - generic [ref=f4e185]:
+      - button "Standard View is not available on this page" [disabled] [ref=f4e186]
+      - button "Map Focus" [ref=f4e191]
+      - button "Fleet View is not available on this page" [disabled] [ref=f4e194]
+      - button "Alert View is not available on this page" [disabled] [ref=f4e198]
+      - button "Playback View" [ref=f4e202]
+      - button "Command Center is not available on this page" [disabled] [ref=f4e206]
+    - generic [ref=f4e212]: © 2026 | Trackofy. All rights reserved.

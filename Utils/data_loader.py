@@ -72,6 +72,53 @@ DEFAULT_DATASETS = {
         "duplicate_sensor_names": [
             {"sensor_name": "Fuel Sensor 1", "description": "Duplicate sensor name submission"}
         ]
+    },
+    "tracking_positive.json": {
+        "valid_split_screens": [
+            {"option": "No", "description": "Default single screen view"},
+            {"option": "2 Screens", "description": "Dual split screen layout"},
+            {"option": "4 Screens", "description": "Quad split screen layout"}
+        ],
+        "valid_date_ranges": [
+            {"from_date": "31/08/2026", "to_date": "31/08/2026", "description": "Same day playback range"},
+            {"from_date": "30/08/2026", "to_date": "31/08/2026", "description": "Multi-day playback range"}
+        ],
+        "valid_hold_times": [
+            {"option": "> 5 Minutes", "description": "Hold time greater than 5 minutes"},
+            {"option": "> 10 Minutes", "description": "Hold time greater than 10 minutes"}
+        ],
+        "valid_overspeed_thresholds": [
+            {"option": "> 50 KM/H", "description": "Overspeed threshold 50 km/h"},
+            {"option": "> 60 KM/H", "description": "Overspeed threshold 60 km/h"}
+        ]
+    },
+    "tracking_negative.json": {
+        "invalid_date_ranges": [
+            {"from_date": "31/08/2026", "to_date": "01/08/2026", "description": "From date later than To date"},
+            {"from_date": "31/12/2026", "to_date": "31/08/2026", "description": "Future From date with past To date"}
+        ],
+        "invalid_time_ranges": [
+            {"from_time": "18:00", "to_time": "09:00", "description": "From time later than To time on same date"}
+        ]
+    },
+    "tracking_functional.json": {
+        "view_presets": [
+            {"preset": "Map Focus", "description": "Map-only view preset"},
+            {"preset": "Playback View", "description": "Map + Bottom panel preset"}
+        ],
+        "trail_colors": [
+            {"color": "#087EA4", "description": "Default cyan trail color"},
+            {"color": "#FF0000", "description": "Red trail color"}
+        ]
+    },
+    "tracking_edgecase.json": {
+        "boundary_trail_thickness": [
+            {"value": "1", "description": "Minimum trail thickness"},
+            {"value": "10", "description": "Maximum trail thickness"}
+        ],
+        "boundary_times": [
+            {"from_time": "00:00", "to_time": "23:59", "description": "Full 24-hour midnight-to-midnight boundary range"}
+        ]
     }
 }
 

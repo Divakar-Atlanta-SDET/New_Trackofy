@@ -1,0 +1,121 @@
+﻿Test Case ID,Category,Area,Test Scenario,Expected Result,Priority
+TRK-NAV-001,Functional,Tracking Page,Open Tracking module,Tracking page loads with map and bottom navigation/preset controls.,Critical
+TRK-NAV-002,Functional,Bottom Presets,Select Map Only preset,Map-only view is displayed and tracking bottom panel is hidden.,High
+TRK-NAV-003,Functional,Bottom Presets,Select Map + Bottom Panel preset,Map and bottom tracking panel are displayed.,High
+TRK-NAV-004,Functional,Bottom Presets,Switch repeatedly between both presets,Final selected preset is displayed correctly without broken/duplicate UI.,Medium
+TRK-NAV-005,Functional,Tabs,Open Live Tracking tab,Live Tracking tab becomes active and its form is displayed.,Critical
+TRK-NAV-006,Functional,Tabs,Open Playback Tracking tab,Playback Tracking tab becomes active and its form is displayed.,Critical
+TRK-NAV-007,Functional,Tabs,Switch Live Tracking to Playback Tracking,Playback form replaces Live form and stale Live state is not incorrectly shown.,High
+TRK-NAV-008,Functional,Tabs,Switch Playback Tracking to Live Tracking,Live form is displayed and stale Playback controls/results do not incorrectly affect it.,High
+TRK-NAV-009,Negative,Page Load,Tracking data/API fails during initial load,Application shows an appropriate error/retry state and does not display a false tracking state.,High
+TRK-NAV-010,Edge Case,Layout,Change browser viewport after opening Tracking,Controls remain usable without overlapping or becoming inaccessible.,Medium
+TRK-LIVE-001,Functional,Live Tracking,Verify default Split Screen value,Configured default value is displayed.,Medium
+TRK-LIVE-002,Functional,Live Tracking,Open Split Screen dropdown,Available options are displayed.,Medium
+TRK-LIVE-003,Positive,Split Screen,Select an available Split Screen option,Selected option is displayed and corresponding layout behavior is applied.,High
+TRK-LIVE-004,Functional,Vehicle,Open Select Vehicle dropdown,Available vehicles are displayed.,Critical
+TRK-LIVE-005,Positive,Vehicle,Select one vehicle,Vehicle is selected and Selected Vehicles counter increments correctly.,Critical
+TRK-LIVE-006,Positive,Vehicle,Select multiple vehicles within supported limit,All selected vehicles are shown and counter matches the selection.,Critical
+TRK-LIVE-007,Edge Case,Vehicle,Select the maximum supported vehicles,Maximum selection is accepted and counter reaches the configured limit.,High
+TRK-LIVE-008,Negative,Vehicle,Attempt to select a vehicle beyond the supported limit,Additional vehicle cannot be selected and UI remains consistent.,High
+TRK-LIVE-009,Functional,Vehicle,Deselect a selected vehicle,Vehicle is removed and counter decrements correctly.,High
+TRK-LIVE-010,Edge Case,Vehicle,Attempt to select the same vehicle twice,Duplicate selection is prevented.,High
+TRK-LIVE-011,Edge Case,Vehicle,Vehicle list has no available vehicles,Clear empty state is displayed and tracking cannot be started without a vehicle.,High
+TRK-LIVE-012,Negative,Vehicle,Vehicle list API fails,Error state is shown and application does not falsely report available selections.,High
+TRK-LIVE-013,Functional,Trail Color,Open trail color selector,Color selector opens successfully.,Medium
+TRK-LIVE-014,Positive,Trail Color,Select a different valid trail color,Selected color/value is displayed.,Medium
+TRK-LIVE-015,Positive,Trail Color,Start tracking after changing trail color,Vehicle trail uses the selected color.,High
+TRK-LIVE-016,Functional,Trail Thickness,Increase trail thickness,Slider/value changes correctly.,Medium
+TRK-LIVE-017,Functional,Trail Thickness,Decrease trail thickness,Slider/value changes correctly.,Medium
+TRK-LIVE-018,Edge Case,Trail Thickness,Move thickness slider to minimum,Minimum supported thickness is accepted and displayed correctly.,Medium
+TRK-LIVE-019,Edge Case,Trail Thickness,Move thickness slider to maximum,Maximum supported thickness is accepted and displayed correctly.,Medium
+TRK-LIVE-020,Functional,Reset,Click Reset without changing values,Form remains in its default state.,Low
+TRK-LIVE-021,Functional,Reset,Change vehicle/color/thickness and click Reset,All resettable Live Tracking values return to defaults.,High
+TRK-LIVE-022,Negative,Start Tracking,Click Start Tracking without selecting a vehicle,Tracking does not start and appropriate validation/feedback is shown.,Critical
+TRK-LIVE-023,Positive,Start Tracking,Select one valid vehicle and click Start Tracking,Live tracking starts and selected vehicle appears on the map.,Critical
+TRK-LIVE-024,Positive,Start Tracking,Select multiple vehicles and start tracking,All selected vehicles are tracked correctly.,Critical
+TRK-LIVE-025,Positive,Start Tracking,Start tracking with custom Split Screen configuration,Tracking starts using the selected layout configuration.,High
+TRK-LIVE-026,Positive,Start Tracking,Start tracking with custom trail color and thickness,Displayed vehicle trail uses selected color and thickness.,High
+TRK-LIVE-027,Functional,Live Updates,Verify live vehicle position updates,Vehicle marker/location updates as new tracking data arrives.,Critical
+TRK-LIVE-028,Functional,Live Updates,Verify trail is rendered for a moving vehicle,Route/trail is rendered according to received location history.,High
+TRK-LIVE-029,Edge Case,Live Updates,Selected vehicle has no current location data,Appropriate unavailable/no-data state is displayed.,High
+TRK-LIVE-030,Edge Case,Live Updates,Multiple selected vehicles update simultaneously,Markers and trails remain associated with the correct vehicles.,Critical
+TRK-LIVE-031,Negative,Start Tracking,Live tracking API fails,Error is shown and application does not display tracking as started.,Critical
+TRK-LIVE-032,Edge Case,Start Tracking,Rapidly click Start Tracking multiple times,Duplicate tracking requests/sessions are prevented or safely handled.,High
+TRK-LIVE-033,Edge Case,Network,Disconnect network during live tracking,Application handles stale/unavailable updates gracefully and communicates the failure.,Critical
+TRK-LIVE-034,Edge Case,Network,Reconnect after live tracking network failure,User can recover/retry and tracking resumes according to application behavior.,High
+TRK-PLAY-001,Functional,Playback,Verify default Playback fields,"Vehicle, dates, times, filters, color, thickness, Reset and Load Playback are displayed.",Critical
+TRK-PLAY-002,Functional,Vehicle,Open Playback vehicle dropdown,Available vehicles are displayed.,High
+TRK-PLAY-003,Positive,Vehicle,Select a valid vehicle,Selected vehicle is displayed.,Critical
+TRK-PLAY-004,Negative,Vehicle,Attempt Load Playback without selecting vehicle,Playback is not loaded and required validation/feedback is shown.,Critical
+TRK-PLAY-005,Edge Case,Vehicle,No vehicles are available,Empty state is displayed and playback cannot be loaded.,High
+TRK-PLAY-006,Functional,From Date,Open From Date picker,Date picker opens successfully.,High
+TRK-PLAY-007,Functional,To Date,Open To Date picker,Date picker opens successfully.,High
+TRK-PLAY-008,Positive,Date Range,Select valid From and To dates,Selected dates are displayed correctly.,High
+TRK-PLAY-009,Positive,Date Range,Select the same From and To date,Same-day range is accepted if supported by the application.,High
+TRK-PLAY-010,Positive,Date Range,Select a valid multi-day range,Range is accepted and can be used for playback.,High
+TRK-PLAY-011,Negative,Date Range,Set From Date later than To Date,Invalid range is rejected or validation is shown.,Critical
+TRK-PLAY-012,Negative,Date Range,Set To Date earlier than From Date,Invalid range is rejected or validation is shown.,Critical
+TRK-PLAY-013,Edge Case,Date Range,Select today's date,Current date is handled correctly.,Medium
+TRK-PLAY-014,Edge Case,Date Range,Select a future date,Application follows its defined rule for future playback dates.,High
+TRK-PLAY-015,Edge Case,Date Range,Select an old date outside available tracking history,Application handles unavailable history without crashing.,Medium
+TRK-PLAY-016,Functional,From Time,Change From Time,Selected time is displayed correctly.,High
+TRK-PLAY-017,Functional,To Time,Change To Time,Selected time is displayed correctly.,High
+TRK-PLAY-018,Positive,Time Range,Select a valid same-day time range,Time range is accepted.,High
+TRK-PLAY-019,Negative,Time Range,Set From Time later than To Time on the same date,Invalid time range is rejected or validation is shown.,Critical
+TRK-PLAY-020,Edge Case,Time Range,Set From Time equal to To Time,Application handles zero-duration range according to defined behavior.,Medium
+TRK-PLAY-021,Edge Case,Time Range,Use 00:00 as From/To Time,Midnight is handled correctly.,Medium
+TRK-PLAY-022,Edge Case,Time Range,Use end-of-day time,End-of-day boundary is handled correctly.,Medium
+TRK-PLAY-023,Positive,Time Range,Use different dates with valid times,Cross-day playback range is accepted.,High
+TRK-PLAY-024,Functional,Hold Time,Open Hold Time dropdown,Available options are displayed.,Medium
+TRK-PLAY-025,Positive,Hold Time,Select a Hold Time option,Selected option is displayed.,Medium
+TRK-PLAY-026,Positive,Hold Time,Load playback with Hold Time filter,Playback behavior/results respect the selected hold-time filter.,High
+TRK-PLAY-027,Edge Case,Hold Time,Select minimum available Hold Time,Minimum option is applied correctly.,Medium
+TRK-PLAY-028,Edge Case,Hold Time,Select maximum available Hold Time,Maximum option is applied correctly.,Medium
+TRK-PLAY-029,Functional,Overspeeding,Open Overspeeding dropdown,Available thresholds are displayed.,Medium
+TRK-PLAY-030,Positive,Overspeeding,Select an Overspeeding threshold,Selected threshold is displayed.,Medium
+TRK-PLAY-031,Positive,Overspeeding,Load playback with Overspeeding filter,Playback behavior/results respect the selected threshold.,High
+TRK-PLAY-032,Edge Case,Overspeeding,Select minimum available threshold,Minimum threshold is applied correctly.,Medium
+TRK-PLAY-033,Edge Case,Overspeeding,Select maximum available threshold,Maximum threshold is applied correctly.,Medium
+TRK-PLAY-034,Functional,Trail Color,Change Playback trail color,Selected color/value is displayed.,Medium
+TRK-PLAY-035,Positive,Trail Color,Load playback after changing trail color,Playback trail uses selected color.,High
+TRK-PLAY-036,Functional,Trail Thickness,Increase Playback trail thickness,Slider/value changes correctly.,Medium
+TRK-PLAY-037,Functional,Trail Thickness,Decrease Playback trail thickness,Slider/value changes correctly.,Medium
+TRK-PLAY-038,Edge Case,Trail Thickness,Set Playback thickness to minimum,Minimum supported value works.,Medium
+TRK-PLAY-039,Edge Case,Trail Thickness,Set Playback thickness to maximum,Maximum supported value works.,Medium
+TRK-PLAY-040,Functional,More Filters,Open More Filters,Additional filters panel opens.,Medium
+TRK-PLAY-041,Functional,More Filters,Close More Filters,Additional filters panel closes without losing unrelated state.,Low
+TRK-PLAY-042,Positive,More Filters,Apply an available additional filter,Playback request uses the selected filter.,High
+TRK-PLAY-043,Positive,More Filters,Apply multiple available additional filters,Playback results satisfy the selected filter combination.,High
+TRK-PLAY-044,Functional,Reset,Click Reset without changing Playback form,Default Playback state remains/returns correctly.,Low
+TRK-PLAY-045,Functional,Reset,Modify all visible Playback fields and click Reset,All resettable values return to defaults.,High
+TRK-PLAY-046,Negative,Load Playback,Click Load Playback with missing required fields,Playback does not load and validation is displayed.,Critical
+TRK-PLAY-047,Positive,Load Playback,Load valid same-day playback,Historical route loads successfully for the selected vehicle/time range.,Critical
+TRK-PLAY-048,Positive,Load Playback,Load valid multi-day playback,Historical route loads successfully.,Critical
+TRK-PLAY-049,Positive,Load Playback,Load playback with Hold Time and Overspeeding filters,Playback uses both selected filters.,High
+TRK-PLAY-050,Positive,Load Playback,Load playback with custom color and thickness,Route is rendered using selected visual settings.,High
+TRK-PLAY-051,Functional,Load Playback,Verify loading state while playback request is processing,Load button indicates processing and duplicate requests are prevented.,Medium
+TRK-PLAY-052,Negative,Load Playback,Playback API fails,Appropriate error is shown and no false playback result is displayed.,Critical
+TRK-PLAY-053,Edge Case,Load Playback,Valid range contains no tracking data,Clear no-data state is displayed.,High
+TRK-PLAY-054,Edge Case,Load Playback,Request a large playback range,Application handles large result data without UI failure.,High
+TRK-PLAY-055,Edge Case,Load Playback,Rapidly click Load Playback,Duplicate playback requests are prevented or safely handled.,High
+TRK-PLAY-056,Edge Case,Network,Disconnect network while loading playback,Loading terminates safely and an error/retry state is shown.,High
+TRK-PLAY-057,Edge Case,Network,Reconnect after playback failure and retry,Playback can be loaded successfully after recovery.,High
+TRK-MAP-001,Functional,Map,Verify map renders when Tracking page opens,Map renders without broken tiles or fatal UI errors.,Critical
+TRK-MAP-002,Functional,Map,Zoom in/out on map,Map zoom changes correctly.,Medium
+TRK-MAP-003,Functional,Map,Pan map,Map can be panned without corrupting tracking form state.,Medium
+TRK-MAP-004,Positive,Live Map,Verify selected live vehicle marker,Marker represents the selected vehicle at its latest available position.,Critical
+TRK-MAP-005,Positive,Live Map,Verify route color,Live route uses configured trail color.,High
+TRK-MAP-006,Positive,Live Map,Verify route thickness,Live route uses configured trail thickness.,High
+TRK-MAP-007,Positive,Playback Map,Verify playback route is displayed,Historical route is rendered for the selected vehicle/range.,Critical
+TRK-MAP-008,Edge Case,Map,Map service/network is unavailable,Map failure is handled gracefully without breaking the tracking form.,High
+TRK-MAP-009,Edge Case,Map,Vehicle coordinates are unavailable/invalid,Marker/route is not rendered at an invalid location and UI remains stable.,High
+TRK-MAP-010,Edge Case,Map,Multiple vehicle routes overlap,Vehicle markers/routes remain correctly associated and usable.,Medium
+TRK-STATE-001,Functional,State,Switch Live to Playback after Live form changes,Playback uses its own state and is not populated with unrelated Live values.,High
+TRK-STATE-002,Functional,State,Switch Playback to Live after Playback form changes,Live form uses its own state and is not populated with unrelated Playback values.,High
+TRK-STATE-003,Edge Case,State,Switch preset while Live Tracking is active,Tracking/layout state follows defined product behavior without duplicate panels or broken map.,High
+TRK-STATE-004,Edge Case,State,Switch preset while Playback is active,Playback/map state remains consistent and UI does not duplicate controls.,High
+TRK-STATE-005,Edge Case,State,Refresh Tracking page,Tracking module initializes correctly after refresh.,High
+TRK-STATE-006,Edge Case,State,Browser back/forward navigation to Tracking,Tracking page initializes correctly and does not retain corrupted state.,Medium
+TRK-STATE-007,Negative,Authentication,Session expires during live tracking,User is handled by the authentication flow and protected requests do not continue incorrectly.,High
+TRK-STATE-008,Negative,Authentication,Session expires during playback load,Request fails safely and authentication handling is triggered.,High
+TRK-STATE-009,Edge Case,API Concurrency,Multiple tracking requests complete out of order,Stale API responses do not overwrite the latest user selection/state.,Critical

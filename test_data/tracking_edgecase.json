@@ -1,0 +1,19 @@
+{
+  "boundary_trail_thickness": [
+    {
+      "value": "1",
+      "description": "Minimum trail thickness"
+    },
+    {
+      "value": "10",
+      "description": "Maximum trail thickness"
+    }
+  ],
+  "boundary_times": [
+    {
+      "from_time": "00:00",
+      "to_time": "23:59",
+      "description": "Full 24-hour midnight-to-midnight boundary range"
+    }
+  ]
+}

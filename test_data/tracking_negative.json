@@ -1,0 +1,21 @@
+{
+  "invalid_date_ranges": [
+    {
+      "from_date": "31/08/2026",
+      "to_date": "01/08/2026",
+      "description": "From date later than To date"
+    },
+    {
+      "from_date": "31/12/2026",
+      "to_date": "31/08/2026",
+      "description": "Future From date with past To date"
+    }
+  ],
+  "invalid_time_ranges": [
+    {
+      "from_time": "18:00",
+      "to_time": "09:00",
+      "description": "From time later than To time on same date"
+    }
+  ]
+}

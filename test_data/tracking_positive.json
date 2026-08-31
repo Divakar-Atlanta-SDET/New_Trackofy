@@ -1,0 +1,48 @@
+{
+  "valid_split_screens": [
+    {
+      "option": "No",
+      "description": "Default single screen view"
+    },
+    {
+      "option": "2 Screens",
+      "description": "Dual split screen layout"
+    },
+    {
+      "option": "4 Screens",
+      "description": "Quad split screen layout"
+    }
+  ],
+  "valid_date_ranges": [
+    {
+      "from_date": "31/08/2026",
+      "to_date": "31/08/2026",
+      "description": "Same day playback range"
+    },
+    {
+      "from_date": "30/08/2026",
+      "to_date": "31/08/2026",
+      "description": "Multi-day playback range"
+    }
+  ],
+  "valid_hold_times": [
+    {
+      "option": "> 5 Minutes",
+      "description": "Hold time greater than 5 minutes"
+    },
+    {
+      "option": "> 10 Minutes",
+      "description": "Hold time greater than 10 minutes"
+    }
+  ],
+  "valid_overspeed_thresholds": [
+    {
+      "option": "> 50 KM/H",
+      "description": "Overspeed threshold 50 km/h"
+    },
+    {
+      "option": "> 60 KM/H",
+      "description": "Overspeed threshold 60 km/h"
+    }
+  ]
+}
