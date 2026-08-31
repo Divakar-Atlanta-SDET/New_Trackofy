@@ -1,0 +1,79 @@
+- generic [ref=f5e2]:
+  - progressbar [ref=f5e4]
+  - generic [ref=f5e20]:
+    - navigation [ref=f5e22]:
+      - generic [ref=f5e23]:
+        - link [ref=f5e25] [cursor=pointer]:
+          - /url: /
+          - img "Intelligent Tracking Management" [ref=f5e26]
+        - generic [ref=f5e28]:
+          - link "Home" [ref=f5e29] [cursor=pointer]:
+            - /url: /home
+            - img [ref=f5e30]: home
+          - link "Dashboard" [ref=f5e32] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=f5e33]: dashboard
+          - link "Unit" [ref=f5e35] [cursor=pointer]:
+            - /url: /unit
+            - img [ref=f5e36]: commute
+          - link "Tracking" [ref=f5e38] [cursor=pointer]:
+            - /url: /tracking
+            - img [ref=f5e39]: public
+          - link "Reports" [ref=f5e41] [cursor=pointer]:
+            - /url: /reports
+            - img [ref=f5e42]: bar_chart
+          - link "Settings" [ref=f5e44] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=f5e45]: settings
+          - link "Administrator" [ref=f5e47] [cursor=pointer]:
+            - /url: /administrator
+            - img [ref=f5e48]: admin_panel_settings
+          - link "Video Telematics" [ref=f5e50] [cursor=pointer]:
+            - /url: /video_telematics
+            - img [ref=f5e51]: video_library
+        - generic [ref=f5e54]:
+          - button [ref=f5e55] [cursor=pointer]:
+            - img [ref=f5e56]: apps
+          - button [ref=f5e57] [cursor=pointer]:
+            - img [ref=f5e58]: dark_mode
+          - button [ref=f5e59] [cursor=pointer]:
+            - img [ref=f5e60]: download
+          - button [ref=f5e61] [cursor=pointer]:
+            - img [ref=f5e62]: notifications_active
+          - button [ref=f5e63] [cursor=pointer]:
+            - img [ref=f5e64]: account_circle
+          - button [ref=f5e65] [cursor=pointer]:
+            - img [ref=f5e66]: translate
+          - button [ref=f5e67] [cursor=pointer]:
+            - img [ref=f5e68]: power_settings_new
+          - button [ref=f5e69] [cursor=pointer]
+    - button [ref=f5e80] [cursor=pointer]:
+      - img [ref=f5e82]: message
+      - text: FEEDBACK
+    - main [ref=f5e83]:
+      - generic [ref=f5e85]:
+        - generic [ref=f5e86]:
+          - generic [ref=f5e88]:
+            - generic [ref=f5e89]:
+              - heading "Dashboard" [level=1] [ref=f5e90]
+              - generic [ref=f5e91]: Live
+            - navigation "Dashboard views" [ref=f5e93]:
+              - button "Graphical" [ref=f5e94] [cursor=pointer]:
+                - img [ref=f5e95]: insert_chart_outlined
+              - button "Tabular" [ref=f5e97] [cursor=pointer]:
+                - img [ref=f5e98]: table_rows
+          - generic [ref=f5e100]:
+            - button "Open AI Insights" [ref=f5e101] [cursor=pointer]:
+              - generic [ref=f5e102]: AI
+              - generic [ref=f5e103]: Insights
+            - button "Open Widget Store" [ref=f5e104] [cursor=pointer]:
+              - img [ref=f5e105]: widgets
+              - generic [ref=f5e106]: Widgets
+            - button "Open Trash Store" [ref=f5e107] [cursor=pointer]:
+              - img [ref=f5e108]: delete_outline
+              - generic [ref=f5e109]: Trash
+            - button "Refresh dashboard" [ref=f5e111] [cursor=pointer]:
+              - img [ref=f5e112]: refresh
+              - generic [ref=f5e113]: 29 Aug, 03:46 PM
+        - main [ref=f5e114]
+    - generic: © 2026 | Trackofy. All rights reserved.

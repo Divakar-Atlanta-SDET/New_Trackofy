@@ -1,0 +1,525 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - navigation [ref=e6]:
+      - generic [ref=e7]:
+        - link [ref=e513] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e12]:
+          - link [ref=e515] [cursor=pointer]:
+            - /url: /home
+            - img [ref=e14]: home
+            - generic [ref=e15]: Home
+          - link [ref=e516] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e17]: dashboard
+            - generic [ref=e18]: Dashboard
+          - link [ref=e517] [cursor=pointer]:
+            - /url: /unit
+            - img [ref=e20]: commute
+            - generic [ref=e21]: Unit
+          - link [ref=e518] [cursor=pointer]:
+            - /url: /tracking
+            - img [ref=e23]: public
+            - generic [ref=e24]: Tracking
+          - link [ref=e519] [cursor=pointer]:
+            - /url: /reports
+            - img [ref=e26]: bar_chart
+            - generic [ref=e27]: Reports
+          - link [ref=e520] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=e29]: settings
+            - generic [ref=e30]: Settings
+          - link [ref=e521] [cursor=pointer]:
+            - /url: /administrator
+            - img [ref=e32]: admin_panel_settings
+            - generic [ref=e33]: Administrator
+          - link [ref=e522] [cursor=pointer]:
+            - /url: /video_telematics
+            - img [ref=e35]: video_library
+            - generic [ref=e36]: Video Telematics
+        - generic [ref=e38]:
+          - button [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: apps
+          - button [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: dark_mode
+          - button [ref=e43] [cursor=pointer]:
+            - img [ref=e44]: download
+          - button [ref=e45] [cursor=pointer]:
+            - img [ref=e46]: notifications_active
+          - button [ref=e47] [cursor=pointer]:
+            - img [ref=e48]: account_circle
+          - button [ref=e49] [cursor=pointer]:
+            - img [ref=e50]: translate
+          - button [ref=e51] [cursor=pointer]:
+            - img [ref=e52]: power_settings_new
+          - button [ref=e53] [cursor=pointer]
+    - button [ref=e523] [cursor=pointer]:
+      - img [ref=e66]: message
+      - text: FEEDBACK
+    - main [ref=e67]:
+      - generic [ref=e70]:
+        - generic [ref=e72]:
+          - img [ref=e74]: directions_car
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - heading [level=1] [ref=e524]: Unit List
+              - generic [ref=e78]:
+                - strong [ref=e79]: "39"
+                - generic [ref=e80]: units
+            - paragraph [ref=e81]: View and manage all registered units and their device information
+        - generic [ref=e82]:
+          - group [ref=e525]:
+            - generic [ref=e86]:
+              - generic [ref=e87]: Rows
+              - combobox [ref=e526] [cursor=pointer]
+            - generic [ref=e89]: 1–10 / 39
+            - button [disabled] [ref=e527]:
+              - img [ref=e91]: first_page
+            - button [disabled] [ref=e528]:
+              - img [ref=e93]: chevron_left
+            - button [ref=e529] [cursor=pointer]:
+              - img [ref=e95]: chevron_right
+            - button [ref=e530] [cursor=pointer]:
+              - img [ref=e97]: last_page
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - button [ref=e531] [cursor=pointer]:
+                - img [ref=e101]: table_view
+              - button [ref=e532] [cursor=pointer]:
+                - img [ref=e104]: description
+              - button [ref=e533] [cursor=pointer]:
+                - img [ref=e107]: picture_as_pdf
+              - button [ref=e534] [cursor=pointer]:
+                - img [ref=e110]: print
+              - button [ref=e535] [cursor=pointer]:
+                - img [ref=e113]: content_copy
+            - generic [ref=e115]:
+              - img [ref=e116]: directions_car
+              - combobox [ref=e536]:
+                - generic [ref=e118] [cursor=pointer]: All Unit Types
+            - generic [ref=e124]:
+              - img [ref=e125]: search
+              - searchbox [ref=e537]
+        - main [ref=e127]:
+          - table [ref=e129]:
+            - rowgroup [ref=e130]:
+              - row [ref=e538]:
+                - columnheader [ref=e539]: Sr No
+                - columnheader [ref=e540] [cursor=pointer]:
+                  - button [ref=e541]:
+                    - generic [ref=e135]: Units
+                - columnheader [ref=e542] [cursor=pointer]:
+                  - button [ref=e543]:
+                    - generic [ref=e141]: IMEI
+                - columnheader [ref=e544] [cursor=pointer]:
+                  - button [ref=e545]:
+                    - generic [ref=e147]: Type
+                - columnheader [ref=e546] [cursor=pointer]:
+                  - button [ref=e547]:
+                    - generic [ref=e153]: Location
+                - columnheader [ref=e548] [cursor=pointer]:
+                  - button [ref=e549]:
+                    - generic [ref=e159]: SIM 1
+                - columnheader [ref=e550] [cursor=pointer]:
+                  - button [ref=e551]:
+                    - generic [ref=e165]: SIM 2
+                - columnheader [ref=e552] [cursor=pointer]:
+                  - button [ref=e553]:
+                    - generic [ref=e171]: Created At
+                - columnheader [ref=e554] [cursor=pointer]:
+                  - button [ref=e555]:
+                    - generic [ref=e177]: Renewal
+                - columnheader [ref=e556]: Status
+                - columnheader [ref=e557]: Settings
+                - columnheader [ref=e558]: Command
+            - rowgroup [ref=e184]:
+              - row [ref=e559]:
+                - cell [ref=e560]: "1"
+                - cell [ref=e561]:
+                  - generic [ref=e206]: "863070048170103"
+                - cell [ref=e563]:
+                  - generic [ref=e211]: "863070048170103"
+                - cell [ref=e564]:
+                  - generic [ref=e213]: Bus
+                - cell [ref=e565]:
+                  - generic [ref=e215]: Default
+                - cell [ref=e566]:
+                  - generic [ref=e217]: "5754224378589"
+                - cell [ref=e567]:
+                  - generic [ref=e219]: N/A
+                - cell [ref=e568]:
+                  - generic [ref=e221]: 03-02-2024
+                - cell [ref=e569]:
+                  - generic [ref=e223]: 09-09-2027
+                - cell [ref=e570]:
+                  - button [ref=e571] [cursor=pointer]:
+                    - generic [ref=e227]: Active
+                - cell [ref=e572]:
+                  - button [ref=e573] [cursor=pointer]:
+                    - img [ref=e230]: settings
+                - cell [ref=e574]:
+                  - button [ref=e575] [cursor=pointer]:
+                    - img [ref=e233]: send
+              - row [ref=e576]:
+                - cell [ref=e577]: "2"
+                - cell [ref=e578]:
+                  - generic [ref=e237]: GCBL10536MHG26HG14547
+                - cell [ref=e580]:
+                  - generic [ref=e242]: "869630055183093"
+                - cell [ref=e581]:
+                  - generic [ref=e244]: Scooty
+                - cell [ref=e582]:
+                  - generic [ref=e246]: Delhi
+                - cell [ref=e583]:
+                  - generic [ref=e248]: "5754222497713"
+                - cell [ref=e584]:
+                  - generic [ref=e250]: N/A
+                - cell [ref=e585]:
+                  - generic [ref=e252]: 27-08-2025
+                - cell [ref=e586]:
+                  - generic [ref=e254]: 27-08-2027
+                - cell [ref=e587]:
+                  - button [ref=e588] [cursor=pointer]:
+                    - generic [ref=e258]: Active
+                - cell [ref=e589]:
+                  - button [ref=e590] [cursor=pointer]:
+                    - img [ref=e261]: settings
+                - cell [ref=e591]:
+                  - button [ref=e592] [cursor=pointer]:
+                    - img [ref=e264]: send
+              - row [ref=e593]:
+                - cell [ref=e594]: "3"
+                - cell [ref=e595]:
+                  - generic [ref=e268]: "869630055281111"
+                - cell [ref=e597]:
+                  - generic [ref=e273]: "869630055281111"
+                - cell [ref=e598]:
+                  - generic [ref=e275]: Car
+                - cell [ref=e599]:
+                  - generic [ref=e277]: Default
+                - cell [ref=e600]:
+                  - generic [ref=e279]: "5754222497733"
+                - cell [ref=e601]:
+                  - generic [ref=e281]: N/A
+                - cell [ref=e602]:
+                  - generic [ref=e283]: 06-08-2025
+                - cell [ref=e603]:
+                  - generic [ref=e285]: 06-08-2027
+                - cell [ref=e604]:
+                  - button [ref=e605] [cursor=pointer]:
+                    - generic [ref=e289]: Active
+                - cell [ref=e606]:
+                  - button [ref=e607] [cursor=pointer]:
+                    - img [ref=e292]: settings
+                - cell [ref=e608]:
+                  - button [ref=e609] [cursor=pointer]:
+                    - img [ref=e295]: send
+              - row [ref=e610]:
+                - cell [ref=e611]: "4"
+                - cell [ref=e612]:
+                  - generic [ref=e299]: GCBL10536MHG30GG13133
+                - cell [ref=e614]:
+                  - generic [ref=e304]: "869630055193027"
+                - cell [ref=e615]:
+                  - generic [ref=e306]: Car
+                - cell [ref=e616]:
+                  - generic [ref=e308]: Default
+                - cell [ref=e617]:
+                  - generic [ref=e310]: "5754209865018"
+                - cell [ref=e618]:
+                  - generic [ref=e312]: N/A
+                - cell [ref=e619]:
+                  - generic [ref=e314]: 04-08-2025
+                - cell [ref=e620]:
+                  - generic [ref=e316]: 04-08-2027
+                - cell [ref=e621]:
+                  - button [ref=e622] [cursor=pointer]:
+                    - generic [ref=e320]: Active
+                - cell [ref=e623]:
+                  - button [ref=e624] [cursor=pointer]:
+                    - img [ref=e323]: settings
+                - cell [ref=e625]:
+                  - button [ref=e626] [cursor=pointer]:
+                    - img [ref=e326]: send
+              - row [ref=e627]:
+                - cell [ref=e628]: "5"
+                - cell [ref=e629]:
+                  - generic [ref=e330]: GCBL10536MHG28GG12907
+                - cell [ref=e631]:
+                  - generic [ref=e335]: "869630055344885"
+                - cell [ref=e632]:
+                  - generic [ref=e337]: Car
+                - cell [ref=e633]:
+                  - generic [ref=e339]: Default
+                - cell [ref=e634]:
+                  - generic [ref=e341]: "5754224379432"
+                - cell [ref=e635]:
+                  - generic [ref=e343]: N/A
+                - cell [ref=e636]:
+                  - generic [ref=e345]: 04-08-2025
+                - cell [ref=e637]:
+                  - generic [ref=e347]: 04-08-2027
+                - cell [ref=e638]:
+                  - button [ref=e639] [cursor=pointer]:
+                    - generic [ref=e351]: Active
+                - cell [ref=e640]:
+                  - button [ref=e641] [cursor=pointer]:
+                    - img [ref=e354]: settings
+                - cell [ref=e642]:
+                  - button [ref=e643] [cursor=pointer]:
+                    - img [ref=e357]: send
+              - row [ref=e644]:
+                - cell [ref=e645]: "6"
+                - cell [ref=e646]:
+                  - generic [ref=e361]: "862360078792707"
+                - cell [ref=e648]:
+                  - generic [ref=e366]: "862360078792707"
+                - cell [ref=e649]:
+                  - generic [ref=e368]: Truck
+                - cell [ref=e650]:
+                  - generic [ref=e370]: Default
+                - cell [ref=e651]:
+                  - generic [ref=e372]: "5754213859307"
+                - cell [ref=e652]:
+                  - generic [ref=e374]: N/A
+                - cell [ref=e653]:
+                  - generic [ref=e376]: 14-07-2026
+                - cell [ref=e654]:
+                  - generic [ref=e378]: 14-07-2027
+                - cell [ref=e655]:
+                  - button [ref=e656] [cursor=pointer]:
+                    - generic [ref=e382]: Active
+                - cell [ref=e657]:
+                  - button [ref=e658] [cursor=pointer]:
+                    - img [ref=e385]: settings
+                - cell [ref=e659]:
+                  - button [ref=e660] [cursor=pointer]:
+                    - img [ref=e388]: send
+              - row [ref=e661]:
+                - cell [ref=e662]: "7"
+                - cell [ref=e663]:
+                  - generic [ref=e392]: wailon_fuel
+                - cell [ref=e665]:
+                  - generic [ref=e397]: "862360078810608"
+                - cell [ref=e666]:
+                  - generic [ref=e399]: Bus
+                - cell [ref=e667]:
+                  - generic [ref=e401]: Delhi
+                - cell [ref=e668]:
+                  - generic [ref=e403]: "1313131321"
+                - cell [ref=e669]:
+                  - generic [ref=e405]: N/A
+                - cell [ref=e670]:
+                  - generic [ref=e407]: 14-07-2026
+                - cell [ref=e671]:
+                  - generic [ref=e409]: 14-07-2027
+                - cell [ref=e672]:
+                  - button [ref=e673] [cursor=pointer]:
+                    - generic [ref=e413]: Active
+                - cell [ref=e674]:
+                  - button [ref=e675] [cursor=pointer]:
+                    - img [ref=e416]: settings
+                - cell [ref=e676]:
+                  - button [ref=e677] [cursor=pointer]:
+                    - img [ref=e419]: send
+              - row [ref=e678]:
+                - cell [ref=e679]: "8"
+                - cell [ref=e680]:
+                  - generic [ref=e423]: GCBL10536MHG21FG10882
+                - cell [ref=e682]:
+                  - generic [ref=e428]: "869630055280923"
+                - cell [ref=e683]:
+                  - generic [ref=e430]: Car
+                - cell [ref=e684]:
+                  - generic [ref=e432]: Default
+                - cell [ref=e685]:
+                  - generic [ref=e434]: "5754209819445"
+                - cell [ref=e686]:
+                  - generic [ref=e436]: N/A
+                - cell [ref=e687]:
+                  - generic [ref=e438]: 28-06-2025
+                - cell [ref=e688]:
+                  - generic [ref=e440]: 28-06-2027
+                - cell [ref=e689]:
+                  - button [ref=e690] [cursor=pointer]:
+                    - generic [ref=e444]: Active
+                - cell [ref=e691]:
+                  - button [ref=e692] [cursor=pointer]:
+                    - img [ref=e447]: settings
+                - cell [ref=e693]:
+                  - button [ref=e694] [cursor=pointer]:
+                    - img [ref=e450]: send
+              - row [ref=e695]:
+                - cell [ref=e696]: "9"
+                - cell [ref=e697]:
+                  - generic [ref=e454]: GCBL10536MHG21FG10875
+                - cell [ref=e699]:
+                  - generic [ref=e459]: "869630055235976"
+                - cell [ref=e700]:
+                  - generic [ref=e461]: Car
+                - cell [ref=e701]:
+                  - generic [ref=e463]: Default
+                - cell [ref=e702]:
+                  - generic [ref=e465]: "5754209818889"
+                - cell [ref=e703]:
+                  - generic [ref=e467]: N/A
+                - cell [ref=e704]:
+                  - generic [ref=e469]: 28-06-2025
+                - cell [ref=e705]:
+                  - generic [ref=e471]: 28-06-2027
+                - cell [ref=e706]:
+                  - button [ref=e707] [cursor=pointer]:
+                    - generic [ref=e475]: Active
+                - cell [ref=e708]:
+                  - button [ref=e709] [cursor=pointer]:
+                    - img [ref=e478]: settings
+                - cell [ref=e710]:
+                  - button [ref=e711] [cursor=pointer]:
+                    - img [ref=e481]: send
+              - row [ref=e712]:
+                - cell [ref=e713]: "10"
+                - cell [ref=e714]:
+                  - generic [ref=e485]: GCBL10536MHG21FG10862
+                - cell [ref=e716]:
+                  - generic [ref=e490]: "869630055299493"
+                - cell [ref=e717]:
+                  - generic [ref=e492]: Car
+                - cell [ref=e718]:
+                  - generic [ref=e494]: Default
+                - cell [ref=e719]:
+                  - generic [ref=e496]: "5754209818364"
+                - cell [ref=e720]:
+                  - generic [ref=e498]: N/A
+                - cell [ref=e721]:
+                  - generic [ref=e500]: 28-06-2025
+                - cell [ref=e722]:
+                  - generic [ref=e502]: 28-06-2027
+                - cell [ref=e723]:
+                  - button [ref=e724] [cursor=pointer]:
+                    - generic [ref=e506]: Active
+                - cell [ref=e725]:
+                  - button [ref=e726] [cursor=pointer]:
+                    - img [ref=e509]: settings
+                - cell [ref=e727]:
+                  - button [ref=e728] [cursor=pointer]:
+                    - img [ref=e512]: send
+    - generic [ref=e192]: © 2026 | Trackofy. All rights reserved.
+  - dialog [active] [ref=e732]:
+    - generic [ref=e736]:
+      - generic [ref=e737]:
+        - banner [ref=e738]:
+          - generic [ref=e739]:
+            - heading "Unit Settings (863070048170103)" [level=2] [ref=e740]
+            - paragraph [ref=e741]: Manage vehicle configuration
+          - button [ref=e742] [cursor=pointer]:
+            - img [ref=e743]: close
+        - navigation "Vehicle configuration sections" [ref=e746]:
+          - generic [ref=e747]:
+            - button "General" [ref=e748] [cursor=pointer]:
+              - img [ref=e750]: tune
+            - button "Icon" [ref=e753] [cursor=pointer]:
+              - img [ref=e755]: collections
+            - button "Sensors" [ref=e757] [cursor=pointer]:
+              - img [ref=e759]: sensors
+            - button "Service" [ref=e761] [cursor=pointer]:
+              - img [ref=e763]: build
+            - button "Alert" [ref=e765] [cursor=pointer]:
+              - img [ref=e767]: warning
+      - main [ref=e769]:
+        - generic [ref=e771]:
+          - generic [ref=e772]:
+            - generic [ref=e773]:
+              - heading "General Settings" [level=2] [ref=e775]
+              - generic [ref=e776]:
+                - generic [ref=e777]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e778]: Name
+                        - textbox "Name" [disabled] [ref=e779]: "863070048170103"
+                - generic [ref=e781]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e782]: Device Model
+                        - textbox "Device Model" [disabled] [ref=e783]: E-101
+                - generic [ref=e785]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e786]: Unit Type
+                        - combobox "Unit Type" [disabled]:
+                          - generic: Bus
+                - generic [ref=e788]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e789]: Serial No
+                        - textbox "Serial No" [disabled] [ref=e790]:
+                          - /placeholder: Serial No.
+                          - text: GE10923A2319
+                - generic [ref=e792]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e793]: SIM 1
+                        - textbox "SIM 1" [disabled] [ref=e794]: "5754224378589"
+                - generic [ref=e796]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e797]: SIM 2
+                        - textbox "SIM 2" [disabled] [ref=e798]
+                - generic [ref=e800]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e801]: Port No
+                        - textbox "Port No" [disabled] [ref=e802]: "16104"
+                - generic [ref=e804]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e805]: Creation Date
+                        - textbox "Creation Date" [disabled] [ref=e806]: 03/02/2024
+                      - generic [ref=e808]:
+                        - button "Open calendar" [disabled]
+                - generic [ref=e810]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic [ref=e811]: Expiry Date
+                        - textbox "Expiry Date" [disabled] [ref=e812]: 09/09/2027
+                      - generic [ref=e814]:
+                        - button "Open calendar" [disabled]
+            - generic [ref=e816]:
+              - heading "Advanced Settings" [level=2] [ref=e818]
+              - generic [ref=e819]:
+                - generic [ref=e823] [cursor=pointer]:
+                  - generic [ref=e824]: Mileage Calculation On
+                  - combobox "Mileage Calculation On" [ref=e825]
+                - generic [ref=e837]:
+                  - generic [ref=e838]: Speed Limit (km/h)
+                  - spinbutton "Speed Limit (km/h)" [ref=e839]: "50.0"
+                - generic [ref=e844]:
+                  - generic [ref=e845]: Fuel Consumption Avg (l/100km)
+                  - spinbutton "Fuel Consumption Avg (l/100km)" [ref=e846]: "10.0"
+                - generic [ref=e851]:
+                  - generic [ref=e852]: Fuel Consumption in Idling (l/h)
+                  - spinbutton "Fuel Consumption in Idling (l/h)" [ref=e853]: "0.5"
+                - generic [ref=e855] [cursor=pointer]:
+                  - generic [ref=e856]: Polyline Colour
+                  - generic [ref=e857]:
+                    - generic [ref=e858]: "#b73895"
+                    - 'textbox "Polyline Colour #b73895" [ref=e859]': "#b73895"
+            - generic [ref=e860]:
+              - heading "Group Settings" [level=2] [ref=e862]
+              - generic [ref=e867] [cursor=pointer]:
+                - generic [ref=e868]: Location Group
+                - combobox "Location Group" [ref=e869]
+          - button "Update" [ref=e879] [cursor=pointer]
+  - generic:
+    - generic:
+      - generic:
+        - combobox
+      - text: Powered by

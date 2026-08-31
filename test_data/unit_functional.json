@@ -1,0 +1,47 @@
+{
+  "unit_type_filters": [
+    {
+      "unit_type": "Car",
+      "description": "Filter by Car unit type"
+    },
+    {
+      "unit_type": "Bus",
+      "description": "Filter by Bus unit type"
+    },
+    {
+      "unit_type": "Truck",
+      "description": "Filter by Truck unit type"
+    },
+    {
+      "unit_type": "Scooty",
+      "description": "Filter by Scooty unit type"
+    }
+  ],
+  "search_keywords": [
+    {
+      "keyword": "Bus",
+      "description": "Search by Bus keyword"
+    },
+    {
+      "keyword": "Truck",
+      "description": "Search by Truck keyword"
+    }
+  ],
+  "settings_tabs": [
+    {
+      "tab": "General"
+    },
+    {
+      "tab": "Icon"
+    },
+    {
+      "tab": "Sensors"
+    },
+    {
+      "tab": "Service"
+    },
+    {
+      "tab": "Alert"
+    }
+  ]
+}

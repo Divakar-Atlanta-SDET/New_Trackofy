@@ -1,0 +1,40 @@
+{
+  "invalid_speed_limits": [
+    {
+      "value": "-10",
+      "description": "Negative integer speed limit"
+    },
+    {
+      "value": "-50",
+      "description": "Large negative speed limit"
+    },
+    {
+      "value": "abc",
+      "description": "Alphabetic non-numeric speed limit"
+    },
+    {
+      "value": "!@#$",
+      "description": "Special characters speed limit"
+    }
+  ],
+  "invalid_fuel_inputs": [
+    {
+      "value": "-5",
+      "description": "Negative fuel consumption"
+    },
+    {
+      "value": "xyz",
+      "description": "Non-numeric fuel average"
+    }
+  ],
+  "blank_form_submissions": [
+    {
+      "form_type": "Fitness",
+      "description": "Blank fitness form submission"
+    },
+    {
+      "form_type": "Pollution",
+      "description": "Blank pollution certificate submission"
+    }
+  ]
+}

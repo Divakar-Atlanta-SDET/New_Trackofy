@@ -1,0 +1,25 @@
+{
+  "boundary_speed_limits": [
+    {
+      "value": "0",
+      "description": "Zero speed limit boundary"
+    },
+    {
+      "value": "50.5",
+      "description": "Decimal speed limit boundary"
+    }
+  ],
+  "whitespace_padded_inputs": [
+    {
+      "value": "  50  ",
+      "expected_trimmed": "50",
+      "description": "Leading and trailing whitespace"
+    }
+  ],
+  "duplicate_sensor_names": [
+    {
+      "sensor_name": "Fuel Sensor 1",
+      "description": "Duplicate sensor name submission"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+﻿Test Case ID,Category,Module,Test Scenario,Test Steps,Test Data,Expected Result,Priority
+TC-001,Edge Case,Alert,Vehicle with no configured alerts,Open Alert tab for a vehicle without alerts.,No alerts,Clear empty state is displayed without errors.,Medium
+TC-002,Edge Case,Alert,Large number of alerts,Open Alert tab for vehicle with many alerts.,Large dataset,Table remains usable and pagination/counts work correctly.,Low
+TC-003,Functional,Alert,Verify Alert tab loads,Open Alert tab.,N/A,Configured alerts are listed for the selected vehicle.,High
+TC-004,Functional,Alert,Verify alert table columns,Inspect alert table.,N/A,"Alert Name, Limit, Duration, SMS, Email and Notification columns are displayed.",High
+TC-005,Functional,Alert,Verify alert count,Compare displayed alert count with listed records.,Existing alerts,Alert count matches the configured/listed records.,Medium
+TC-006,Functional,Alert,Verify alert status indicators,"Inspect SMS, Email and Notification statuses.",Enabled/Disabled values,Statuses are displayed accurately and consistently.,Medium
+TC-007,Functional,Alert,Verify alert pagination,Use pagination when alerts exceed page size.,Multiple alerts,Pagination controls navigate correctly and record counts are accurate.,Low
+TC-008,Negative,Alert,Alert API failure,Open Alert tab while alert API fails.,Simulated API failure,Clear error state is displayed and stale/false data is not presented as current.,High
+TC-009,Positive,Alert,Verify active alerts are displayed,Open Alert tab for a vehicle with active alerts.,Existing active alerts,Active configured alerts are displayed.,High
+TC-010,Edge Case,Common,Rapidly switch tabs,Rapidly click multiple tabs.,N/A,No incorrect tab content is displayed and requests/state remain consistent.,Medium
+TC-011,Functional,Common,Open Unit Settings from Unit List,Open Unit List and click Settings for a unit.,Valid unit,Unit Settings opens for the selected unit and the unit identifier is displayed.,High
+TC-012,Functional,Common,Verify all Unit Settings tabs are displayed,Open Unit Settings and inspect the tab navigation.,N/A,"General, Icon, Sensors, Service and Alert tabs are displayed.",High
+TC-013,Functional,Common,Switch between Unit Settings tabs,Click each tab one by one.,General/Icon/Sensors/Service/Alert,Correct tab becomes active and its content loads without layout or console errors.,High
+TC-014,Functional,Common,Close Unit Settings,Click the X button.,N/A,Settings panel closes and the Unit List is visible.,Medium
+TC-015,Functional,Common,Verify selected unit context is retained,Open settings for a specific unit and switch tabs.,Unit A,All tabs continue to show/configure data for the selected unit.,High
+TC-016,Negative,Common,Handle settings API failure,Open/update a tab while its API request fails.,Simulated API failure,Clear error feedback is shown; UI does not display false success.,High
+TC-017,Positive,Common,Reload settings and retain saved data,"Update a setting, save, close and reopen settings.",Valid update,Saved value is displayed after reopening.,High
+TC-018,Edge Case,Cross Module,Close settings during unsaved change,Modify a field and close settings.,Unsaved data,System follows expected discard behavior and does not silently persist changes.,Medium
+TC-019,Edge Case,Cross Module,Network interruption during update,Disconnect/interrupt network during save.,Valid data + network failure,User receives an error and existing saved data remains intact.,Critical
+TC-020,Edge Case,Cross Module,Double-click Update/Submit,Rapidly click Update/Submit.,Valid data,Only one update/record creation occurs; duplicate requests are prevented or safely handled.,High
+TC-021,Functional,Cross Module,Verify update success notification,Perform a valid General/Icon/Service update.,Valid data,Success toast is displayed and reflects the correct operation.,High
+TC-022,Functional,Cross Module,Verify state after switching tabs,"Make a valid change, switch tabs and return before saving.",Unsaved change,Behavior is consistent with current save model; unsaved values are not unexpectedly persisted.,Medium
+TC-023,Functional,Cross Module,Verify Unit List reflects updated icon,"Change icon and update, close settings.",Valid icon,Unit List displays the new icon.,High
+TC-024,Functional,Cross Module,Verify updated values persist after browser refresh,Save a General/Service setting and refresh page.,Valid saved value,Saved value remains correct after refresh.,High
+TC-025,Functional,Cross Module,Verify keyboard navigation,Navigate through settings using keyboard only.,N/A,Focusable controls follow logical order and actions can be performed without a mouse where applicable.,Medium
+TC-026,Functional,Cross Module,Verify close controls are accessible,Navigate to close buttons using keyboard/accessibility tools.,N/A,Close controls have accessible names and can be activated.,Medium
+TC-027,Functional,Cross Module,Verify responsive behavior,Open Unit Settings at supported viewport sizes.,Desktop/tablet/mobile if supported,Content remains usable without unintended overlap or inaccessible controls.,Medium
+TC-028,Negative,Cross Module,Verify failed update notification,Trigger a validation/API failure.,Invalid data/API error,Error/warning feedback is displayed and no false success appears.,High
+TC-029,Negative,Cross Module,Expired session during update,Expire session before Update/Submit.,Valid data + expired session,Operation fails safely and authentication handling is triggered as designed.,High
+TC-030,Edge Case,Fitness,Valid From later than Valid Till,Enter reversed dates.,From > Till,Invalid date range is rejected if prohibited.,High
+TC-031,Edge Case,Fitness,Equal validity dates,Set Valid From and Valid Till to same date.,Same date,System follows defined date rule.,Medium
+TC-032,Edge Case,Fitness,Boundary certificate cost,Enter minimum/maximum supported cost.,Boundary values,System handles limits correctly.,Medium
+TC-033,Edge Case,Fitness,Reminder days zero,Enter 0.,0,System accepts/rejects according to business rule.,Low
+TC-034,Functional,Fitness,Verify Fitness form fields,Open Fitness sub-tab.,N/A,"Valid From, Valid Till, Certificate Cost and Expiry Reminder Before Days are displayed.",High
+TC-035,Negative,Fitness,Submit with required fields empty,Submit blank form.,Blank,Validation is displayed and save is blocked.,Critical
+TC-036,Negative,Fitness,Enter invalid certificate cost,Enter non-numeric/negative cost.,abc / -10,Invalid cost is rejected.,High
+TC-037,Negative,Fitness,Enter invalid reminder days,Enter non-numeric/negative days.,abc / -1,Invalid value is rejected.,High
+TC-038,Positive,Fitness,Submit valid fitness certificate data,Enter all valid required values and submit.,Valid dates/cost/reminder,Fitness data is saved successfully.,Critical
+TC-039,Edge Case,General,Enter zero Speed Limit,Set Speed Limit to 0 and update.,0,System follows the defined business rule: accepts it if valid or rejects it with validation.,Medium
+TC-040,Edge Case,General,Enter decimal Speed Limit,Enter a decimal speed limit.,50.5,System handles decimal input according to the field's supported precision.,Medium
+TC-041,Edge Case,General,Enter leading/trailing spaces in text field,Enter spaces around a valid text value and update.,'  value  ',System trims or preserves whitespace according to defined behavior without corrupting data.,Low
+TC-042,Edge Case,General,Update without changing any value,Open settings and click Update without edits.,No changes,System handles the request safely without corrupting existing values.,Low
+TC-043,Edge Case,General,Change colour and cancel/close without update,Change colour but do not click Update; close settings and reopen.,Unsaved colour,Unsaved change is not persisted.,Medium
+TC-044,Edge Case,General,Set expiry date equal to creation date,Set expiry date to the creation date and update.,Same date,System accepts/rejects according to the business rule and gives clear feedback if rejected.,Medium
+TC-045,Edge Case,General,Set expiry date earlier than creation date,Attempt to save an expiry date before creation date.,Earlier date,System rejects the invalid date relationship if prohibited.,High
+TC-046,Functional,General,Verify General fields are displayed,Open General tab.,N/A,"Serial No, SIM 1, SIM 2, Port No, Creation Date, Expiry Date, Mileage Calculation On, Speed Limit, Fuel Consumption Avg, Fuel Consumption in Idling, Polyline Colour and Location Group are displayed as applicable.",High
+TC-047,Functional,General,Verify existing General values load,Open General tab for a configured unit.,Existing unit,Current values are populated correctly.,High
+TC-048,Functional,General,Verify non-editable fields cannot be modified,Attempt to edit fields that are read-only in the UI.,Serial No/Creation Date if read-only,Read-only fields cannot be changed.,Medium
+TC-049,Functional,General,Verify expiry date picker,Click Expiry Date/calendar control.,Valid date,Date picker opens and a date can be selected.,Medium
+TC-050,Negative,General,Enter negative Speed Limit,Enter a negative speed limit and update.,-10,Value is rejected with appropriate validation; no invalid value is saved.,High
+TC-051,Negative,General,Enter non-numeric Speed Limit,Enter alphabetic/symbolic value and update.,abc,Invalid value is rejected and update is blocked.,High
+TC-052,Negative,General,Enter negative fuel consumption,Enter a negative value and update.,-0.5,Value is rejected if negative values are not permitted.,Medium
+TC-053,Negative,General,Enter non-numeric fuel consumption,Enter non-numeric data in fuel consumption fields.,abc,Invalid value is rejected.,Medium
+TC-054,Negative,General,Clear required General value,Clear a required editable field and update.,Blank,Update is blocked and appropriate validation is shown.,High
+TC-055,Negative,General,Enter excessively large numeric value,Enter a value beyond the supported numeric range.,Very large number,Input is rejected/limited or appropriate validation is displayed.,Medium
+TC-056,Negative,General,Enter invalid date format if manual input is supported,Enter malformed date and update.,Invalid date,Invalid date is rejected.,Medium
+TC-057,Positive,General,Update Speed Limit with valid value,Enter a valid speed limit and click Update.,50,"Value is accepted, update succeeds, and saved value persists.",High
+TC-058,Positive,General,Update Fuel Consumption Avg with valid value,Enter a valid average fuel consumption and click Update.,10.0,Value is accepted and persisted.,Medium
+TC-059,Positive,General,Update Fuel Consumption in Idling with valid value,Enter a valid idling consumption value and click Update.,0.5,Value is accepted and persisted.,Medium
+TC-060,Positive,General,Change Mileage Calculation setting,"Open Mileage Calculation dropdown, select another valid option and update.",Available option,Selected option is saved and displayed after reopening.,High
+TC-061,Positive,General,Change Location Group,"Open Location Group dropdown, select a valid group and update.",Existing group,Selected group is saved and displayed.,High
+TC-062,Positive,General,Change Polyline Colour,Select/change a valid colour and click Update.,Valid colour,"Colour is accepted, saved and reflected where applicable.",Medium
+TC-063,Positive,General,Update multiple General fields together,Modify multiple editable fields and click Update.,Valid combined values,All valid changes are saved together.,High
+TC-064,Edge Case,Icon,Switch unit type before selecting icon,Change Unit Type and inspect Available Icons.,Different valid type,Available icons update appropriately for the selected unit type.,Medium
+TC-065,Edge Case,Icon,Rapidly switch unit types,Change unit type multiple times quickly.,Multiple valid types,UI ends in the correct selected type and corresponding icon list.,Low
+TC-066,Functional,Icon,Verify Icon tab loads,Open Icon tab.,N/A,"Unit Type, Current Icon and Available Icons are displayed.",High
+TC-067,Functional,Icon,Verify current icon is displayed,Open Icon tab.,Existing unit,Current icon matches the unit's icon shown in Unit List.,High
+TC-068,Functional,Icon,Open Unit Type dropdown,Click Unit Type dropdown.,N/A,Available unit types are displayed.,Medium
+TC-069,Functional,Icon,Cancel icon change,Select another icon but do not update; close/reopen.,Valid icon,Original saved icon remains unchanged.,Medium
+TC-070,Negative,Icon,Attempt invalid icon selection,Attempt to submit an unavailable/invalid icon value if manipulation is possible.,Invalid icon,Invalid value is rejected and existing icon remains unchanged.,Medium
+TC-071,Positive,Icon,Change icon to another available icon,Select an available icon and click Update.,Valid available icon,Icon changes successfully and is reflected in the Unit List.,High
+TC-072,Positive,Icon,Change icon and persist after reopening,"Change icon, update, close settings and reopen Icon tab.",Valid icon,Selected icon remains saved.,High
+TC-073,Edge Case,Insurance,Zero premium,Enter 0 premium.,0,System handles according to business rule.,Medium
+TC-074,Edge Case,Insurance,Zero depreciation,Enter 0 depreciation.,0,System handles according to business rule.,Medium
+TC-075,Edge Case,Insurance,IDV greater than or equal to premium boundary,Enter boundary relationship values.,Boundary values,System accepts/rejects according to defined business rule.,Medium
+TC-076,Edge Case,Insurance,Valid From later than Valid Till,Enter reversed dates.,From > Till,Invalid date range is rejected if prohibited.,High
+TC-077,Edge Case,Insurance,Equal validity dates,Set Valid From and Valid Till to same date.,Same date,System follows defined date rule.,Medium
+TC-078,Functional,Insurance,Verify Insurance fields,Open Insurance sub-tab.,N/A,"Insurance Company, Total Premium, Depreciation, IDV, Valid From, Valid Till, Expiry Reminder Before Days, Insurance File, Submit and View History are displayed.",High
+TC-079,Functional,Insurance,View insurance history,Click View History.,Existing history,Correct insurance history is displayed.,Medium
+TC-080,Negative,Insurance,Submit blank insurance form,Click Submit without data.,Blank,Required-field validation is displayed and submission is blocked.,Critical
+TC-081,Negative,Insurance,Invalid Total Premium,Enter non-numeric/negative premium.,abc / -100,Invalid premium is rejected.,High
+TC-082,Negative,Insurance,Invalid Depreciation,Enter invalid depreciation.,abc / negative / unsupported range,Invalid value is rejected.,High
+TC-083,Negative,Insurance,Invalid IDV,Enter non-numeric/negative IDV.,abc / -100,Invalid value is rejected.,High
+TC-084,Negative,Insurance,Invalid reminder days,Enter invalid reminder value.,abc / -1,Invalid value is rejected.,High
+TC-085,Negative,Insurance,Unsupported insurance file,Upload unsupported file type.,Unsupported file,File is rejected with clear feedback.,High
+TC-086,Negative,Insurance,Oversized insurance file,Upload oversized file.,Oversized file,Upload is rejected according to file-size limit.,High
+TC-087,Positive,Insurance,Submit valid insurance data,Fill all required fields with valid values and submit.,"Valid company, premium, depreciation, IDV, dates, reminder",Insurance record is saved successfully.,Critical
+TC-088,Positive,Insurance,Upload valid insurance file,Upload supported insurance document and submit.,Supported file,File uploads and record saves successfully.,High
+TC-089,Edge Case,Pollution,Valid boundary certificate cost,Enter minimum/maximum supported cost.,Boundary numeric values,System handles values according to configured limits.,Medium
+TC-090,Edge Case,Pollution,Reminder days zero,Enter 0 reminder days.,0,System accepts/rejects according to business rule.,Medium
+TC-091,Edge Case,Pollution,Valid From later than Valid Till,Enter reversed validity dates.,From > Till,System rejects invalid date range if prohibited.,High
+TC-092,Edge Case,Pollution,Valid From equal to Valid Till,Use same date for both fields.,Same date,System handles according to date-range rule.,Medium
+TC-093,Functional,Pollution,Verify Pollution form fields,Open Pollution sub-tab.,N/A,"Pollution Certificate Number, Valid From, Valid Till, Certificate Cost, Expiry Reminder Before Days and certificate file upload are displayed.",High
+TC-094,Functional,Pollution,View pollution history,Click View History.,Existing history,Correct historical pollution records are displayed.,Medium
+TC-095,Negative,Pollution,Submit with required fields empty,Click Submit with blank form.,Blank,Validation is shown and save is blocked.,Critical
+TC-096,Negative,Pollution,Invalid certificate number,Enter invalid certificate number.,Invalid format,Validation is shown and invalid value is not saved.,High
+TC-097,Negative,Pollution,Invalid certificate cost,Enter non-numeric/negative cost.,abc / -100,Invalid cost is rejected.,High
+TC-098,Negative,Pollution,Invalid reminder days,Enter negative/non-numeric reminder days.,-1 / abc,Invalid value is rejected.,High
+TC-099,Negative,Pollution,Unsupported file type,Upload unsupported file.,Unsupported extension,Upload is rejected with clear feedback.,High
+TC-100,Negative,Pollution,Oversized certificate file,Upload a file larger than configured maximum.,Oversized file,Upload is rejected with size-limit feedback.,High
+TC-101,Positive,Pollution,Submit valid pollution certificate,Enter all valid required values and submit.,Valid certificate data,Pollution certificate is saved successfully.,Critical
+TC-102,Positive,Pollution,Upload valid certificate file,Select a supported certificate file and submit.,Supported PDF/image as allowed,File uploads successfully and record saves.,High
+TC-103,Positive,Pollution,Save valid certificate without optional file if optional,Complete required fields without file and submit.,Valid form,Record saves if file is optional.,Medium
+TC-104,Edge Case,Sensors,Use duplicate sensor configuration name,Create a sensor using an existing configuration name.,Existing name,System handles duplicate according to business rule; no unintended duplicate is created if prohibited.,High
+TC-105,Edge Case,Sensors,Create sensor with maximum supported name length,Enter name at maximum supported length.,Boundary length,Value is accepted and saved if within the limit.,Low
+TC-106,Edge Case,Sensors,Exceed sensor name length,Enter name beyond supported length.,Over-limit name,Input is limited or validation is shown.,Low
+TC-107,Edge Case,Sensors,Empty calibration table,Remove/clear calibration rows and attempt save.,No calibration rows,System accepts/rejects according to sensor configuration rules and gives appropriate feedback.,Medium
+TC-108,Functional,Sensors,Verify Sensors tab loads,Open Sensors tab.,N/A,"Standard Sensors/Custom Sensors sections or tabs, Add Sensor, table and pagination are displayed.",High
+TC-109,Functional,Sensors,Verify standard sensor list,Open Standard Sensors.,Existing sensor data,"Sensor Name, Sensor Type, Created Date, Last Updated and Detail columns display correctly.",High
+TC-110,Functional,Sensors,Switch Standard/Custom Sensors,Click both sensor tabs.,N/A,Correct sensor list loads for the selected tab.,High
+TC-111,Functional,Sensors,Verify Sensor Configuration fields,Open Add Sensor.,N/A,"Sensor Configuration Name, Sensor Type, Configuration Expression, Calibration Table, Add Row, Clear, Cancel and Save Config are displayed.",High
+TC-112,Functional,Sensors,Remove calibration row,Click row delete icon.,Existing row,Selected row is removed without affecting other rows.,Medium
+TC-113,Functional,Sensors,Clear calibration rows,Add/edit calibration data and click Clear.,Existing calibration data,Calibration table is cleared according to current UI behavior.,Medium
+TC-114,Functional,Sensors,Cancel sensor configuration,Enter data and click Cancel.,Unsaved values,Configuration closes and no new sensor is created.,Medium
+TC-115,Functional,Sensors,Open sensor detail,Click Detail for an existing sensor.,Existing sensor,Correct sensor configuration/detail is opened.,Medium
+TC-116,Functional,Sensors,Verify sensor pagination,Change Items per page and use next/previous controls when multiple records exist.,5/other available values,Correct number of records and page navigation are displayed.,Low
+TC-117,Negative,Sensors,Save sensor without configuration name,Leave name empty and save.,Blank name,Save is blocked and required-field validation is shown.,High
+TC-118,Negative,Sensors,Save sensor without sensor type,Leave Sensor Type empty and save.,Blank type,Save is blocked and required-field validation is shown.,High
+TC-119,Negative,Sensors,Invalid calibration value,Enter invalid/non-numeric calibration data if numeric validation applies.,abc,Invalid value is rejected or validation is shown.,Medium
+TC-120,Negative,Sensors,Invalid configuration expression,Enter malformed/unsupported expression and save.,Invalid expression,System rejects invalid expression with meaningful feedback.,High
+TC-121,Negative,Sensors,Backend failure while saving sensor,Submit valid sensor while save API fails.,Valid data + API error,Error is displayed and sensor is not falsely reported as created.,Critical
+TC-122,Positive,Sensors,Open Add Sensor configuration,Click Add Sensor.,N/A,Sensor Configuration form opens.,High
+TC-123,Positive,Sensors,Create sensor configuration with valid basic data,Enter valid name and sensor type and save using valid supported configuration.,Valid sensor name/type,Sensor configuration is created successfully.,Critical
+TC-124,Positive,Sensors,Add configuration expression,Enter valid expression and save.,Valid supported expression,Expression is accepted and persisted.,High
+TC-125,Positive,Sensors,Add calibration row,Click Add Row and enter valid ADC/raw and calibration values.,10 / 20,New calibration row is added and values are retained.,High
+TC-126,Positive,Sensors,Add multiple calibration rows,Add multiple rows with valid values.,Multiple valid pairs,All rows are displayed and saved correctly.,Medium
+TC-127,Functional,Service,Open Service tab,Click Service tab.,N/A,"Profile, Pollution, Fitness, Insurance and Service sub-tabs are displayed.",High
+TC-128,Functional,Service,Switch Service sub-tabs,Open each Service sub-tab.,N/A,Correct form/content loads for each selected sub-tab.,High
+TC-129,Functional,Service,Verify View History availability,Open Pollution/Insurance/Service where View History is present.,N/A,View History opens the relevant historical records.,Medium
+TC-130,Edge Case,Vehicle Service,Odometer Before equals Odometer After,Use same valid reading.,10000 / 10000,System handles according to business rule.,Medium
+TC-131,Edge Case,Vehicle Service,Zero service cost,Enter zero cost.,0,System accepts/rejects according to business rule.,Low
+TC-132,Edge Case,Vehicle Service,Very large odometer value,Enter maximum supported odometer value.,Boundary value,Value is handled without overflow or formatting issues.,Medium
+TC-133,Functional,Vehicle Service,Verify Service form fields,Open Service sub-tab.,N/A,"Service No, Service Date, Odometer Before, Odometer After, Service Cost, Next Service Odometer, Next Service Duration, Reminder Before, Service Parts, Add Part, View History and Submit are displayed.",High
+TC-134,Functional,Vehicle Service,View service history,Click View History.,Existing history,Correct service history is displayed.,Medium
+TC-135,Functional,Vehicle Service,Remove service part,Remove an existing service part if removal control is available.,Existing part,Selected part is removed only.,Medium
+TC-136,Negative,Vehicle Service,Submit blank service form,Click Submit without entering data.,Blank,Required-field validation is displayed and submission is blocked.,Critical
+TC-137,Negative,Vehicle Service,Invalid Service Cost,Enter non-numeric/negative cost.,abc / -100,Invalid cost is rejected.,High
+TC-138,Negative,Vehicle Service,Invalid Odometer Before,Enter non-numeric/negative odometer.,abc / -1,Invalid value is rejected.,High
+TC-139,Negative,Vehicle Service,Invalid Odometer After,Enter non-numeric/negative odometer.,abc / -1,Invalid value is rejected.,High
+TC-140,Negative,Vehicle Service,Odometer After less than Odometer Before,Enter lower after reading.,"Before=10000, After=9000",System rejects invalid odometer progression if prohibited.,Critical
+TC-141,Negative,Vehicle Service,Invalid Next Service Odometer,Enter invalid or lower-than-current value.,Invalid boundary,System rejects value according to service rules.,High
+TC-142,Negative,Vehicle Service,Invalid Next Service Duration,Enter non-numeric/negative duration.,abc / -1,Invalid value is rejected.,High
+TC-143,Negative,Vehicle Service,Invalid Reminder Before,Enter non-numeric/negative reminder.,abc / -1,Invalid value is rejected.,High
+TC-144,Negative,Vehicle Service,Save service with invalid part data,Add incomplete/invalid part and submit.,Invalid part,Submission is blocked or invalid part is rejected.,Medium
+TC-145,Positive,Vehicle Service,Submit valid service record,Fill all required fields with valid values and submit.,Valid service data,Service record is created successfully.,Critical
+TC-146,Positive,Vehicle Service,Add a service part,Click Add Part and enter valid part data.,Valid part data,Part is added to Service Parts.,High
+TC-147,Positive,Vehicle Service,Add multiple service parts,Add multiple valid parts.,Multiple valid parts,All parts are listed correctly.,Medium

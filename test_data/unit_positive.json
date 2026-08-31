@@ -1,0 +1,51 @@
+{
+  "valid_speed_limits": [
+    {
+      "value": "50",
+      "description": "Standard city speed limit"
+    },
+    {
+      "value": "60",
+      "description": "Expressway speed limit"
+    },
+    {
+      "value": "80",
+      "description": "Highway speed limit"
+    }
+  ],
+  "valid_fuel_avg": [
+    {
+      "value": "10.0",
+      "description": "Standard heavy vehicle fuel average"
+    },
+    {
+      "value": "12.5",
+      "description": "Light commercial vehicle fuel average"
+    }
+  ],
+  "valid_fuel_idle": [
+    {
+      "value": "0.5",
+      "description": "Standard idling fuel consumption"
+    },
+    {
+      "value": "1.2",
+      "description": "Heavy idling fuel consumption"
+    }
+  ],
+  "valid_fitness_certificates": [
+    {
+      "cost": "1500",
+      "reminder": "15",
+      "description": "Standard fitness certificate update"
+    }
+  ],
+  "valid_pollution_certificates": [
+    {
+      "cost": "500",
+      "cert_no": "PUC-2026-99",
+      "description": "Standard pollution certificate update"
+    }
+  ]
+}
+
