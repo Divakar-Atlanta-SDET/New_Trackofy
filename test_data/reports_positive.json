@@ -1,0 +1,100 @@
+{
+  "valid_report_generation": [
+    {
+      "report_name": "Fleet Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "01/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Generate Fleet Summary with valid single-day range"
+    },
+    {
+      "report_name": "Vehicle Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "25/08/2026",
+      "end_date": "01/09/2026",
+      "description": "Generate Vehicle Summary with valid multi-day range"
+    },
+    {
+      "report_name": "Running Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "01/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Generate Running Summary with valid filters"
+    },
+    {
+      "report_name": "Stoppage Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "01/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Generate Stoppage Summary with valid filters"
+    },
+    {
+      "report_name": "Maxspeed Chart",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "01/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Generate Maxspeed Chart with valid filters"
+    },
+    {
+      "report_name": "Engine Hour",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "01/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Generate Engine Hour with valid filters"
+    }
+  ],
+  "valid_vehicle_selection": [
+    {
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "description": "Select valid single vehicle for report"
+    }
+  ],
+  "valid_date_ranges": [
+    {
+      "start_date": "01/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Same day range"
+    },
+    {
+      "start_date": "25/08/2026",
+      "end_date": "01/09/2026",
+      "description": "One week range"
+    }
+  ],
+  "valid_export_formats": [
+    {"format": "Excel", "extension": ".xlsx", "description": "Export to Excel format"},
+    {"format": "CSV", "extension": ".csv", "description": "Export to CSV format"},
+    {"format": "PDF", "extension": ".pdf", "description": "Export to PDF format"}
+  ],
+  "valid_schedule_configs": [
+    {
+      "report_scope": "Standard Report",
+      "report_name": "Fleet Summary",
+      "frequency": "Daily",
+      "schedule_time": "08:00",
+      "email_1": "test@trackofy.com",
+      "description": "Schedule Fleet Summary daily"
+    },
+    {
+      "report_scope": "Standard Report",
+      "report_name": "Vehicle Summary",
+      "frequency": "Weekly",
+      "schedule_time": "09:00",
+      "email_1": "test@trackofy.com",
+      "description": "Schedule Vehicle Summary weekly"
+    }
+  ],
+  "valid_custom_report_templates": [
+    {
+      "template_name": "Automated Test Template",
+      "template_description": "Template created by automation test suite for validation",
+      "description": "Create valid custom report template"
+    }
+  ]
+}

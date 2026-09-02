@@ -1,0 +1,4 @@
+[   10973ms] [LOG] {veh_reg: 863070048170103, sys_renewal: 2027-09-09, created: 2024-02-03, port_no: 16104, location_id: 994} @ https://staging.trackofy.com/chunk-XX7FMQZP.js:0
+[   10977ms] [LOG] 296 @ https://staging.trackofy.com/chunk-XX7FMQZP.js:0
+[   55644ms] [WARNING] The specified value "dhjfv" cannot be parsed, or is out of range. @ https://staging.trackofy.com/chunk-EDJ7274H.js:4
+[   55645ms] [WARNING] The specified value "green" does not conform to the required format.  The value must be a valid CSS color. @ https://staging.trackofy.com/chunk-EDJ7274H.js:4

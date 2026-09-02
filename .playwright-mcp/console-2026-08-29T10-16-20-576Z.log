@@ -1,8 +1,0 @@
-[    2943ms] [LOG] [CMSV6] Loading player script: https://cctv.trackofy.com/808gps/open/player/js/cmsv6player.min.js @ https://staging.trackofy.com/chunk-VKGAHLAY.js:0
-[    3330ms] [WARNING] google.maps.DirectionsRenderer is deprecated as of February 25th, 2026. At this time, google.maps.DirectionsRenderer is not scheduled to be discontinued. While google.maps.DirectionsRenderer will continue to receive bug fixes for any major regressions, existing bugs in google.maps.DirectionsRenderer will not be addressed. At least 12 months notice will be given before support is discontinued. Please see https://developers.google.com/maps/legacy for additional details and https://developers.google.com/maps/documentation/javascript/routes/routes-migrate-rendering for the migration guide. @ https://maps.googleapis.com/maps-api-v3/api/js/66/2d/main.js:209
-[    3361ms] [LOG] [CMSV6] Script downloaded: https://cctv.trackofy.com/808gps/open/player/js/cmsv6player.min.js @ https://staging.trackofy.com/chunk-VKGAHLAY.js:0
-[    3361ms] [LOG] [CMSV6] Player SDK loaded successfully. @ https://staging.trackofy.com/chunk-VKGAHLAY.js:0
-[ 1648640ms] [LOG] [CMSV6] Loading player script: https://cctv.trackofy.com/808gps/open/player/js/cmsv6player.min.js @ https://staging.trackofy.com/chunk-VKGAHLAY.js:0
-[ 1648649ms] [LOG] [CMSV6] Player SDK loaded successfully. @ https://staging.trackofy.com/chunk-VKGAHLAY.js:0
-[ 1665172ms] [LOG] {veh_reg: 863070048170103, sys_renewal: 2027-09-09, created: 2024-02-03, port_no: 16104, location_id: null} @ https://staging.trackofy.com/chunk-AEPXDN7O.js:0
-[ 1665173ms] [LOG] 296 @ https://staging.trackofy.com/chunk-AEPXDN7O.js:0

@@ -1,36 +1,16 @@
-import re
 import pytest
 from playwright.sync_api import expect
 
-from Pages.login_page import LoginPage
-from Pages.unit_page import UnitPage
-from Pages.unit_settings_page import UnitSettingsPage
 from components.toast_notifcations import ToastNotifications
 from Utils.data_loader import load_test_data
 
 
-def login_and_open_unit_settings(page, config, credentials):
-    """Helper to log in, navigate to /unit and open unit settings."""
-    login_page = LoginPage(page, config)
-    unit_page = UnitPage(page)
-    unit_settings_page = UnitSettingsPage(page)
-
-    login_page.open()
-    login_page.login(credentials["username"], credentials["password"])
-    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
-
-    unit_page.open_unit_list()
-    unit_page.open_unit_settings_by_index(0)
-    unit_settings_page.wait_for_modal_open()
-    return unit_page, unit_settings_page
-
-
 @pytest.mark.positive
 @pytest.mark.parametrize("speed_data", load_test_data("unit_positive.json", "valid_speed_limits"))
-def test_tc057_update_speed_limit_valid_value(page, config, credentials, speed_data):
+def test_tc057_update_speed_limit_valid_value(unit_settings, speed_data):
     """TC-057: Positive - Update Speed Limit with valid parametrized values."""
-    unit_page, unit_settings_page = login_and_open_unit_settings(page, config, credentials)
-    toast = ToastNotifications(page)
+    unit_page, unit_settings_page = unit_settings
+    toast = ToastNotifications(unit_settings_page.page)
 
     unit_settings_page.update_speed_limit(speed_data["value"])
 
@@ -41,10 +21,10 @@ def test_tc057_update_speed_limit_valid_value(page, config, credentials, speed_d
 
 @pytest.mark.positive
 @pytest.mark.parametrize("fuel_data", load_test_data("unit_positive.json", "valid_fuel_avg"))
-def test_tc058_update_fuel_consumption_avg_valid(page, config, credentials, fuel_data):
+def test_tc058_update_fuel_consumption_avg_valid(unit_settings, fuel_data):
     """TC-058: Positive - Update Fuel Consumption Avg with valid parametrized values."""
-    unit_page, unit_settings_page = login_and_open_unit_settings(page, config, credentials)
-    toast = ToastNotifications(page)
+    unit_page, unit_settings_page = unit_settings
+    toast = ToastNotifications(unit_settings_page.page)
 
     unit_settings_page.switch_tab("General")
     unit_settings_page.fuel_avg_spin.fill(fuel_data["value"])
@@ -58,10 +38,10 @@ def test_tc058_update_fuel_consumption_avg_valid(page, config, credentials, fuel
 
 @pytest.mark.positive
 @pytest.mark.parametrize("idle_data", load_test_data("unit_positive.json", "valid_fuel_idle"))
-def test_tc059_update_fuel_consumption_idling_valid(page, config, credentials, idle_data):
+def test_tc059_update_fuel_consumption_idling_valid(unit_settings, idle_data):
     """TC-059: Positive - Update Fuel Consumption in Idling with valid parametrized values."""
-    unit_page, unit_settings_page = login_and_open_unit_settings(page, config, credentials)
-    toast = ToastNotifications(page)
+    unit_page, unit_settings_page = unit_settings
+    toast = ToastNotifications(unit_settings_page.page)
 
     unit_settings_page.switch_tab("General")
     unit_settings_page.fuel_idle_spin.fill(idle_data["value"])
@@ -74,41 +54,85 @@ def test_tc059_update_fuel_consumption_idling_valid(page, config, credentials, i
 
 
 @pytest.mark.positive
-def test_tc060_change_mileage_calculation_setting(page, config, credentials):
+def test_tc060_change_mileage_calculation_setting(unit_settings):
     """TC-060: Positive - Change Mileage Calculation dropdown setting."""
-    unit_page, unit_settings_page = login_and_open_unit_settings(page, config, credentials)
+    unit_page, unit_settings_page = unit_settings
+    page = unit_settings_page.page
+    toast = ToastNotifications(page)
     unit_settings_page.switch_tab("General")
-    expect(unit_settings_page.modal_heading).to_be_visible()
+
+    unit_settings_page.mileage_calc_select.click()
+    options = page.get_by_role("option").all()
+    assert len(options) > 0, "Expected at least 1 mileage calculation option"
+    options[0].click()
+    page.wait_for_timeout(300)
+
+    if unit_settings_page.update_btn.is_enabled():
+        unit_settings_page.update_btn.click()
+        page.wait_for_timeout(500)
+
+    if toast.success_toast.count() > 0:
+        expect(toast.success_toast.first).to_be_visible()
 
 
 @pytest.mark.positive
-def test_tc061_change_location_group(page, config, credentials):
+def test_tc061_change_location_group(unit_settings):
     """TC-061: Positive - Change Location Group dropdown selection."""
-    unit_page, unit_settings_page = login_and_open_unit_settings(page, config, credentials)
+    unit_page, unit_settings_page = unit_settings
+    page = unit_settings_page.page
+    toast = ToastNotifications(page)
     unit_settings_page.switch_tab("General")
-    expect(unit_settings_page.modal_heading).to_be_visible()
+
+    unit_settings_page.location_group_select.click()
+    options = page.get_by_role("option").all()
+    assert len(options) > 0, "Expected at least 1 location group option"
+    options[0].click()
+    page.wait_for_timeout(300)
+
+    if unit_settings_page.update_btn.is_enabled():
+        unit_settings_page.update_btn.click()
+        page.wait_for_timeout(500)
+
+    if toast.success_toast.count() > 0:
+        expect(toast.success_toast.first).to_be_visible()
 
 
 @pytest.mark.positive
-def test_tc062_change_polyline_colour(page, config, credentials):
+def test_tc062_change_polyline_colour(unit_settings):
     """TC-062: Positive - Change Polyline Colour selection."""
-    unit_page, unit_settings_page = login_and_open_unit_settings(page, config, credentials)
+    unit_page, unit_settings_page = unit_settings
+    page = unit_settings_page.page
+    toast = ToastNotifications(page)
     unit_settings_page.switch_tab("General")
-    expect(unit_settings_page.modal_heading).to_be_visible()
+
+    test_color = "#3b2cc1"
+    unit_settings_page.change_polyline_color(test_color)
+    page.wait_for_timeout(500)
+
+    current_color = unit_settings_page.polyline_colour_input.input_value().lower()
+    assert test_color in current_color or current_color == test_color, f"Expected color '{test_color}', got '{current_color}'"
+    if toast.success_toast.count() > 0:
+        expect(toast.success_toast.first).to_be_visible()
 
 
 @pytest.mark.positive
-def test_tc063_update_multiple_general_fields_together(page, config, credentials):
+def test_tc063_update_multiple_general_fields_together(unit_settings):
     """TC-063: Positive - Modify multiple editable General fields and update."""
-    unit_page, unit_settings_page = login_and_open_unit_settings(page, config, credentials)
+    unit_page, unit_settings_page = unit_settings
+    page = unit_settings_page.page
     toast = ToastNotifications(page)
 
     unit_settings_page.switch_tab("General")
-    unit_settings_page.speed_limit_spin.fill("60")
-    unit_settings_page.fuel_avg_spin.fill("12.5")
+    unit_settings_page.speed_limit_spin.fill("68")
+    unit_settings_page.fuel_avg_spin.fill("11.5")
+    unit_settings_page.fuel_idle_spin.fill("0.6")
+
     if unit_settings_page.update_btn.is_enabled():
         unit_settings_page.update_btn.click()
+        page.wait_for_timeout(500)
 
-    expect(unit_settings_page.modal_heading).to_be_visible()
+    assert unit_settings_page.speed_limit_spin.input_value() == "68"
+    assert unit_settings_page.fuel_avg_spin.input_value() == "11.5"
+    assert unit_settings_page.fuel_idle_spin.input_value() == "0.6"
     if toast.success_toast.count() > 0:
         expect(toast.success_toast.first).to_be_visible()

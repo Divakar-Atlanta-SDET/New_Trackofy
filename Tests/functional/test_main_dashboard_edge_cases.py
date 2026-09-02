@@ -20,8 +20,7 @@ def test_main_dashboard_empty_widget_datasets_rendering(page, config, credential
 
     # 2. Assert dashboard loaded and contains empty state indicators where data is 0.
     expect(dashboard_page.dashboard_heading).to_be_visible()
-    body_text = page.locator("body").inner_text()
-    assert "No data available" in body_text or "No data found" in body_text or "Total Fleet" in body_text
+    assert dashboard_page.contains_any_text(["No data available", "No data found", "Total Fleet"])
 
 
 @pytest.mark.functional
@@ -61,6 +60,7 @@ def test_main_dashboard_unauthorized_direct_access_redirect(page, config):
 
 
 @pytest.mark.functional
+@pytest.mark.allow_server_error
 def test_main_dashboard_api_failure_resilience(page, config, credentials):
     """Verify dashboard resilience when telemetry API requests fail with HTTP 500 status."""
     login_page = LoginPage(page, config)

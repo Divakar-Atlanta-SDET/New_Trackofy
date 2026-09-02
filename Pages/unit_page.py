@@ -11,7 +11,11 @@ class UnitPage(BasePage):
 
         # Header and Unit Count Badge
         self.unit_list_heading = page.locator("h1, header h1").filter(has_text=re.compile(r"Unit List", re.I)).first
-        self.unit_count_badge = page.locator("strong").first
+        # The header count lives in <span class="tx-data-count"><strong>39</strong> units</span>
+        # next to the heading -- targeted via that class rather than "first
+        # <strong> on the page" (which also matches the All/Active/Expired/Due
+        # Soon filter buttons' counts and only worked before by DOM-order luck).
+        self.unit_count_badge = page.locator(".tx-data-count strong").first
 
         # Search and Filters
         self.search_box = page.get_by_placeholder(re.compile(r"Search units", re.I))
@@ -20,9 +24,6 @@ class UnitPage(BasePage):
         # Table & Rows
         self.table = page.get_by_role("table").first
         self.table_rows = page.locator("tbody tr")
-
-        # Toast Container
-        self.toast_container = page.locator(".toast-container, .ngx-toastr, mat-snack-bar-container, [role='alert'], [class*='toast']").first
 
     def open_unit_list(self):
         """Navigate to the Unit list page."""
@@ -56,31 +57,20 @@ class UnitPage(BasePage):
         """Click the Open unit settings button on a specific table row."""
         self.table_rows.first.wait_for(state="visible", timeout=15000)
         row = self.table_rows.nth(index)
-        btn = row.locator("button").filter(has=self.page.locator("img[alt='settings'], img[src*='settings'], mat-icon:has-text('settings')")).first
-        if not btn.is_visible():
-            btn = row.locator("button[aria-label*='settings']").first
+        btn = row.get_by_role("button", name="Open unit settings")
         self.wait_for_visible(btn)
-        btn.click(force=True)
+        btn.click()
         self.wait_for_loading_to_finish()
 
     def get_unit_count(self) -> int:
         """Read total unit count from badge with fallback to table rows."""
         self.table_rows.first.wait_for(state="visible", timeout=15000)
         row_count = self.table_rows.count()
-        badge = self.page.locator("strong").first
-        if badge.is_visible():
-            txt = badge.inner_text().strip()
+        if self.unit_count_badge.is_visible():
+            txt = self.unit_count_badge.inner_text().strip()
             match = re.search(r"\d+", txt)
             if match:
                 val = int(match.group(0))
                 if val > 0:
                     return val
         return row_count
-
-    def expect_toast_notification(self, text_pattern: str = None):
-        """Assert success or status toast message appears."""
-        if text_pattern:
-            toast = self.page.locator(".toast-container, .ngx-toastr, mat-snack-bar-container, [role='alert'], [class*='toast']").filter(has_text=re.compile(text_pattern, re.I)).first
-        else:
-            toast = self.toast_container
-        self.wait_for_visible(toast)

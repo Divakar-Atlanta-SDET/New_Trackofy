@@ -1,0 +1,125 @@
+- generic [ref=e4]:
+  - navigation [ref=e6]:
+    - generic [ref=e7]:
+      - link [ref=e9] [cursor=pointer]:
+        - /url: /
+        - img "Intelligent Tracking Management" [ref=e10]
+      - generic [ref=e12]:
+        - link "Home" [ref=e13] [cursor=pointer]:
+          - /url: /home
+          - img [aria-hidden] [ref=e14]: home
+        - link "Dashboard" [ref=e16] [cursor=pointer]:
+          - /url: /dashboard
+          - img [aria-hidden] [ref=e17]: dashboard
+        - link "Unit" [ref=e19] [cursor=pointer]:
+          - /url: /unit
+          - img [aria-hidden] [ref=e20]: commute
+        - link "Tracking" [ref=e22] [cursor=pointer]:
+          - /url: /tracking
+          - img [aria-hidden] [ref=e23]: public
+        - link "Reports" [ref=e25] [cursor=pointer]:
+          - /url: /reports
+          - img [aria-hidden] [ref=e26]: bar_chart
+        - link "Settings" [ref=e28] [cursor=pointer]:
+          - /url: /settings
+          - img [aria-hidden] [ref=e29]: settings
+        - link "Administrator" [ref=e31] [cursor=pointer]:
+          - /url: /administrator
+          - img [aria-hidden] [ref=e32]: admin_panel_settings
+        - link "Video Telematics" [ref=e34] [cursor=pointer]:
+          - /url: /video_telematics
+          - img [aria-hidden] [ref=e35]: video_library
+      - generic [ref=e37]:
+        - button [ref=e39] [cursor=pointer]:
+          - img [aria-hidden] [ref=e40]: apps
+        - button [ref=e41] [cursor=pointer]:
+          - img [aria-hidden] [ref=e42]: download
+        - button [ref=e43] [cursor=pointer]:
+          - img [aria-hidden] [ref=e44]: notifications_active
+        - button [ref=e47] [cursor=pointer]:
+          - img [aria-hidden] [ref=e49]: account_circle
+          - img [aria-hidden] [ref=e50]: expand_more
+        - button [ref=e51] [cursor=pointer]
+  - button [ref=e62] [cursor=pointer]:
+    - img [aria-hidden] [ref=e64]: message
+    - text: FEEDBACK
+  - main [ref=e65]:
+    - generic [ref=e68]:
+      - generic [ref=e70]:
+        - img [aria-hidden] [ref=e72]: directions_car
+        - generic [ref=e73]:
+          - generic [ref=e74]:
+            - heading "Unit List" [level=1] [ref=e75]
+            - generic [ref=e76]:
+              - strong [ref=e77]: "0"
+              - generic [ref=e78]: units
+          - paragraph [ref=e79]: View and manage all registered units and their device information
+      - generic [ref=e80]:
+        - group "Unit list table pagination" [ref=e83]:
+          - generic [ref=e84]:
+            - generic [ref=e85]: Rows
+            - combobox "Rows per page" [ref=e86] [cursor=pointer]:
+              - option "5"
+              - option "10" [selected]
+              - option "20"
+              - option "50"
+          - generic [ref=e87]: 0–0 / 0
+          - button "First page" [disabled] [ref=e88]:
+            - img [aria-hidden] [ref=e89]: first_page
+          - button "Previous page" [disabled] [ref=e90]:
+            - img [aria-hidden] [ref=e91]: chevron_left
+          - button "Next page" [disabled] [ref=e92]:
+            - img [aria-hidden] [ref=e93]: chevron_right
+          - button "Last page" [disabled] [ref=e94]:
+            - img [aria-hidden] [ref=e95]: last_page
+        - generic [ref=e96]:
+          - generic [ref=e97]:
+            - button "Export to Excel" [ref=e98] [cursor=pointer]:
+              - img [aria-hidden] [ref=e99]: table_view
+            - button "Export to CSV" [ref=e101] [cursor=pointer]:
+              - img [aria-hidden] [ref=e102]: description
+            - button "Export to PDF" [ref=e104] [cursor=pointer]:
+              - img [aria-hidden] [ref=e105]: picture_as_pdf
+            - button "Print document" [ref=e107] [cursor=pointer]:
+              - img [aria-hidden] [ref=e108]: print
+            - button "Copy table content" [ref=e110] [cursor=pointer]:
+              - img [aria-hidden] [ref=e111]: content_copy
+          - generic [ref=e113]:
+            - img [aria-hidden] [ref=e114]: directions_car
+            - combobox "Select unit types" [ref=e115]:
+              - generic [ref=e116] [cursor=pointer]
+          - generic [ref=e122]:
+            - img [aria-hidden] [ref=e123]: search
+            - searchbox "Search units" [ref=e124]
+      - main [ref=e125]:
+        - table [ref=e127]:
+          - rowgroup [ref=e128]:
+            - row [ref=e129]:
+              - columnheader "Sr No" [ref=e130]
+              - columnheader [ref=e131] [cursor=pointer]:
+                - button "Units" [ref=e132]
+              - columnheader [ref=e137] [cursor=pointer]:
+                - button "IMEI" [ref=e138]
+              - columnheader [ref=e143] [cursor=pointer]:
+                - button "Type" [ref=e144]
+              - columnheader [ref=e149] [cursor=pointer]:
+                - button "Location" [ref=e150]
+              - columnheader [ref=e155] [cursor=pointer]:
+                - button "SIM 1" [ref=e156]
+              - columnheader [ref=e161] [cursor=pointer]:
+                - button "SIM 2" [ref=e162]
+              - columnheader [ref=e167] [cursor=pointer]:
+                - button "Created At" [ref=e168]
+              - columnheader [ref=e173] [cursor=pointer]:
+                - button "Renewal" [ref=e174]
+              - columnheader "Status" [ref=e179]
+              - columnheader "Settings" [ref=e180]
+              - columnheader "Command" [ref=e181]
+          - rowgroup [ref=e182]:
+            - row [ref=e183]:
+              - cell "No units found Change the unit type filter or search criteria" [ref=e184]:
+                - generic [ref=e185]:
+                  - img [aria-hidden] [ref=e187]: directions_car_off
+                  - generic [ref=e188]: No units found
+                  - generic [ref=e189]: Change the unit type filter or search criteria
+  - generic: © 2026 | Trackofy. All rights reserved.

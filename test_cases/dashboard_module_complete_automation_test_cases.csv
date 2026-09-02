@@ -1,0 +1,118 @@
+﻿Test Case ID,Category,Area,Test Scenario,Expected Result,Priority
+DASH-SM-001,Smoke,Dashboard,Open Dashboard,"Dashboard loads with cards/grid, global filter and controls.",Critical
+DASH-SM-002,Smoke,Dashboard,Verify cards load,"Configured cards load with title, data/no-data state and actions.",Critical
+DASH-SM-003,Smoke,Card Settings,Open settings,Selected card settings open successfully.,High
+DASH-SM-004,Smoke,Date Filter,Open card date filter,"Today, Yesterday, Last 7 Days and This Month are available.",High
+DASH-SM-005,Smoke,Widget Store,Open widget stores,"Fleet, BMS and Video Telematics stores are accessible.",High
+DASH-SM-006,Smoke,Trash,Open Trash,Removed cards are listed in Trash.,High
+DASH-SM-007,Smoke,Grid,Drag and drop a card,Card moves to the target position and grid remains valid.,High
+DASH-SM-008,Smoke,Trash,Delete and restore a card,Card is removed from dashboard and can be restored.,Critical
+DASH-GF-001,Positive,Global Filter,Apply valid vehicle filter,All applicable cards refresh with the selected vehicle data.,Critical
+DASH-GF-002,Positive,Global Filter,Apply multiple vehicle filters,All applicable cards reflect the selected vehicle set.,High
+DASH-GF-003,Positive,Global Filter,Apply valid global date/time filter,All applicable cards refresh using the selected period.,Critical
+DASH-GF-004,Functional,Global Filter,Clear global filter,Cards return to the default unfiltered state.,High
+DASH-GF-005,Edge Case,Global Filter,Apply filter returning no data,Cards show a consistent no-data state.,High
+DASH-GF-006,Negative,Global Filter,Apply invalid/incomplete filter,Invalid filter is rejected or validated without corrupting the dashboard.,High
+DASH-GF-007,Negative,Global Filter,Global filter API fails,Error is shown and stale data is not falsely presented as current.,High
+DASH-GF-008,Edge Case,Global Filter,Rapidly change global filters,Final state corresponds to the latest selection.,Critical
+DASH-GF-009,Functional,Global Filter,Refresh after global filter,Filter persistence/reset behavior matches requirements and data remains correct.,High
+DASH-DF-001,Positive,Card Date Filter,Select Today,Card shows data for Today.,High
+DASH-DF-002,Positive,Card Date Filter,Select Yesterday,Card shows data for Yesterday.,High
+DASH-DF-003,Positive,Card Date Filter,Select Last 7 Days,Card shows data for the last 7 days.,High
+DASH-DF-004,Positive,Card Date Filter,Select This Month,Card shows data for the current month.,High
+DASH-DF-005,Functional,Card Date Filter,Switch between date filters,Data and selected filter update correctly.,High
+DASH-DF-006,Edge Case,Card Date Filter,Last 7 Days crossing month boundary,Correct calendar range is used.,High
+DASH-DF-007,Edge Case,Card Date Filter,This Month on first day of month,Only current-month data is included.,High
+DASH-DF-008,Negative,Card Date Filter,Date-filter API fails,Card shows an error/retry state.,High
+DASH-DF-009,Edge Case,Card Date Filter,Rapidly switch date filters,Final data matches the last selected period.,Critical
+DASH-SET-001,Functional,Card Settings,Open card settings,Settings menu opens for the selected card.,High
+DASH-SET-002,Positive,Card Settings,Rename card with valid value,Card title updates and persists.,High
+DASH-SET-003,Negative,Card Settings,Rename with empty value,Empty title is rejected or validated.,High
+DASH-SET-004,Edge Case,Card Settings,Rename beyond maximum length,Input is rejected/truncated according to requirements.,Medium
+DASH-SET-005,Positive,Card Settings,Change chart to Bar,Bar chart renders correctly using the same underlying data.,High
+DASH-SET-006,Positive,Card Settings,Change chart to Line,Line chart renders correctly.,High
+DASH-SET-007,Positive,Card Settings,Change chart to Spline,Spline chart renders correctly.,High
+DASH-SET-008,Positive,Card Settings,Change chart to Area,Area chart renders correctly.,High
+DASH-SET-009,Edge Case,Card Settings,Switch chart types repeatedly,Final chart type matches the last selection.,High
+DASH-SET-010,Positive,Card Settings,Change chart color,Valid color is applied and saved.,High
+DASH-SET-011,Negative,Card Settings,Use invalid color value,Invalid color is rejected or validated.,Medium
+DASH-SET-012,Positive,Card Settings,Sort ascending,Data is ordered ascending by the selected metric.,High
+DASH-SET-013,Positive,Card Settings,Sort descending,Data is ordered descending by the selected metric.,High
+DASH-SET-014,Functional,Card Settings,Switch ascending to descending,Order changes correctly without changing values.,High
+DASH-SET-015,Positive,Card Settings,Add hidden table column,Selected column appears in table view.,High
+DASH-SET-016,Positive,Card Settings,Remove visible table column,Selected column disappears from table view.,High
+DASH-SET-017,Positive,Card Settings,Add multiple table columns,All selected columns appear.,High
+DASH-SET-018,Positive,Card Settings,Remove multiple table columns,All deselected columns disappear.,High
+DASH-SET-019,Negative,Card Settings,Remove mandatory column,Mandatory column cannot be removed or is handled as specified.,High
+DASH-SET-020,Edge Case,Card Settings,Remove all optional columns,Table remains valid and usable.,Medium
+DASH-SET-021,Functional,Card Settings,Change column order,Table follows configured order if ordering is supported.,Medium
+DASH-SET-022,Functional,Card Settings,Save settings and refresh,Saved title/chart/color/sort/columns persist.,Critical
+DASH-SET-023,Functional,Card Settings,Cancel settings changes,Unsaved changes are discarded.,High
+DASH-SET-024,Negative,Card Settings,Settings API fails,Error is shown and unsaved changes are not falsely persisted.,Critical
+DASH-SET-025,Edge Case,Card Settings,Rapidly change settings,Final saved state matches final valid configuration.,High
+DASH-TBL-001,Functional,Table/Data Validation,Open eye/table view,Card displays its underlying data in table form.,High
+DASH-TBL-002,Functional,Table/Data Validation,Verify table headers against configured columns,Table contains exactly the configured visible columns.,Critical
+DASH-TBL-003,Functional,Table/Data Validation,Verify chart values against table values,Chart and table represent the same underlying values.,Critical
+DASH-TBL-004,Functional,Table/Data Validation,Verify record count against source data,Displayed count matches the applicable dataset.,Critical
+DASH-TBL-005,Positive,Table/Data Validation,Open table after date filter,Table reflects the selected period.,High
+DASH-TBL-006,Positive,Table/Data Validation,Open table after global filter,Table reflects globally filtered data.,Critical
+DASH-TBL-007,Positive,Table/Data Validation,Open table after sorting,Table order matches configured sorting.,High
+DASH-TBL-008,Edge Case,Table/Data Validation,Open table with no data,Clear no-data state is shown.,Medium
+DASH-DRG-001,Positive,Drag & Drop/Grid,Move card to another grid position,Card occupies target position.,High
+DASH-DRG-002,Positive,Drag & Drop/Grid,Swap two cards,Both cards exchange positions correctly.,High
+DASH-DRG-003,Functional,Drag & Drop/Grid,Move card across rows,Card is placed in intended row.,High
+DASH-DRG-004,Functional,Drag & Drop/Grid,Reorder several cards,Final order matches operations.,High
+DASH-DRG-005,Functional,Drag & Drop/Grid,Refresh after reordering,Order persists according to requirements.,Critical
+DASH-DRG-006,Edge Case,Drag & Drop/Grid,Drag card to current position,No duplicate or unexpected reorder occurs.,Medium
+DASH-DRG-007,Negative,Drag & Drop/Grid,Drop outside valid grid area,Card remains in a valid position.,High
+DASH-DRG-008,Edge Case,Drag & Drop/Grid,Rapidly reorder cards,Final layout is stable.,High
+DASH-DRG-009,Negative,Drag & Drop/Grid,Layout save API fails,Failure is shown and new order is not falsely persisted.,High
+DASH-WST-001,Functional,Widget Store,Open Fleet Widget Store,Fleet widgets are listed.,High
+DASH-WST-002,Functional,Widget Store,Open BMS Widget Store,BMS widgets are listed.,High
+DASH-WST-003,Functional,Widget Store,Open Video Telematics Store,Video widgets are listed.,High
+DASH-WST-004,Positive,Widget Store,Add Fleet widget,Widget appears on dashboard.,Critical
+DASH-WST-005,Positive,Widget Store,Add BMS widget,Widget appears on dashboard.,Critical
+DASH-WST-006,Positive,Widget Store,Add Video Telematics widget,Widget appears on dashboard.,Critical
+DASH-WST-007,Positive,Widget Store,Add multiple widgets,All selected widgets are added without losing existing cards.,High
+DASH-WST-008,Edge Case,Widget Store,Add already-present widget,Duplicate is prevented or handled according to requirements.,High
+DASH-WST-009,Edge Case,Widget Store,Add widgets up to configured limit,Dashboard handles maximum widget capacity safely.,High
+DASH-WST-010,Negative,Widget Store,Widget add API fails,Widget is not falsely shown as added and error is displayed.,High
+DASH-WST-011,Functional,Widget Store,Close store without adding,No unintended dashboard change occurs.,Medium
+DASH-WST-012,Functional,Widget Store,Configure newly added widget,New widget accepts supported settings and persists them.,High
+DASH-TRS-001,Positive,Trash/Restore,Move card to Trash,Card disappears from dashboard and appears in Trash.,Critical
+DASH-TRS-002,Positive,Trash/Restore,Restore one card,Card returns to dashboard.,Critical
+DASH-TRS-003,Positive,Trash/Restore,Restore multiple cards,All selected cards are restored.,High
+DASH-TRS-004,Functional,Trash/Restore,Restored card retains settings,Saved configuration is retained if required.,High
+DASH-TRS-005,Functional,Trash/Restore,Restored card loads current data,Card shows current applicable data.,High
+DASH-TRS-006,Positive,Trash/Restore,Permanently delete from Trash if supported,Card cannot be restored after permanent deletion.,High
+DASH-TRS-007,Negative,Trash/Restore,Cancel permanent deletion,Card remains in Trash.,Medium
+DASH-TRS-008,Negative,Trash/Restore,Trash API fails,State remains consistent and error is shown.,High
+DASH-TRS-009,Negative,Trash/Restore,Restore API fails,Card is not falsely restored.,High
+DASH-TRS-010,Edge Case,Trash/Restore,Trash all cards,Empty dashboard state is handled correctly.,Critical
+DASH-TRS-011,Edge Case,Trash/Restore,Restore unavailable widget,Application handles unavailable widget safely.,Medium
+DASH-DAT-001,Functional,Data Integrity/Resilience,Verify KPI/card count against source dataset,Card count equals the applicable source record count.,Critical
+DASH-DAT-002,Functional,Data Integrity/Resilience,Verify chart data against table data,Every chart value maps to the corresponding table value.,Critical
+DASH-DAT-003,Functional,Data Integrity/Resilience,Verify cards after global filter,All applicable card data matches filtered source data.,Critical
+DASH-DAT-004,Functional,Data Integrity/Resilience,Verify cards after card-specific filter,Card data matches selected period.,Critical
+DASH-DAT-005,Negative,Data Integrity/Resilience,One card API fails while others succeed,Failed card shows error while other cards remain usable.,High
+DASH-DAT-006,Negative,Data Integrity/Resilience,API returns null values,Nulls are handled without broken rendering.,High
+DASH-DAT-007,Negative,Data Integrity/Resilience,API returns malformed data,Card fails gracefully without misleading values.,High
+DASH-DAT-008,Edge Case,Data Integrity/Resilience,Card receives zero records,Correct zero/no-data state appears.,High
+DASH-DAT-009,Edge Case,Data Integrity/Resilience,Card receives very large dataset,Card remains usable and renders safely.,High
+DASH-DAT-010,Edge Case,Data Integrity/Resilience,Multiple cards load simultaneously,Responses remain associated with the correct cards.,Critical
+DASH-DAT-011,Negative,Data Integrity/Resilience,Older API response arrives after newer response,Stale response does not overwrite latest data.,Critical
+DASH-DAT-012,Negative,Data Integrity/Resilience,Disconnect while dashboard loads,Failure is handled and dashboard is recoverable.,High
+DASH-DAT-013,Positive,Data Integrity/Resilience,Reconnect and retry,Dashboard recovers successfully.,High
+DASH-SYS-001,Functional,Persistence/Permissions/UI,Logout/login after dashboard customization,Persisted configuration is restored according to account rules.,Critical
+DASH-SYS-002,Negative,Persistence/Permissions/UI,Read-only user opens dashboard,Allowed viewing works and restricted actions are disabled.,High
+DASH-SYS-003,Negative,Persistence/Permissions/UI,Unauthorized card modification attempt,Update is rejected and no unauthorized change occurs.,High
+DASH-SYS-004,Negative,Persistence/Permissions/UI,Unauthorized widget addition attempt,Add operation is blocked.,High
+DASH-SYS-005,Negative,Persistence/Permissions/UI,Unauthorized delete/restore attempt,Restricted operation is blocked.,High
+DASH-SYS-006,Edge Case,Persistence/Permissions/UI,Open dashboard with many cards,Grid remains usable without overlap/inaccessible controls.,High
+DASH-SYS-007,Edge Case,Persistence/Permissions/UI,Open settings near viewport edge,Settings menu remains fully visible.,High
+DASH-SYS-008,Edge Case,Persistence/Permissions/UI,Open multiple card menus rapidly,Only intended menu remains active.,Medium
+DASH-SYS-009,Functional,Persistence/Permissions/UI,Verify card loading state,Loading state appears until data or error is returned.,Medium
+DASH-SYS-010,Negative,Persistence/Permissions/UI,Session expires while saving,Save fails safely and authentication handling occurs.,High
+DASH-SYS-011,Edge Case,Persistence/Permissions/UI,Change global filter while card filter is loading,Final state follows defined filter precedence; no stale overwrite.,Critical
+DASH-SYS-012,Edge Case,Persistence/Permissions/UI,Drag card while data refreshes,Layout remains stable.,High
+DASH-SYS-013,Edge Case,Persistence/Permissions/UI,Delete card while its API request is in progress,Deleted card does not reappear from a late response.,High

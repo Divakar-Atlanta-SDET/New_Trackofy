@@ -119,6 +119,88 @@ DEFAULT_DATASETS = {
         "boundary_times": [
             {"from_time": "00:00", "to_time": "23:59", "description": "Full 24-hour midnight-to-midnight boundary range"}
         ]
+    },
+    "reports_positive.json": {
+        "valid_report_generation": [
+            {"report_name": "Fleet Summary", "vehicle_name": "GCBL10536MHG14AG04459", "driver_name": "", "start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Generate Fleet Summary with valid single-day range"},
+            {"report_name": "Vehicle Summary", "vehicle_name": "GCBL10536MHG14AG04459", "driver_name": "", "start_date": "25/08/2026", "end_date": "01/09/2026", "description": "Generate Vehicle Summary with valid multi-day range"},
+            {"report_name": "Running Summary", "vehicle_name": "GCBL10536MHG14AG04459", "driver_name": "", "start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Generate Running Summary with valid filters"}
+        ],
+        "valid_vehicle_selection": [
+            {"vehicle_name": "GCBL10536MHG14AG04459", "description": "Select valid single vehicle for report"}
+        ],
+        "valid_date_ranges": [
+            {"start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Same day range"},
+            {"start_date": "25/08/2026", "end_date": "01/09/2026", "description": "One week range"}
+        ],
+        "valid_export_formats": [
+            {"format": "Excel", "extension": ".xlsx", "description": "Export to Excel format"},
+            {"format": "CSV", "extension": ".csv", "description": "Export to CSV format"},
+            {"format": "PDF", "extension": ".pdf", "description": "Export to PDF format"}
+        ],
+        "valid_schedule_configs": [
+            {"report_scope": "Standard Report", "report_name": "Fleet Summary", "frequency": "Daily", "schedule_time": "08:00", "email_1": "test@trackofy.com", "description": "Schedule Fleet Summary daily"}
+        ],
+        "valid_custom_report_templates": [
+            {"template_name": "Automated Test Template", "template_description": "Template created by automation test suite", "description": "Create valid custom report template"}
+        ]
+    },
+    "reports_negative.json": {
+        "invalid_date_ranges": [
+            {"start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"start_date": "", "end_date": "01/09/2026", "description": "Empty start date"}
+        ],
+        "missing_required_fields": [
+            {"report_name": "Fleet Summary", "field_missing": "vehicle", "description": "Generate report without selecting any vehicle"},
+            {"report_name": "Vehicle Summary", "field_missing": "vehicle", "description": "Generate report without selecting any vehicle"}
+        ],
+        "invalid_schedule_configs": [
+            {"report_scope": "Standard Report", "report_name": "Fleet Summary", "frequency": "Daily", "schedule_time": "08:00", "email_1": "", "description": "Schedule with empty email address"},
+            {"report_scope": "Standard Report", "report_name": "Fleet Summary", "frequency": "Daily", "schedule_time": "08:00", "email_1": "invalid-email-format", "description": "Schedule with invalid email format"}
+        ],
+        "reports_with_no_vehicle_selected": [
+            {"report_name": "Fleet Summary", "description": "Attempt to generate Fleet Summary without vehicle"},
+            {"report_name": "Vehicle Summary", "description": "Attempt to generate Vehicle Summary without vehicle"}
+        ]
+    },
+    "reports_functional.json": {
+        "standard_report_categories": [
+            {"category": "Fleet Performance", "report_count": 7, "description": "Fleet Performance category"},
+            {"category": "Trips & Movement", "report_count": 4, "description": "Trips & Movement category"},
+            {"category": "Driver & Safety", "report_count": 4, "description": "Driver & Safety category"},
+            {"category": "BMS & Sensors", "report_count": 6, "description": "BMS & Sensors category"}
+        ],
+        "report_tabs": [
+            {"tab_name": "Standard", "expected_path": "/reports/standard", "description": "Standard tab navigation"},
+            {"tab_name": "Custom", "expected_path": "/reports/custom", "description": "Custom tab navigation"},
+            {"tab_name": "Schedule", "expected_path": "/reports/scheduled", "description": "Schedule tab navigation"}
+        ],
+        "rows_per_page_options": [
+            {"value": "10", "description": "10 rows per page"},
+            {"value": "25", "description": "25 rows per page"},
+            {"value": "50", "description": "50 rows per page"},
+            {"value": "100", "description": "100 rows per page"}
+        ],
+        "kpi_card_names": [
+            {"name": "Total Units", "description": "Total Units KPI card"},
+            {"name": "Ignition On", "description": "Ignition On KPI card"},
+            {"name": "Moving Units", "description": "Moving Units KPI card"},
+            {"name": "Avg Utilization", "description": "Avg Utilization KPI card"},
+            {"name": "Stale / Offline Units", "description": "Stale / Offline Units KPI card"},
+            {"name": "Active Alerts", "description": "Active Alerts KPI card"}
+        ]
+    },
+    "reports_edgecase.json": {
+        "boundary_date_ranges": [
+            {"start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Same start and end date boundary"},
+            {"start_date": "01/01/2026", "end_date": "01/09/2026", "description": "Very large date range spanning 8 months"}
+        ],
+        "empty_result_reports": [
+            {"report_name": "Vehicle Summary", "vehicle_name": "GCBL10536MHG14AG04459", "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"}
+        ],
+        "custom_report_boundary_names": [
+            {"template_name": "A", "template_description": "Minimum single character template name", "description": "Single character template name"}
+        ]
     }
 }
 

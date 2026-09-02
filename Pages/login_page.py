@@ -5,9 +5,9 @@ class LoginPage:
         self.page = page
         self.config = config
         # locators
-        self.username_input = page.get_by_label("User Name")
-        self.password_input = page.get_by_label("Password")
-        self.login_btn = page.get_by_role("button", name="Log in")
+        self.username_input = page.get_by_placeholder("Enter username or email")
+        self.password_input = page.get_by_placeholder("Enter password")
+        self.login_btn = page.get_by_role("button", name="Sign in", exact=True)
         
     def open(self):
         self.page.goto(self.config["base_url"])
@@ -23,6 +23,15 @@ class LoginPage:
     
     
     def login(self, username: str, password: str):
-        self.username_input.fill(username)
-        self.password_input.fill(password)
-        self.login_btn.click()
+        if "/home" in self.page.url:
+            return
+        try:
+            self.username_input.wait_for(state="visible", timeout=10000)
+            self.username_input.fill(username)
+            self.password_input.fill(password)
+            self.login_btn.click()
+        except Exception:
+            if "/home" in self.page.url:
+                return
+            raise
+

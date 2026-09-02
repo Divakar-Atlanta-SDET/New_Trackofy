@@ -1,0 +1,210 @@
+﻿Test Case ID,Category,Area,Test Scenario,Expected Result,Priority
+REP-COM-001,Functional,Navigation,Open Reports module,"Reports page loads with Standard, Custom and Schedule categories.",Critical
+REP-COM-002,Functional,Navigation,"Switch between Standard, Custom and Schedule",Selected category opens correctly without stale content.,High
+REP-COM-003,Functional,Standard,Open Standard reports,All four standard report categories and configured reports are displayed.,Critical
+REP-COM-004,Functional,Report Selection,Open report type selector,Available reports are displayed and selectable.,High
+REP-COM-005,Functional,Report Selection,Select a standard report,Selected report and its configuration controls are displayed.,High
+REP-COM-006,Negative,Generation,Generate with required data missing,Generation is prevented and validation is shown.,Critical
+REP-COM-007,Negative,Generation,Report API fails,Appropriate error is shown and UI remains usable.,Critical
+REP-COM-008,Edge Case,Generation,Generate report for a no-data range,Clear no-data state is displayed.,High
+REP-COM-009,Edge Case,Generation,Generate report for a large vehicle/date range,Request completes without UI failure or incorrect state.,High
+REP-COM-010,Functional,Reset,Modify filters and reset,All resettable filters return to defined defaults.,High
+REP-COM-011,Positive,Date Range,Select valid date range,Selected range is displayed and used for generation.,High
+REP-COM-012,Negative,Date Range,Set start date after end date,Range is rejected or validation is shown.,Critical
+REP-COM-013,Edge Case,Date Range,Select same start and end date,Same-day range is handled according to report rules.,High
+REP-COM-014,Edge Case,Date Range,Select future dates,Application follows the defined future-date rule.,Medium
+REP-COM-015,Functional,Vehicle Filter,Open vehicle selector,Available vehicles are displayed.,High
+REP-COM-016,Positive,Vehicle Filter,Select one vehicle,Selected vehicle is reflected in filters.,High
+REP-COM-017,Positive,Vehicle Filter,Select multiple vehicles,All selected vehicles are reflected in filters.,High
+REP-COM-018,Functional,Export,Open export options for generated report,Supported export options are displayed.,High
+REP-COM-019,Positive,Export,Export generated report,Selected format downloads successfully.,Critical
+REP-COM-020,Negative,Export,Export service fails,Error is shown and no false successful download is reported.,High
+REP-COM-021,Negative,Permissions,Open restricted report,Access is denied/handled according to permissions.,High
+REP-STD-001,Functional,Fleet Performance,Open Fleet Performance category,Fleet Performance opens and its configured reports are listed.,High
+REP-STD-002,Functional,Fleet Summary,Select Fleet Summary,Fleet Summary is selected and its configuration controls are displayed.,High
+REP-STD-003,Positive,Fleet Summary,Generate Fleet Summary with valid filters,Fleet Summary returns data matching the selected filters.,High
+REP-STD-004,Negative,Fleet Summary,Generate Fleet Summary with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-005,Edge Case,Fleet Summary,Generate Fleet Summary for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-006,Functional,Vehicle Summary,Select Vehicle Summary,Vehicle Summary is selected and its configuration controls are displayed.,High
+REP-STD-007,Positive,Vehicle Summary,Generate Vehicle Summary with valid filters,Vehicle Summary returns data matching the selected filters.,High
+REP-STD-008,Negative,Vehicle Summary,Generate Vehicle Summary with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-009,Edge Case,Vehicle Summary,Generate Vehicle Summary for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-010,Functional,Work Hour,Select Work Hour,Work Hour is selected and its configuration controls are displayed.,High
+REP-STD-011,Positive,Work Hour,Generate Work Hour with valid filters,Work Hour returns data matching the selected filters.,High
+REP-STD-012,Negative,Work Hour,Generate Work Hour with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-013,Edge Case,Work Hour,Generate Work Hour for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-014,Functional,Engine Hour,Select Engine Hour,Engine Hour is selected and its configuration controls are displayed.,High
+REP-STD-015,Positive,Engine Hour,Generate Engine Hour with valid filters,Engine Hour returns data matching the selected filters.,High
+REP-STD-016,Negative,Engine Hour,Generate Engine Hour with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-017,Edge Case,Engine Hour,Generate Engine Hour for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-018,Functional,Running Summary,Select Running Summary,Running Summary is selected and its configuration controls are displayed.,High
+REP-STD-019,Positive,Running Summary,Generate Running Summary with valid filters,Running Summary returns data matching the selected filters.,High
+REP-STD-020,Negative,Running Summary,Generate Running Summary with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-021,Edge Case,Running Summary,Generate Running Summary for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-022,Functional,Maxspeed Chart,Select Maxspeed Chart,Maxspeed Chart is selected and its configuration controls are displayed.,High
+REP-STD-023,Positive,Maxspeed Chart,Generate Maxspeed Chart with valid filters,Maxspeed Chart returns data matching the selected filters.,High
+REP-STD-024,Negative,Maxspeed Chart,Generate Maxspeed Chart with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-025,Edge Case,Maxspeed Chart,Generate Maxspeed Chart for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-026,Functional,Trips & Movement,Open Trips & Movement category,Trips & Movement opens and its configured reports are listed.,High
+REP-STD-027,Functional,Trip Report,Select Trip Report,Trip Report is selected and its configuration controls are displayed.,High
+REP-STD-028,Positive,Trip Report,Generate Trip Report with valid filters,Trip Report returns data matching the selected filters.,High
+REP-STD-029,Negative,Trip Report,Generate Trip Report with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-030,Edge Case,Trip Report,Generate Trip Report for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-031,Functional,Distance Chart,Select Distance Chart,Distance Chart is selected and its configuration controls are displayed.,High
+REP-STD-032,Positive,Distance Chart,Generate Distance Chart with valid filters,Distance Chart returns data matching the selected filters.,High
+REP-STD-033,Negative,Distance Chart,Generate Distance Chart with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-034,Edge Case,Distance Chart,Generate Distance Chart for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-035,Functional,Cumulative Distance,Select Cumulative Distance,Cumulative Distance is selected and its configuration controls are displayed.,High
+REP-STD-036,Positive,Cumulative Distance,Generate Cumulative Distance with valid filters,Cumulative Distance returns data matching the selected filters.,High
+REP-STD-037,Negative,Cumulative Distance,Generate Cumulative Distance with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-038,Edge Case,Cumulative Distance,Generate Cumulative Distance for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-039,Functional,Stopping Summary,Select Stopping Summary,Stopping Summary is selected and its configuration controls are displayed.,High
+REP-STD-040,Positive,Stopping Summary,Generate Stopping Summary with valid filters,Stopping Summary returns data matching the selected filters.,High
+REP-STD-041,Negative,Stopping Summary,Generate Stopping Summary with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-042,Edge Case,Stopping Summary,Generate Stopping Summary for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-043,Functional,Idle,Select Idle,Idle is selected and its configuration controls are displayed.,High
+REP-STD-044,Positive,Idle,Generate Idle with valid filters,Idle returns data matching the selected filters.,High
+REP-STD-045,Negative,Idle,Generate Idle with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-046,Edge Case,Idle,Generate Idle for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-047,Functional,Driver & Safety,Open Driver & Safety category,Driver & Safety opens and its configured reports are listed.,High
+REP-STD-048,Functional,Driver Report,Select Driver Report,Driver Report is selected and its configuration controls are displayed.,High
+REP-STD-049,Positive,Driver Report,Generate Driver Report with valid filters,Driver Report returns data matching the selected filters.,High
+REP-STD-050,Negative,Driver Report,Generate Driver Report with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-051,Edge Case,Driver Report,Generate Driver Report for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-052,Functional,Driver Performance,Select Driver Performance,Driver Performance is selected and its configuration controls are displayed.,High
+REP-STD-053,Positive,Driver Performance,Generate Driver Performance with valid filters,Driver Performance returns data matching the selected filters.,High
+REP-STD-054,Negative,Driver Performance,Generate Driver Performance with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-055,Edge Case,Driver Performance,Generate Driver Performance for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-056,Functional,Alert,Select Alert,Alert is selected and its configuration controls are displayed.,High
+REP-STD-057,Positive,Alert,Generate Alert with valid filters,Alert returns data matching the selected filters.,High
+REP-STD-058,Negative,Alert,Generate Alert with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-059,Edge Case,Alert,Generate Alert for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-060,Functional,ADAS Alarm Report,Select ADAS Alarm Report,ADAS Alarm Report is selected and its configuration controls are displayed.,High
+REP-STD-061,Positive,ADAS Alarm Report,Generate ADAS Alarm Report with valid filters,ADAS Alarm Report returns data matching the selected filters.,High
+REP-STD-062,Negative,ADAS Alarm Report,Generate ADAS Alarm Report with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-063,Edge Case,ADAS Alarm Report,Generate ADAS Alarm Report for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-064,Functional,BMS & Sensors,Open BMS & Sensors category,BMS & Sensors opens and its configured reports are listed.,High
+REP-STD-065,Functional,BMS Summary Report,Select BMS Summary Report,BMS Summary Report is selected and its configuration controls are displayed.,High
+REP-STD-066,Positive,BMS Summary Report,Generate BMS Summary Report with valid filters,BMS Summary Report returns data matching the selected filters.,High
+REP-STD-067,Negative,BMS Summary Report,Generate BMS Summary Report with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-068,Edge Case,BMS Summary Report,Generate BMS Summary Report for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-069,Functional,BMS Cell Report,Select BMS Cell Report,BMS Cell Report is selected and its configuration controls are displayed.,High
+REP-STD-070,Positive,BMS Cell Report,Generate BMS Cell Report with valid filters,BMS Cell Report returns data matching the selected filters.,High
+REP-STD-071,Negative,BMS Cell Report,Generate BMS Cell Report with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-072,Edge Case,BMS Cell Report,Generate BMS Cell Report for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-073,Functional,Battery Charging Summary,Select Battery Charging Summary,Battery Charging Summary is selected and its configuration controls are displayed.,High
+REP-STD-074,Positive,Battery Charging Summary,Generate Battery Charging Summary with valid filters,Battery Charging Summary returns data matching the selected filters.,High
+REP-STD-075,Negative,Battery Charging Summary,Generate Battery Charging Summary with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-076,Edge Case,Battery Charging Summary,Generate Battery Charging Summary for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-077,Functional,Temperature,Select Temperature,Temperature is selected and its configuration controls are displayed.,High
+REP-STD-078,Positive,Temperature,Generate Temperature with valid filters,Temperature returns data matching the selected filters.,High
+REP-STD-079,Negative,Temperature,Generate Temperature with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-080,Edge Case,Temperature,Generate Temperature for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-081,Functional,Humidity Report,Select Humidity Report,Humidity Report is selected and its configuration controls are displayed.,High
+REP-STD-082,Positive,Humidity Report,Generate Humidity Report with valid filters,Humidity Report returns data matching the selected filters.,High
+REP-STD-083,Negative,Humidity Report,Generate Humidity Report with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-084,Edge Case,Humidity Report,Generate Humidity Report for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-STD-085,Functional,Sensor Report,Select Sensor Report,Sensor Report is selected and its configuration controls are displayed.,High
+REP-STD-086,Positive,Sensor Report,Generate Sensor Report with valid filters,Sensor Report returns data matching the selected filters.,High
+REP-STD-087,Negative,Sensor Report,Generate Sensor Report with invalid date range,Generation is blocked or validation is displayed.,High
+REP-STD-088,Edge Case,Sensor Report,Generate Sensor Report for a no-data range,Clear no-data state is displayed without a broken report.,Medium
+REP-DL-110,Functional,Downloads,Generate Work Hour,Work Hour is submitted for generation and becomes available in Downloads.,Critical
+REP-DL-111,Functional,Downloads,Verify Work Hour generation status,Downloads shows the correct pending/processing/completed status for Work Hour.,High
+REP-DL-112,Positive,Downloads,Download completed Work Hour,Generated Work Hour file downloads successfully and is not corrupted.,Critical
+REP-DL-113,Positive,Downloads,Verify Work Hour file matches filters,Downloaded Work Hour data matches submitted vehicle/date/filter values.,High
+REP-DL-114,Edge Case,Downloads,Generate Work Hour for no-data range,No-data result is handled correctly and no misleading file is presented.,High
+REP-DL-115,Edge Case,Downloads,Generate multiple Work Hour requests,Separate requests/files remain correctly associated with their filters.,High
+REP-DL-116,Negative,Downloads,Download failed Work Hour job,Failed generation cannot be downloaded as a valid report.,High
+REP-DL-120,Functional,Downloads,Generate Idle,Idle is submitted for generation and becomes available in Downloads.,Critical
+REP-DL-121,Functional,Downloads,Verify Idle generation status,Downloads shows the correct pending/processing/completed status for Idle.,High
+REP-DL-122,Positive,Downloads,Download completed Idle,Generated Idle file downloads successfully and is not corrupted.,Critical
+REP-DL-123,Positive,Downloads,Verify Idle file matches filters,Downloaded Idle data matches submitted vehicle/date/filter values.,High
+REP-DL-124,Edge Case,Downloads,Generate Idle for no-data range,No-data result is handled correctly and no misleading file is presented.,High
+REP-DL-125,Edge Case,Downloads,Generate multiple Idle requests,Separate requests/files remain correctly associated with their filters.,High
+REP-DL-126,Negative,Downloads,Download failed Idle job,Failed generation cannot be downloaded as a valid report.,High
+REP-DL-131,Functional,Downloads,Refresh Downloads while report is processing,Job status remains consistent and no duplicate job is created.,Medium
+REP-DL-132,Edge Case,Downloads,Generate a large download-only report,File generation/download completes without UI failure.,High
+REP-DL-133,Edge Case,Downloads,Rapidly submit download-only report,Duplicate jobs are prevented or safely handled.,High
+REP-CUS-001,Functional,Custom,Open Custom reports,Custom report builder opens successfully.,Critical
+REP-CUS-002,Functional,Custom Builder,Verify available report sources,Configured report types that can be combined are available.,High
+REP-CUS-003,Positive,Custom Builder,Select one report,Selected report is added to the custom configuration.,High
+REP-CUS-004,Positive,Custom Builder,Select multiple reports from one category,All selected reports are added without duplication.,High
+REP-CUS-005,Positive,Custom Builder,Combine reports from different categories,Reports from different categories can be combined when supported.,Critical
+REP-CUS-006,Positive,Custom Builder,Combine reports from all four standard categories,Supported cross-category combination can be generated.,High
+REP-CUS-007,Functional,Custom Builder,Remove selected report,Removed report no longer contributes to the custom report.,High
+REP-CUS-008,Edge Case,Custom Builder,Attempt to add the same report twice,Duplicate selection is prevented or handled according to requirements.,Medium
+REP-CUS-009,Negative,Custom Builder,Generate without selecting any report,Generation is prevented and validation is displayed.,High
+REP-CUS-010,Positive,Custom Builder,Generate custom report with valid filters,Combined report is generated successfully.,Critical
+REP-CUS-011,Positive,Custom Output,Verify every selected report appears in output,Output contains data/sections for every selected report.,Critical
+REP-CUS-012,Functional,Custom Builder,Change vehicle filter and regenerate,Output reflects the new vehicle selection.,High
+REP-CUS-013,Functional,Custom Builder,Change date range and regenerate,Output reflects the new date range.,High
+REP-CUS-014,Edge Case,Custom Output,One selected report has no data,Empty section is handled without corrupting other report sections.,High
+REP-CUS-015,Edge Case,Custom Output,All selected reports have no data,Clear no-data state is shown.,High
+REP-CUS-016,Negative,Custom Generation,Custom report API fails,Error is shown and no false report is displayed.,High
+REP-CUS-017,Edge Case,Custom Builder,Select a large supported number of reports,Builder remains usable and generated output is handled correctly.,Medium
+REP-CUS-018,Functional,Custom Builder,Reset custom report configuration,Selected reports and filters return to defaults.,High
+REP-CUS-019,Positive,Custom Export,Export generated custom report,Combined report exports/downloads successfully.,High
+REP-CUS-020,Edge Case,Custom Builder,Rapidly add/remove reports,Final configuration matches the last user actions.,Medium
+REP-SCH-001,Functional,Schedule,Open Schedule reports,Schedule configuration/list opens successfully.,Critical
+REP-SCH-002,Functional,Schedule Builder,Select report to schedule,Selected report is reflected in schedule configuration.,High
+REP-SCH-003,Positive,Schedule Builder,Enter valid email recipient,Valid recipient is accepted.,Critical
+REP-SCH-004,Negative,Schedule Builder,Enter invalid email recipient,Invalid email is rejected or validation is shown.,High
+REP-SCH-005,Negative,Schedule Builder,Leave required recipient empty,Schedule cannot be saved and required validation is shown.,High
+REP-SCH-006,Positive,Daily,Create daily schedule,Schedule is saved with daily frequency and correct configuration.,Critical
+REP-SCH-007,Positive,Weekly,Create weekly schedule,Schedule is saved with weekly frequency and correct configuration.,Critical
+REP-SCH-008,Positive,Monthly,Create monthly schedule,Schedule is saved with monthly frequency and correct configuration.,Critical
+REP-SCH-009,Positive,Custom Range,Create custom date-range schedule,Schedule is saved with the selected custom range.,Critical
+REP-SCH-010,Negative,Schedule Builder,Save without selecting report,Schedule is not saved and report validation is shown.,High
+REP-SCH-011,Negative,Schedule Builder,Save without selecting frequency,Schedule is not saved and frequency validation is shown.,High
+REP-SCH-012,Negative,Custom Range,Use invalid custom date range,Schedule is rejected or validation is shown.,High
+REP-SCH-013,Negative,Custom Range,Set custom start date after end date,Invalid range is rejected.,Critical
+REP-SCH-014,Edge Case,Custom Range,Use same start/end date,Same-day custom range follows defined behavior.,Medium
+REP-SCH-015,Functional,Schedule List,Verify saved schedule appears,"Saved schedule shows correct report, frequency, recipient and status.",Critical
+REP-SCH-016,Functional,Schedule List,Edit scheduled report,Changes are saved and reflected in the list.,High
+REP-SCH-017,Functional,Schedule List,Disable active schedule,Schedule becomes inactive and future delivery is stopped.,Critical
+REP-SCH-018,Functional,Schedule List,Re-enable disabled schedule,Schedule becomes active again according to configuration.,High
+REP-SCH-019,Functional,Schedule List,Delete scheduled report,Schedule is removed after required confirmation.,High
+REP-SCH-020,Negative,Schedule List,Cancel delete confirmation,Schedule remains unchanged.,Medium
+REP-SCH-021,Positive,Schedule Delivery,Verify scheduled email is received,Configured recipient receives the scheduled report.,Critical
+REP-SCH-022,Positive,Schedule Delivery,Verify email report content,"Email report matches the saved report, filters and date configuration.",Critical
+REP-SCH-023,Positive,Schedule Delivery,Verify report attachment if applicable,Attachment is accessible and not corrupted.,High
+REP-SCH-024,Negative,Schedule Delivery,Email service fails,Failure is handled and schedule/delivery history reflects the failure as defined.,High
+REP-SCH-025,Edge Case,Schedule Builder,Create multiple schedules for the same report,Schedules remain independently identifiable if duplicates are allowed.,Medium
+REP-SCH-026,Edge Case,Schedule Builder,Rapidly save schedule,Duplicate schedules are prevented or safely handled.,High
+REP-SCH-027,Functional,Schedule Builder,Switch Daily to Weekly,Weekly-specific configuration is shown and stale daily state is cleared.,High
+REP-SCH-028,Functional,Schedule Builder,Switch Weekly to Monthly,Monthly configuration is shown correctly.,High
+REP-SCH-029,Functional,Schedule Builder,Switch to Custom Date Range,Custom range controls appear and irrelevant recurrence controls are handled correctly.,High
+REP-SCH-030,Edge Case,Schedule Builder,Switch frequency repeatedly,Final saved configuration matches the final selected frequency.,Medium
+REP-SCH-031,Functional,Schedule Builder,Reset schedule form,Resettable fields return to defaults and no schedule is created.,Medium
+REP-REL-001,Edge Case,UI State,Rapidly switch report categories,Final selected category is displayed without duplicated/stale forms.,Medium
+REP-REL-002,Edge Case,UI State,Rapidly change report type,Final report type and configuration are loaded correctly.,Medium
+REP-REL-003,Edge Case,Generation,Rapidly click Generate Report,Duplicate report requests are prevented or safely handled.,High
+REP-REL-004,Negative,Network,Disconnect during report generation,Loading ends safely and an error/retry state is shown.,High
+REP-REL-005,Negative,Network,Reconnect and retry report generation,Report can be generated after recovery.,High
+REP-REL-006,Negative,Authentication,Session expires during report generation,Authentication handling occurs and no false success is shown.,High
+REP-REL-007,Negative,Authentication,Session expires during download,Download is safely handled according to authentication state.,High
+REP-REL-008,Edge Case,Concurrency,Multiple report requests return out of order,Stale responses do not overwrite the latest report/filter state.,Critical
+REP-REL-009,Edge Case,Concurrency,Multiple report jobs are pending,Each job remains correctly associated with its submitted report/filter set.,High
+REP-REL-010,Functional,Navigation,Use browser Back/Forward around Reports,Reports initializes correctly without corrupted state.,Medium
+REP-REL-011,Functional,Accessibility,Navigate report controls by keyboard,Interactive controls are keyboard accessible where supported.,Medium
+REP-REL-012,Functional,Accessibility,Verify active report category state,Active Standard/Custom/Schedule state is identifiable.,Medium
+REP-COL-001,Functional,Column Configuration,Verify column selector is displayed,Available report columns can be selected/deselected.,High
+REP-COL-002,Functional,Column Configuration,Verify default column selection,All configured default columns are selected when the report configuration opens.,High
+REP-COL-003,Positive,Column Configuration,Uncheck one column before generating a report,The unchecked column is absent from the generated report table.,Critical
+REP-COL-004,Positive,Column Configuration,Uncheck multiple columns before generating a report,All unchecked columns are absent from the generated report table.,Critical
+REP-COL-005,Positive,Column Configuration,Keep only one optional column selected,Generated table contains only the selected columns plus any mandatory columns.,High
+REP-COL-006,Positive,Column Configuration,Uncheck and re-check a column,The re-checked column appears in the generated report table.,High
+REP-COL-007,Positive,Column Configuration,Select all available columns,Generated report displays all available columns.,High
+REP-COL-008,Negative,Column Configuration,Attempt to deselect a mandatory column,Mandatory column cannot be removed or is handled according to the defined requirement.,High
+REP-COL-009,Edge Case,Column Configuration,Deselect all optional columns,Application handles the configuration without a broken or invalid table.,Medium
+REP-COL-010,Functional,Column Configuration,Change column order before generating report,"Generated table follows the configured column order, if reordering is supported.",Medium
+REP-COL-011,Positive,Column Configuration,Change column selection and regenerate the report,Newly generated report reflects the latest column selection.,Critical
+REP-COL-012,Functional,Column Configuration,Verify hidden column remains hidden on all table pages,A deselected column does not reappear when navigating through pagination.,High
+REP-COL-013,Functional,Column Configuration,Sort the report after hiding a column,Sorting does not cause the hidden column to reappear.,Medium
+REP-COL-014,Functional,Column Configuration,Search/filter report after hiding a column,Search/filter does not restore the hidden column.,Medium
+REP-COL-015,Edge Case,Column Configuration,Rapidly select and deselect columns,Generated report reflects the final column selection state.,High
+REP-COL-016,Functional,Column Configuration,"Generate report, change column selection, and inspect existing report",Existing generated report remains unchanged until the report is regenerated.,High
+REP-COL-017,Functional,Column Configuration,Reset column selection,Columns return to their configured default selection.,High
+REP-COL-018,Positive,Column Configuration,Export report after hiding columns,"Exported report follows the selected column configuration, if export is designed to respect it.",High
+REP-COL-019,Positive,Column Configuration,Download Work Hour/Idle report after hiding columns,"Downloaded report follows the selected column configuration, if column selection is supported for the download report.",High
+REP-COL-020,Negative,Column Configuration,Column configuration API fails,Appropriate error is shown and the application does not silently generate a report with an incorrect column configuration.,High

@@ -1,0 +1,36 @@
+﻿Test Case ID,Category,Area,Test Scenario,Expected Result,Priority
+REP-KPI-001,Functional,KPI vs Table,Verify Total Units KPI against report table,Total Units KPI equals the number of unique vehicle/unit records represented by the report table for the selected filters.,Critical
+REP-KPI-002,Functional,KPI vs Table,Verify Total Units KPI after changing vehicle filter,Total Units KPI updates and equals the number of unique records returned for the newly selected vehicle filter.,Critical
+REP-KPI-003,Functional,KPI vs Table,Verify Total Units KPI after changing date range,Total Units KPI reflects the records applicable to the newly selected date range.,High
+REP-KPI-004,Functional,KPI vs Table,Verify Ignition On KPI against table data,"Ignition On KPI equals the count of report rows/vehicles whose underlying ignition status is On, according to the report's defined business rule.",Critical
+REP-KPI-005,Functional,KPI vs Table,Verify Moving Units KPI against table data,Moving Units KPI equals the count of vehicles whose underlying movement/current-speed condition qualifies as Moving.,Critical
+REP-KPI-006,Functional,KPI vs Table,Verify Stale/Offline KPI against table data,Stale/Offline KPI equals the count of vehicles classified as Stale/Offline by the report's defined status/last-contact rule.,Critical
+REP-KPI-007,Functional,KPI vs Table,Verify Avg Utilization KPI against report data,"Avg Utilization KPI equals the calculated average utilization for the records returned by the report, using the application's defined calculation/rounding rule.",Critical
+REP-KPI-008,Functional,KPI vs Table,Verify Active Alerts KPI against alert data,Active Alerts KPI equals the number of active alerts represented by the report/alert data source for the selected scope.,Critical
+REP-KPI-009,Functional,KPI Calculation,Verify KPI rounding/decimal precision,KPI values use the same rounding and decimal precision defined by the application.,High
+REP-KPI-010,Functional,KPI Calculation,Verify KPI values after pagination,Changing table page does not change KPIs; KPIs represent the complete filtered dataset rather than only the current page.,Critical
+REP-KPI-011,Functional,KPI Calculation,Verify KPI values with 10 rows per page,KPIs remain calculated from the full result set when table displays 10 rows per page.,Critical
+REP-KPI-012,Functional,KPI Calculation,Verify KPI values after changing rows per page,Changing rows per page does not change KPI values.,High
+REP-KPI-013,Functional,KPI Calculation,Verify KPI values after sorting a table column,Sorting table data does not change KPI values.,High
+REP-KPI-014,Functional,KPI Calculation,Verify KPI values after searching/filtering report table,"KPIs follow the application's defined behavior for table search; if search is a dataset filter, KPIs must update to match the filtered dataset.",High
+REP-KPI-015,Functional,KPI Calculation,Verify KPI values when all table records are visible,Each KPI can be independently reconciled against the corresponding complete dataset.,Critical
+REP-KPI-016,Edge Case,KPI vs Table,Generate report with no records,KPIs display the defined zero/empty state and table shows no records.,High
+REP-KPI-017,Edge Case,KPI vs Table,Generate report with exactly one record,All applicable KPIs are calculated correctly for a single record.,High
+REP-KPI-018,Edge Case,KPI vs Table,Generate report where all vehicles are Moving,Moving Units equals Total Units and other status KPIs remain consistent.,Medium
+REP-KPI-019,Edge Case,KPI vs Table,Generate report where no vehicles are Moving,Moving Units equals zero and table data contains no records meeting the Moving condition.,Medium
+REP-KPI-020,Edge Case,KPI vs Table,Generate report where all vehicles are Stale/Offline,Stale/Offline KPI equals Total Units when all records meet the configured stale/offline condition.,Medium
+REP-KPI-021,Edge Case,KPI vs Table,Generate report with zero active alerts,Active Alerts KPI displays zero and alert-related data is consistent with the empty state.,Medium
+REP-KPI-022,Negative,KPI Integrity,Verify KPI does not retain values from previous report,"After changing report type/filters and generating a new report, KPI cards reflect only the new report data.",Critical
+REP-KPI-023,Negative,KPI Integrity,Verify KPI does not update from stale API response,A delayed response from an earlier request must not overwrite KPI values belonging to the latest report request.,Critical
+REP-KPI-024,Negative,KPI Integrity,Report table loads but KPI API fails,Application shows an appropriate KPI error/empty state and does not display misleading stale KPI values.,High
+REP-KPI-025,Negative,KPI Integrity,KPI loads but report table API fails,Application handles the inconsistent state clearly and does not present KPI/table values as successfully reconciled.,High
+REP-KPI-026,Functional,KPI vs Table,Verify KPI values after report regeneration,Regenerating the same report produces KPI values consistent with the newly returned table dataset.,High
+REP-KPI-027,Functional,KPI vs Table,Verify KPI values for each Standard report that exposes KPI cards,Every KPI card exposed for the selected standard report is reconciled against its corresponding report data/source.,Critical
+REP-KPI-028,Functional,KPI vs Table,Verify KPI values for Custom report,Custom report KPIs correspond to the combined/custom dataset and do not use unrelated standard-report values.,Critical
+REP-KPI-029,Functional,KPI vs Table,Verify KPI values after vehicle selection changes,Changing selected vehicles and regenerating updates all applicable KPI cards consistently.,High
+REP-KPI-030,Functional,KPI vs Table,Verify KPI values after date/time filter changes,Changing date/time filters and regenerating updates all applicable KPIs consistently with returned data.,High
+REP-KPI-031,Edge Case,KPI Calculation,Verify KPI calculation with negative/zero numeric report values where supported,KPI calculations follow the application's business rules and do not produce invalid values such as NaN or unexpected negative totals.,Medium
+REP-KPI-032,Edge Case,KPI Calculation,Verify KPI calculation with missing/null source values,Null/missing source values are handled according to the defined calculation rule and do not corrupt KPI results.,High
+REP-KPI-033,Functional,KPI Calculation,Verify KPI values after export/download,"Where exported report contains the underlying KPI/source data, exported values match the displayed KPI values.",Medium
+REP-KPI-034,Functional,KPI vs Table,Verify KPI card labels map to correct table fields,Each KPI is calculated from the intended business field and is not accidentally mapped to another table column.,Critical
+REP-KPI-035,Functional,KPI vs Table,Verify KPI count uses unique vehicles when required,KPI counts unique vehicle/unit identifiers and does not double-count duplicate rows where the report can contain multiple records per vehicle.,Critical

@@ -49,5 +49,7 @@ def test_trk_play_040_041_toggle_more_filters(page, config, credentials):
 def test_trk_play_044_045_reset_playback_form(page, config, credentials):
     """TRK-PLAY-044, 045: Functional - Test Reset button on Playback Tracking form."""
     tracking_page = login_and_open_tracking(page, config, credentials)
+    tracking_page.select_first_available_playback_vehicle()
+    expect(tracking_page.load_playback_btn).to_be_enabled()
     tracking_page.playback_reset_btn.click()
-    expect(tracking_page.playback_vehicle_select).to_be_visible()
+    expect(tracking_page.load_playback_btn).to_be_disabled()

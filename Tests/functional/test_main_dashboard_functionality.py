@@ -29,15 +29,12 @@ def test_main_dashboard_loads_successfully_and_displays_kpis(page, config, crede
     expect(page).to_have_url(re.compile(rf"{re.escape(config['base_url'])}/dashboard/graphical/?$"))
     expect(dashboard_page.dashboard_heading).to_be_visible()
 
-    # 4. Verify primary top KPI summary cards are rendered on screen.
+    # 4. Verify the top KPI summary strip is rendered on screen.
+    # Individual tiles (Running/Stopped/No Data/Expired/BMS Enabled/...) render
+    # conditionally based on live fleet counts, so only Total Fleet -- which is
+    # always present -- and the KPI Settings control are safe to assert on here.
     expect(dashboard_page.total_fleet_metric).to_be_visible()
-    expect(dashboard_page.active_devices_metric).to_be_visible()
-    expect(dashboard_page.running_devices_metric).to_be_visible()
-    expect(dashboard_page.idle_devices_metric).to_be_visible()
-    expect(dashboard_page.stopped_devices_metric).to_be_visible()
-    expect(dashboard_page.no_data_devices_metric).to_be_visible()
-    expect(dashboard_page.expired_devices_metric).to_be_visible()
-    expect(dashboard_page.bms_enabled_metric).to_be_visible()
+    expect(page.get_by_role("button", name=re.compile(r"KPI Settings", re.I))).to_be_visible()
 
 
 @pytest.mark.functional

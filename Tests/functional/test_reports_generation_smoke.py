@@ -21,6 +21,7 @@ REPORT_LOAD_LIMIT_SECONDS = {
 @pytest.mark.reports
 @pytest.mark.report_generation
 @pytest.mark.parametrize("report", STANDARD_REPORTS, ids=[report["name"] for report in STANDARD_REPORTS])
+@pytest.mark.allow_server_error  # already tracks/discards a known get-bms-vehicles 500 itself via network_monitor
 def test_standard_reports_generate_results(authenticated_page, report, network_monitor):
     reports_page = ReportsPage(authenticated_page)
     reports_page.open_standard_reports()

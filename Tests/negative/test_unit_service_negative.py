@@ -1,34 +1,72 @@
-import re
 import pytest
 from playwright.sync_api import expect
 
-from Pages.login_page import LoginPage
-from Pages.unit_page import UnitPage
-from Pages.unit_settings_page import UnitSettingsPage
-from components.toast_notifcations import ToastNotifications
+
+@pytest.mark.negative
+def test_tc035_submit_blank_fitness_form_validation(unit_settings):
+    """TC-035: Negative - Open Fitness Add form and verify Submit button is disabled when fields are blank."""
+    unit_page, unit_settings_page = unit_settings
+    unit_settings_page.switch_service_subtab("Fitness")
+    unit_settings_page.fitness_add_cert_btn.click()
+    unit_settings_page.page.wait_for_timeout(500)
+
+    expect(unit_settings_page.fitness_submit_btn).to_be_disabled()
+    unit_settings_page.fitness_view_history_btn.click()
 
 
 @pytest.mark.negative
-def test_submit_blank_fitness_form_validation(page, config, credentials):
-    """TC-035: Submit blank fitness form and verify validation errors or error toast."""
-    login_page = LoginPage(page, config)
-    unit_page = UnitPage(page)
-    unit_settings_page = UnitSettingsPage(page)
-    toast = ToastNotifications(page)
+def test_tc080_submit_blank_insurance_form_validation(unit_settings):
+    """TC-080: Negative - Open Insurance Add form and verify Submit button is disabled when fields are blank."""
+    unit_page, unit_settings_page = unit_settings
+    unit_settings_page.switch_service_subtab("Insurance")
+    unit_settings_page.insurance_add_btn.click()
+    unit_settings_page.page.wait_for_timeout(500)
 
-    login_page.open()
-    login_page.login(credentials["username"], credentials["password"])
-    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
+    expect(unit_settings_page.insurance_submit_btn).to_be_disabled()
+    unit_settings_page.insurance_view_history_btn.click()
 
-    unit_page.open_unit_list()
-    unit_page.open_unit_settings_by_index(0)
-    unit_settings_page.wait_for_modal_open()
 
-    unit_settings_page.switch_service_subtab("Fitness")
+@pytest.mark.negative
+def test_tc095_submit_blank_pollution_form_validation(unit_settings):
+    """TC-095: Negative - Open Pollution Add form and verify Submit button is disabled when fields are blank."""
+    unit_page, unit_settings_page = unit_settings
+    unit_settings_page.switch_service_subtab("Pollution")
+    unit_settings_page.pollution_add_cert_btn.click()
+    unit_settings_page.page.wait_for_timeout(500)
 
-    if unit_settings_page.fitness_submit_btn.is_visible():
-        unit_settings_page.fitness_submit_btn.click()
+    expect(unit_settings_page.pollution_submit_btn).to_be_disabled()
+    unit_settings_page.pollution_view_history_btn.click()
 
-    expect(unit_settings_page.modal_heading).to_be_visible()
-    if toast.error_toast.count() > 0:
-        expect(toast.error_toast.first).to_be_visible()
+
+@pytest.mark.negative
+def test_tc136_submit_blank_service_form_validation(unit_settings):
+    """TC-136: Negative - Open Vehicle Service Add form and verify Submit button is disabled when fields are blank."""
+    unit_page, unit_settings_page = unit_settings
+    unit_settings_page.switch_service_subtab("Service")
+    unit_settings_page.service_add_btn.click()
+    unit_settings_page.page.wait_for_timeout(500)
+
+    expect(unit_settings_page.service_submit_btn).to_be_disabled()
+    unit_settings_page.service_view_history_btn.click()
+
+
+@pytest.mark.negative
+def test_tc140_odometer_after_less_than_before_validation(unit_settings):
+    """TC-140: Negative - Enter Odometer After smaller than Odometer Before and assert validation error."""
+    unit_page, unit_settings_page = unit_settings
+    page = unit_settings_page.page
+    unit_settings_page.switch_service_subtab("Service")
+    unit_settings_page.service_add_btn.click()
+    page.wait_for_timeout(500)
+
+    unit_settings_page.odometer_before_input.fill("10000")
+    unit_settings_page.odometer_after_input.fill("5000")
+
+    # In vehicle service, odometer after cannot be less than odometer before
+    is_invalid = unit_settings_page.odometer_after_input.evaluate("el => !el.checkValidity()")
+    button_disabled = unit_settings_page.service_submit_btn.is_disabled()
+    error_msg = page.locator("text=/cannot be less|invalid odometer|must be greater/i")
+
+    assert is_invalid or button_disabled or error_msg.count() > 0, "Expected validation failure when Odometer After < Odometer Before"
+
+    unit_settings_page.service_view_history_btn.click()

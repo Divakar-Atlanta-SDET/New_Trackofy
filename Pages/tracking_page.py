@@ -58,6 +58,7 @@ class TrackingPage(BasePage):
         self.map_container = page.get_by_role("button", name=re.compile(r"(Live Tracking|Playback Tracking|Map|Hybrid)", re.I)).first
         self.map_tile_btn = page.get_by_role("button", name=re.compile(r"^Map$", re.I)).first
         self.hybrid_tile_btn = page.get_by_role("button", name=re.compile(r"^Hybrid$", re.I)).first
+        self.map_selected_vehicle_pill = page.locator("text=/Selected:/i").first
 
         # Toast Container
         self.toast_container = page.locator(".toast-container, .ngx-toastr, mat-snack-bar-container, [role='alert'], [class*='toast']").first
@@ -90,6 +91,55 @@ class TrackingPage(BasePage):
         self.wait_for_visible(self.more_filters_btn)
         self.more_filters_btn.click()
         self.wait_for_loading_to_finish()
+
+    def select_first_available_vehicle(self) -> str:
+        """Open vehicle dropdown and select the first available vehicle."""
+        self.switch_to_live_tracking()
+        self.wait_for_visible(self.live_vehicle_select)
+        self.live_vehicle_select.click()
+        first_option = self.page.get_by_role("option").first
+        self.wait_for_visible(first_option)
+        vehicle_name = first_option.inner_text().strip()
+        first_option.click()
+        self.wait_for_loading_to_finish()
+        return vehicle_name
+
+    def select_first_available_playback_vehicle(self) -> str:
+        """Open Playback vehicle dropdown and select the first available vehicle."""
+        self.switch_to_playback_tracking()
+        self.wait_for_visible(self.playback_vehicle_select)
+        self.playback_vehicle_select.click()
+        first_option = self.page.get_by_role("option").first
+        self.wait_for_visible(first_option)
+        vehicle_name = first_option.inner_text().strip()
+        first_option.click()
+        self.wait_for_loading_to_finish()
+        return vehicle_name
+
+    def select_split_screen_option(self, option_text: str):
+        """Select a split screen option."""
+        self.wait_for_visible(self.live_split_screen_select)
+        self.live_split_screen_select.click()
+        opt = self.page.get_by_role("option", name=re.compile(option_text, re.I)).first
+        if opt.is_visible():
+            opt.click()
+        self.wait_for_loading_to_finish()
+
+    def start_live_tracking_flow(self) -> str:
+        """Perform full live tracking flow: select vehicle and click Start Tracking."""
+        vehicle_name = self.select_first_available_vehicle()
+        self.wait_for_visible(self.start_tracking_btn)
+        self.start_tracking_btn.click()
+        self.wait_for_loading_to_finish()
+        return vehicle_name
+
+    def load_playback_flow(self) -> str:
+        """Perform full playback flow: select vehicle and click Load Playback."""
+        vehicle_name = self.select_first_available_playback_vehicle()
+        if self.load_playback_btn.is_enabled():
+            self.load_playback_btn.click()
+            self.wait_for_loading_to_finish()
+        return vehicle_name
 
     def select_preset_map_focus(self):
         """Click the Map Focus preset button."""

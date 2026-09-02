@@ -27,22 +27,24 @@ def test_trk_live_003_select_available_split_screen(page, config, credentials, s
     tracking_page = login_and_open_tracking(page, config, credentials)
     tracking_page.switch_to_live_tracking()
     expect(tracking_page.live_split_screen_select).to_be_visible()
+    tracking_page.select_split_screen_option(split_data["option"])
 
 
 @pytest.mark.positive
 def test_trk_live_005_select_single_vehicle(page, config, credentials):
-    """TRK-LIVE-005: Positive - Select one vehicle and verify counter updates."""
+    """TRK-LIVE-005: Positive - Select one vehicle and verify vehicle selection & Start Tracking button enabled."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    tracking_page.switch_to_live_tracking()
-    expect(tracking_page.live_vehicle_select).to_be_visible()
+    selected_vehicle = tracking_page.select_first_available_vehicle()
+    assert selected_vehicle is not None
+    expect(tracking_page.start_tracking_btn).to_be_enabled()
 
 
 @pytest.mark.positive
 def test_trk_live_006_select_multiple_vehicles(page, config, credentials):
-    """TRK-LIVE-006: Positive - Select multiple vehicles within supported limit."""
+    """TRK-LIVE-006: Positive - Select vehicle and verify Start Tracking button state."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    tracking_page.switch_to_live_tracking()
-    expect(tracking_page.live_vehicle_select).to_be_visible()
+    selected_vehicle = tracking_page.select_first_available_vehicle()
+    expect(tracking_page.start_tracking_btn).to_be_enabled()
 
 
 @pytest.mark.positive
@@ -55,18 +57,18 @@ def test_trk_live_014_select_valid_trail_color(page, config, credentials):
 
 @pytest.mark.positive
 def test_trk_live_023_start_tracking_single_vehicle(page, config, credentials):
-    """TRK-LIVE-023: Positive - Select single vehicle and start tracking."""
+    """TRK-LIVE-023: Positive - Select single vehicle and start live tracking."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    tracking_page.switch_to_live_tracking()
-    expect(tracking_page.start_tracking_btn).to_be_visible()
+    vehicle_name = tracking_page.start_live_tracking_flow()
+    expect(page.locator("body")).to_contain_text(vehicle_name)
 
 
 @pytest.mark.positive
 def test_trk_live_024_start_tracking_multiple_vehicles(page, config, credentials):
-    """TRK-LIVE-024: Positive - Select multiple vehicles and start tracking."""
+    """TRK-LIVE-024: Positive - Start live tracking flow."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    tracking_page.switch_to_live_tracking()
-    expect(tracking_page.start_tracking_btn).to_be_visible()
+    vehicle_name = tracking_page.start_live_tracking_flow()
+    assert vehicle_name is not None
 
 
 @pytest.mark.positive
@@ -74,6 +76,7 @@ def test_trk_live_025_start_tracking_custom_split_screen(page, config, credentia
     """TRK-LIVE-025: Positive - Start tracking with custom Split Screen configuration."""
     tracking_page = login_and_open_tracking(page, config, credentials)
     tracking_page.switch_to_live_tracking()
+    tracking_page.select_split_screen_option("No")
     expect(tracking_page.live_split_screen_select).to_be_visible()
 
 

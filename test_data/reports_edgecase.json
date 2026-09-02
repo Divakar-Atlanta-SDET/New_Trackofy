@@ -1,0 +1,73 @@
+{
+  "boundary_date_ranges": [
+    {
+      "start_date": "01/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Same start and end date boundary"
+    },
+    {
+      "start_date": "01/01/2026",
+      "end_date": "01/09/2026",
+      "description": "Very large date range spanning 8 months"
+    }
+  ],
+  "large_vehicle_selection": [
+    {
+      "select_all": true,
+      "description": "Select all vehicles for maximum data load"
+    }
+  ],
+  "rapid_filter_changes": [
+    {
+      "report_name": "Fleet Summary",
+      "rapid_clicks": 3,
+      "description": "Rapidly toggle report selection multiple times"
+    }
+  ],
+  "empty_result_reports": [
+    {
+      "report_name": "Vehicle Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Running Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate Running Summary for empty date range"
+    }
+  ],
+  "custom_report_boundary_names": [
+    {
+      "template_name": "A",
+      "template_description": "Minimum single character template name",
+      "description": "Single character template name"
+    },
+    {
+      "template_name": "Test Template With A Very Long Name That Could Potentially Exceed UI Boundaries And Cause Layout Issues",
+      "template_description": "Testing maximum length template name for edge case validation",
+      "description": "Very long template name boundary"
+    }
+  ],
+  "schedule_boundary_times": [
+    {
+      "schedule_time": "00:00",
+      "description": "Schedule at midnight boundary"
+    },
+    {
+      "schedule_time": "23:59",
+      "description": "Schedule at end-of-day boundary"
+    }
+  ],
+  "downloads_page_boundary": [
+    {
+      "search_query": "nonexistent_report_xyz",
+      "description": "Search for non-existent report in downloads"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "invalid_date_ranges": [
+    {
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "start_date": "",
+      "end_date": "01/09/2026",
+      "description": "Empty start date"
+    },
+    {
+      "start_date": "01/09/2026",
+      "end_date": "",
+      "description": "Empty end date"
+    }
+  ],
+  "missing_required_fields": [
+    {
+      "report_name": "Fleet Summary",
+      "field_missing": "vehicle",
+      "description": "Generate report without selecting any vehicle"
+    },
+    {
+      "report_name": "Vehicle Summary",
+      "field_missing": "vehicle",
+      "description": "Generate report without selecting any vehicle"
+    }
+  ],
+  "invalid_schedule_configs": [
+    {
+      "report_scope": "Standard Report",
+      "report_name": "Fleet Summary",
+      "frequency": "Daily",
+      "schedule_time": "08:00",
+      "email_1": "",
+      "description": "Schedule with empty email address"
+    },
+    {
+      "report_scope": "Standard Report",
+      "report_name": "Fleet Summary",
+      "frequency": "Daily",
+      "schedule_time": "08:00",
+      "email_1": "invalid-email-format",
+      "description": "Schedule with invalid email format"
+    }
+  ],
+  "invalid_custom_report_templates": [
+    {
+      "template_name": "",
+      "template_description": "",
+      "description": "Create custom report with empty name and description"
+    }
+  ],
+  "reports_with_no_vehicle_selected": [
+    {
+      "report_name": "Fleet Summary",
+      "description": "Attempt to generate Fleet Summary without vehicle"
+    },
+    {
+      "report_name": "Vehicle Summary",
+      "description": "Attempt to generate Vehicle Summary without vehicle"
+    },
+    {
+      "report_name": "Running Summary",
+      "description": "Attempt to generate Running Summary without vehicle"
+    }
+  ]
+}

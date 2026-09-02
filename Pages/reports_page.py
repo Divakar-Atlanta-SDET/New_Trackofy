@@ -164,10 +164,9 @@ class ReportsPage(BasePage):
                 break
             except Exception as exc:
                 last_error = exc
-                self.wait_for_loading_to_finish()
         else:
             raise last_error or AssertionError(f"Could not open standard report form: {report_name}")
-        self.wait_for_visible(self.page.get_by_text("Configure report filters", exact=True))
+        self.wait_for_visible(self.page.get_by_text("Configure report filters", exact=False).first)
         self.wait_for_standard_report_form(report_name)
 
     def open_standard_report_category_for(self, report_name: str):
@@ -947,13 +946,13 @@ class ReportsPage(BasePage):
     def result_table_headers(self) -> list[str]:
         if not self.has_results_table():
             return []
-        header_text = self.result_table.locator("thead").inner_text()
+        header_text = self.result_table.last.locator("thead").inner_text()
         return [line.strip() for line in header_text.splitlines() if line.strip()]
 
     def result_row_count(self) -> int:
         if not self.has_results_table():
             return 0
-        rows = self.result_table.locator("tbody tr")
+        rows = self.result_table.last.locator("tbody tr")
         return rows.count()
 
     def result_surface(self) -> dict[str, object]:
@@ -1035,9 +1034,326 @@ class ReportsPage(BasePage):
                 continue
         raise AssertionError("No visible locator matched the current report surface.")
 
+
     def _vehicle_combobox(self) -> Locator:
         return self._first_visible(
             self.page.get_by_role("combobox", name="Select Vehicles *"),
             self.page.get_by_role("combobox", name="Select Vehicles"),
             self.page.get_by_role("combobox", name="Select Vehicle"),
         )
+
+    # ─── KPI Card Methods ───────────────────────────────────────────────
+
+    def get_kpi_card_value(self, card_name: str) -> str:
+        """Read the numeric value from a KPI card by its label."""
+        card = self.page.locator("article").filter(has_text=re.compile(rf"\b{re.escape(card_name)}\b", re.I))
+        self.wait_for_visible(card.first)
+        text = card.first.inner_text().strip()
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        for line in lines:
+            if line != card_name and re.search(r"\d", line):
+                return line
+        return lines[0] if lines else ""
+
+    def get_all_kpi_values(self) -> dict[str, str]:
+        """Read all KPI card values from the generated report page."""
+        kpi_names = ["Total Units", "Ignition On", "Moving Units", "Avg Utilization", "Stale / Offline Units", "Active Alerts"]
+        values = {}
+        for name in kpi_names:
+            try:
+                values[name] = self.get_kpi_card_value(name)
+            except Exception:
+                values[name] = ""
+        return values
+
+    def kpi_cards_visible(self) -> bool:
+        """Check if KPI cards section is visible on the generated report page."""
+        articles = self.page.locator("article")
+        return articles.count() >= 3
+
+    # ─── Table Pagination Methods ───────────────────────────────────────
+
+    def change_rows_per_page(self, value: str):
+        """Change the rows-per-page selector to the given value."""
+        rows_combo = self.page.get_by_role("combobox", name="Rows per page")
+        self.wait_for_visible(rows_combo)
+        rows_combo.click()
+        option = self.page.get_by_role("option", name=value, exact=True)
+        self.wait_for_visible(option)
+        option.click()
+        self.wait_for_loading_to_finish()
+
+    def get_current_rows_per_page(self) -> str:
+        """Get the currently selected rows-per-page value."""
+        rows_combo = self.page.get_by_role("combobox", name="Rows per page")
+        self.wait_for_visible(rows_combo)
+        return rows_combo.inner_text().strip()
+
+    def click_next_page(self):
+        """Click the Next page pagination button."""
+        btn = self.page.get_by_role("button", name="Next page")
+        self.wait_for_visible(btn)
+        btn.click()
+        self.wait_for_loading_to_finish()
+
+    def click_previous_page(self):
+        """Click the Previous page pagination button."""
+        btn = self.page.get_by_role("button", name="Previous page")
+        self.wait_for_visible(btn)
+        btn.click()
+        self.wait_for_loading_to_finish()
+
+    def click_first_page(self):
+        """Click the First page pagination button."""
+        btn = self.page.get_by_role("button", name="First page")
+        self.wait_for_visible(btn)
+        btn.click()
+        self.wait_for_loading_to_finish()
+
+    def click_last_page(self):
+        """Click the Last page pagination button."""
+        btn = self.page.get_by_role("button", name="Last page")
+        self.wait_for_visible(btn)
+        btn.click()
+        self.wait_for_loading_to_finish()
+
+    def is_next_page_enabled(self) -> bool:
+        """Check if Next page button is enabled."""
+        return self.page.get_by_role("button", name="Next page").is_enabled()
+
+    def is_previous_page_enabled(self) -> bool:
+        """Check if Previous page button is enabled."""
+        return self.page.get_by_role("button", name="Previous page").is_enabled()
+
+    def get_pagination_info(self) -> str:
+        """Get pagination text like '1 – 10 of 36'."""
+        body = self.visible_text()
+        match = re.search(r"(\d+)\s*[–-]\s*(\d+)\s+of\s+(\d+)", body)
+        return match.group(0) if match else ""
+
+    def get_pagination_total(self) -> int:
+        """Extract total row count from pagination info."""
+        info = self.get_pagination_info()
+        match = re.search(r"of\s+(\d+)", info)
+        return int(match.group(1)) if match else 0
+
+    # ─── Table Search & Sort Methods ────────────────────────────────────
+
+    def search_in_report_table(self, query: str):
+        """Type a search query in the report table searchbox."""
+        searchbox = self.page.get_by_role("searchbox", name="Search report")
+        self.wait_for_visible(searchbox)
+        searchbox.fill(query)
+        self.wait_for_loading_to_finish()
+
+    def clear_report_table_search(self):
+        """Clear the report table searchbox."""
+        searchbox = self.page.get_by_role("searchbox", name="Search report")
+        self.wait_for_visible(searchbox)
+        searchbox.fill("")
+        self.wait_for_loading_to_finish()
+
+    def get_table_column_headers(self) -> list[str]:
+        """Get all visible column headers from the report results table."""
+        if not self.has_results_table():
+            return []
+        headers = self.result_table.last.locator("thead th, thead td")
+        names = []
+        for i in range(headers.count()):
+            text = headers.nth(i).inner_text().strip()
+            if text:
+                names.append(text)
+        return names
+
+    def sort_table_by_column(self, column_name: str):
+        """Click a column header to sort by that column."""
+        header = self.result_table.last.locator("thead").get_by_text(column_name, exact=True).first
+        self.wait_for_visible(header)
+        header.click()
+        self.wait_for_loading_to_finish()
+
+    def get_table_cell_values(self, column_index: int, max_rows: int = 10) -> list[str]:
+        """Get cell values from a specific column index (0-based) for the first max_rows rows."""
+        if not self.has_results_table():
+            return []
+        rows = self.result_table.last.locator("tbody tr")
+        values = []
+        count = min(rows.count(), max_rows)
+        for i in range(count):
+            cells = rows.nth(i).locator("td")
+            if cells.count() > column_index:
+                values.append(cells.nth(column_index).inner_text().strip())
+        return values
+
+    # ─── Export Methods ─────────────────────────────────────────────────
+
+    def export_report_to(self, format_name: str):
+        """Click one of the export buttons: Excel, CSV, PDF."""
+        btn = self.page.get_by_role("button", name=re.compile(rf"Export report to {format_name}", re.I))
+        self.wait_for_visible(btn)
+        btn.click()
+        self.wait_for_loading_to_finish()
+
+    def print_report_table(self):
+        """Click the Print report table button."""
+        btn = self.page.get_by_role("button", name="Print report table")
+        self.wait_for_visible(btn)
+        btn.click()
+
+    def copy_report_table(self):
+        """Click the Copy report table button."""
+        btn = self.page.get_by_role("button", name="Copy report table")
+        self.wait_for_visible(btn)
+        btn.click()
+
+    def export_buttons_visible(self) -> list[str]:
+        """Return names of visible export buttons."""
+        export_names = ["Excel", "CSV", "PDF"]
+        visible = []
+        for name in export_names:
+            btn = self.page.get_by_role("button", name=re.compile(rf"Export report to {name}", re.I))
+            if btn.count() > 0 and btn.first.is_visible():
+                visible.append(name)
+        return visible
+
+    # ─── Downloads Page Methods ─────────────────────────────────────────
+
+    def open_downloads_page(self):
+        """Navigate to the Downloads page (/profile/downloads)."""
+        self.page.goto("/profile/downloads")
+        self.expect_path("/profile/downloads")
+        self.wait_for_visible(self.page.get_by_text("Downloads", exact=True).first)
+        self.wait_for_loading_to_finish()
+
+    def get_download_entries(self) -> list[dict[str, str]]:
+        """Get all download entries from the Downloads table."""
+        downloads_table = self.page.get_by_role("table")
+        if downloads_table.count() == 0:
+            return []
+        self.wait_for_visible(downloads_table.first)
+        rows = downloads_table.first.locator("tbody tr")
+        entries = []
+        for i in range(rows.count()):
+            cells = rows.nth(i).locator("td")
+            if cells.count() >= 5:
+                entry = {
+                    "index": cells.nth(0).inner_text().strip(),
+                    "report_name": cells.nth(1).inner_text().strip(),
+                    "requested_on": cells.nth(2).inner_text().strip(),
+                    "duration": cells.nth(3).inner_text().strip(),
+                    "status": cells.nth(4).inner_text().strip(),
+                }
+                download_link = cells.nth(5).locator("a") if cells.count() > 5 else None
+                if download_link and download_link.count() > 0:
+                    entry["download_url"] = download_link.first.get_attribute("href") or ""
+                entries.append(entry)
+        return entries
+
+    def download_entry_count(self) -> int:
+        """Get number of download entries."""
+        return len(self.get_download_entries())
+
+    def latest_download_status(self) -> str:
+        """Get the status of the most recent download entry."""
+        entries = self.get_download_entries()
+        return entries[0]["status"] if entries else ""
+
+    # ─── Custom Report Dialog Methods ───────────────────────────────────
+
+    def custom_dialog_has_steps(self) -> bool:
+        """Check if the custom report dialog has General, Components, Settings steps."""
+        return self.contains_texts(["General", "Components", "Settings"])
+
+    def fill_custom_report_general(self, name: str, description: str):
+        """Fill the General step of custom report creation."""
+        name_input = self.page.get_by_role("textbox", name="Template name")
+        self.wait_for_visible(name_input)
+        name_input.fill(name)
+        desc_input = self.page.get_by_role("textbox", name="Description")
+        self.wait_for_visible(desc_input)
+        desc_input.fill(description)
+
+    def click_custom_continue(self):
+        """Click Continue in the custom report dialog."""
+        btn = self.page.get_by_role("button", name=re.compile(r"Continue", re.I)).last
+        self.wait_for_visible(btn)
+        btn.click()
+        self.wait_for_loading_to_finish()
+
+    # ─── Schedule Report Validation Methods ─────────────────────────────
+
+    def schedule_form_has_required_fields(self) -> bool:
+        """Verify the schedule report form has all required fields."""
+        return self.contains_texts([
+            "Select Report Type", "Select Vehicles",
+            "Select Frequency", "Schedule Till", "Schedule Time",
+            "Email Recipients", "Email 1"
+        ])
+
+    def schedule_frequency_options(self) -> list[str]:
+        """Get available frequency options from the schedule form."""
+        return self._option_names_for_combobox("Select Frequency")
+
+    def schedule_report_type_options(self) -> list[str]:
+        """Get available report type options from the schedule form."""
+        return self._option_names_for_combobox("Select Report Type")
+
+    # ─── Column Configuration Methods ─────────────────────────────────────────
+
+    def _column_checkbox(self, column_name):
+        return self.page.get_by_role("checkbox", name=column_name)
+
+    def toggle_report_column(self, column_name, check=None):
+        checkbox = self._column_checkbox(column_name)
+        self.wait_for_visible(checkbox)
+        if check is None:
+            checkbox.click()
+        elif check and not checkbox.is_checked():
+            checkbox.click()
+        elif check is False and checkbox.is_checked():
+            checkbox.click()
+        self.wait_for_loading_to_finish()
+
+    def is_column_checkbox_disabled(self, column_name):
+        checkbox = self._column_checkbox(column_name)
+        try:
+            self.wait_for_visible(checkbox, timeout=5000)
+            return checkbox.is_disabled()
+        except Exception:
+            return False
+
+    def is_column_checkbox_checked(self, column_name):
+        checkbox = self._column_checkbox(column_name)
+        try:
+            self.wait_for_visible(checkbox, timeout=5000)
+            return checkbox.is_checked()
+        except Exception:
+            return False
+
+    def get_available_column_checkboxes(self):
+        checkboxes = self.page.get_by_role("checkbox")
+        names = []
+        for i in range(checkboxes.count()):
+            cb = checkboxes.nth(i)
+            if cb.is_visible():
+                label = cb.get_attribute("aria-label") or cb.inner_text()
+                if label:
+                    names.append(label.strip())
+        return names
+
+    def uncheck_all_optional_columns(self):
+        unchecked = []
+        checkboxes = self.page.get_by_role("checkbox")
+        count = checkboxes.count()
+        for i in range(count):
+            cb = checkboxes.nth(i)
+            if not cb.is_visible():
+                continue
+            if cb.is_disabled():
+                continue
+            if cb.is_checked():
+                label = cb.get_attribute("aria-label") or ""
+                cb.click()
+                self.wait_for_loading_to_finish()
+                unchecked.append(label.strip())
+        return unchecked

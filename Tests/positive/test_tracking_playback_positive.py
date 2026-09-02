@@ -25,7 +25,9 @@ def login_and_open_tracking(page, config, credentials):
 def test_trk_play_003_select_valid_vehicle(page, config, credentials):
     """TRK-PLAY-003: Positive - Select a valid vehicle for playback."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    expect(tracking_page.playback_vehicle_select).to_be_visible()
+    selected_vehicle = tracking_page.select_first_available_playback_vehicle()
+    assert selected_vehicle is not None
+    expect(tracking_page.load_playback_btn).to_be_enabled()
 
 
 @pytest.mark.positive
@@ -33,16 +35,20 @@ def test_trk_play_003_select_valid_vehicle(page, config, credentials):
 def test_trk_play_008_009_010_select_valid_date_ranges(page, config, credentials, range_data):
     """TRK-PLAY-008, 009, 010: Positive - Select valid same-day and multi-day date ranges."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    expect(tracking_page.from_date_input).to_be_visible()
-    expect(tracking_page.to_date_input).to_be_visible()
+    tracking_page.from_date_input.fill(range_data["from_date"])
+    tracking_page.to_date_input.fill(range_data["to_date"])
+    expect(tracking_page.from_date_input).to_have_value(range_data["from_date"])
+    expect(tracking_page.to_date_input).to_have_value(range_data["to_date"])
 
 
 @pytest.mark.positive
 def test_trk_play_018_023_select_valid_time_ranges(page, config, credentials):
     """TRK-PLAY-018, 023: Positive - Select valid same-day and cross-day time ranges."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    expect(tracking_page.from_time_input).to_be_visible()
-    expect(tracking_page.to_time_input).to_be_visible()
+    tracking_page.from_time_input.fill("00:00")
+    tracking_page.to_time_input.fill("12:00")
+    expect(tracking_page.from_time_input).to_have_value("00:00")
+    expect(tracking_page.to_time_input).to_have_value("12:00")
 
 
 @pytest.mark.positive
@@ -67,7 +73,8 @@ def test_trk_play_030_031_select_overspeeding_threshold(page, config, credential
 def test_trk_play_035_load_playback_custom_color(page, config, credentials):
     """TRK-PLAY-035: Positive - Load playback after changing trail color."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    expect(tracking_page.load_playback_btn).to_be_visible()
+    vehicle_name = tracking_page.load_playback_flow()
+    assert vehicle_name is not None
 
 
 @pytest.mark.positive
@@ -83,4 +90,5 @@ def test_trk_play_042_043_apply_more_filters(page, config, credentials):
 def test_trk_play_047_048_049_050_load_playback_variations(page, config, credentials):
     """TRK-PLAY-047 to 050: Positive - Load valid same-day, multi-day, filtered, and styled playback."""
     tracking_page = login_and_open_tracking(page, config, credentials)
-    expect(tracking_page.load_playback_btn).to_be_visible()
+    vehicle_name = tracking_page.load_playback_flow()
+    assert vehicle_name is not None
