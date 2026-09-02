@@ -1,41 +1,41 @@
-import re
 import pytest
 from playwright.sync_api import expect
 
-from Pages.login_page import LoginPage
-from Pages.tracking_page import TrackingPage
+
+@pytest.mark.negative
+def test_trk_live_008_exceed_vehicle_selection_limit(tracking):
+    """TRK-LIVE-008: Negative - Attempt to select a vehicle beyond the app-reported max limit."""
+    available = tracking.available_vehicle_count()
+    _, max_allowed = tracking.read_selected_vehicles_counter()
+    if not max_allowed or available <= max_allowed:
+        pytest.skip("Not enough vehicles on this account to exceed the selection limit")
+
+    tracking.select_n_vehicles(max_allowed)
+    selected_at_max, reported_max = tracking.read_selected_vehicles_counter()
+    assert selected_at_max == max_allowed == reported_max
+
+    tracking.attempt_select_one_more_vehicle(already_selected=max_allowed)
+    selected_after_attempt, _ = tracking.read_selected_vehicles_counter()
+    assert selected_after_attempt == max_allowed, "Selecting beyond the reported max must be rejected"
 
 
-def login_and_open_tracking(page, config, credentials):
-    """Helper to log in and open /tracking module."""
-    login_page = LoginPage(page, config)
+@pytest.mark.negative
+@pytest.mark.allow_server_error
+def test_trk_live_012_vehicle_list_api_failure(authenticated_page):
+    """TRK-LIVE-012: Negative - Vehicle list API fails; no false available-selection state."""
+    from Pages.tracking_page import TrackingPage
+
+    page = authenticated_page
+    page.route("**/api/**", lambda route: route.fulfill(status=500, body="Internal Server Error"))
+    page.route("**/trackofy_api_new/**", lambda route: route.fulfill(status=500, body="Internal Server Error"))
     tracking_page = TrackingPage(page)
-
-    login_page.open()
-    login_page.login(credentials["username"], credentials["password"])
-    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
-
-    tracking_page.open_tracking_page()
-    tracking_page.switch_to_live_tracking()
-    return tracking_page
-
-
-@pytest.mark.negative
-def test_trk_live_008_exceed_vehicle_selection_limit(page, config, credentials):
-    """TRK-LIVE-008: Negative - Attempt to select vehicles beyond supported limit of 4."""
-    tracking_page = login_and_open_tracking(page, config, credentials)
-    expect(tracking_page.live_vehicle_select).to_be_visible()
-
-
-@pytest.mark.negative
-def test_trk_live_012_031_intercept_live_api_failure(page, config, credentials):
-    """TRK-LIVE-012, 031: Negative - Intercept Live Tracking API failure and assert feedback."""
-    tracking_page = login_and_open_tracking(page, config, credentials)
-    expect(tracking_page.live_vehicle_select).to_be_visible()
-
-
-@pytest.mark.negative
-def test_trk_live_022_start_tracking_without_vehicle(page, config, credentials):
-    """TRK-LIVE-022: Negative - Click Start Tracking without selecting a vehicle."""
-    tracking_page = login_and_open_tracking(page, config, credentials)
+    tracking_page.page.goto("/tracking")
+    page.wait_for_timeout(2500)
+    # With the vehicle-data API down, Start Tracking must not be falsely usable.
     expect(tracking_page.start_tracking_btn).to_be_disabled()
+
+
+@pytest.mark.negative
+def test_trk_live_022_start_tracking_without_vehicle(tracking):
+    """TRK-LIVE-022: Negative - Click Start Tracking without selecting a vehicle."""
+    expect(tracking.start_tracking_btn).to_be_disabled()

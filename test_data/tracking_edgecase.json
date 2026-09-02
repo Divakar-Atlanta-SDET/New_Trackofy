@@ -1,14 +1,4 @@
 {
-  "boundary_trail_thickness": [
-    {
-      "value": "1",
-      "description": "Minimum trail thickness"
-    },
-    {
-      "value": "10",
-      "description": "Maximum trail thickness"
-    }
-  ],
   "boundary_times": [
     {
       "from_time": "00:00",

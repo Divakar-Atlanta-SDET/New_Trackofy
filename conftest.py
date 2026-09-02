@@ -11,6 +11,7 @@ from config.settings import load_config
 from Pages.login_page import LoginPage
 from Pages.unit_page import UnitPage
 from Pages.unit_settings_page import UnitSettingsPage
+from Pages.tracking_page import TrackingPage
 
 
 load_dotenv()
@@ -211,6 +212,19 @@ def unit_settings(authenticated_page):
     unit_page.open_unit_settings_by_index(0)
     unit_settings_page.wait_for_modal_open()
     return unit_page, unit_settings_page
+
+
+@pytest.fixture
+def tracking(authenticated_page):
+    """Log in and open the Tracking module, defaulted to the Live Tracking tab.
+
+    Replaces the per-file `login_and_open_tracking(page, config, credentials)`
+    helper duplicated across every Tracking test file.
+    """
+    tracking_page = TrackingPage(authenticated_page)
+    tracking_page.open_tracking_page()
+    tracking_page.switch_to_live_tracking()
+    return tracking_page
 
 
 @pytest.fixture

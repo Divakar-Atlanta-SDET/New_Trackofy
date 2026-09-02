@@ -67,6 +67,38 @@ test suite itself and is not listed here. Reproduction is against
   concurrency/contention issue when the same unit's data is requested by
   multiple sessions close together, not just plain flakiness.
 
+## Tracking Module
+
+### 6. Playback From/To Date: entered value is silently transposed (day/month swapped)
+- **Test**: `Tests/positive/test_tracking_playback_positive.py` (see `_fmt_input`/`_fmt_display`
+  helpers, needed to work around this in the test suite itself)
+- **Symptom**: The From Date / To Date fields **display** dates as
+  `DD/MM/YYYY` (confirmed: the default, untouched value for "today"
+  rendered as `03/09/2026` for 3 September 2026). But any value a user
+  enters — whether typed with real keystrokes or set programmatically — is
+  **parsed as `MM/DD/YYYY`**. Typing "03/09/2026" intending 3 September
+  gets silently reinterpreted as 9 March and redisplayed as `09/03/2026`.
+  Reproduced identically with real keyboard input (`press_sequentially`),
+  ruling out a test-tooling artifact.
+- **Impact**: Whenever the intended day is ≤ 12, a user can silently select
+  the wrong date for playback with no error or warning — day and month get
+  swapped. (When the intended day is > 12, the mismatch would presumably
+  surface as a parse/validation failure instead, which is a separate,
+  better-behaved case.)
+
+### 7. "Playback View" preset doesn't reliably return to the Playback tab
+- **Test**: `Tests/edgecase/test_tracking_state_edgecase.py::test_trk_state_004_switch_preset_while_playback_active`
+- **Symptom**: From a fresh page load, clicking the "Playback View" preset
+  button correctly opens the bottom panel on the Playback Tracking tab
+  (confirmed via `TRK-NAV-003`). But once playback data has actually been
+  loaded and the user then collapses the panel (Map Focus) and reopens it
+  via "Playback View" again, the panel comes back showing the **Live
+  Tracking** tab instead, even though the playback player controls (Play/
+  Restart/speed selector) are still visible on the map above it.
+- **Impact**: Inconsistent, state-dependent behavior for the same button —
+  confusing for a user who just wants to get back to their loaded playback
+  results after toggling the panel.
+
 ---
 
 ## Test Suite Notes (not application bugs, for context)

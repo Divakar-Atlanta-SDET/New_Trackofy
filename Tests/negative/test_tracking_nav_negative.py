@@ -1,20 +1,19 @@
-import re
 import pytest
 from playwright.sync_api import expect
 
-from Pages.login_page import LoginPage
-from Pages.tracking_page import TrackingPage
-
 
 @pytest.mark.negative
-def test_trk_nav_009_initial_tracking_load_failure(page, config, credentials):
-    """TRK-NAV-009: Negative - Intercept initial tracking config API failure."""
-    login_page = LoginPage(page, config)
+@pytest.mark.allow_server_error
+def test_trk_nav_009_initial_tracking_load_failure(authenticated_page):
+    """TRK-NAV-009: Negative - Intercept initial tracking config API failure; no false tracking state."""
+    from Pages.tracking_page import TrackingPage
+
+    page = authenticated_page
+    page.route("**/api/**", lambda route: route.fulfill(status=500, body="Internal Server Error"))
     tracking_page = TrackingPage(page)
-
-    login_page.open()
-    login_page.login(credentials["username"], credentials["password"])
-    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
-
-    tracking_page.open_tracking_page()
-    expect(tracking_page.map_container).to_be_visible()
+    tracking_page.page.goto("/tracking")
+    page.wait_for_timeout(2500)
+    # The page must not silently claim a working tracking state after every API call fails.
+    assert not tracking_page.start_tracking_btn.is_enabled() or tracking_page.contains_any_text(
+        ["error", "failed", "unable", "something went wrong", "retry"]
+    )

@@ -1,21 +1,17 @@
-import re
 import pytest
 from playwright.sync_api import expect
 
-from Pages.login_page import LoginPage
-from Pages.tracking_page import TrackingPage
-
 
 @pytest.mark.edgecase
-def test_trk_nav_010_viewport_resize(page, config, credentials):
-    """TRK-NAV-010: Edge Case - Change browser viewport after opening Tracking."""
-    login_page = LoginPage(page, config)
-    tracking_page = TrackingPage(page)
+def test_trk_nav_010_viewport_resize(tracking):
+    """TRK-NAV-010: Edge Case - Change browser viewport after opening Tracking; controls stay usable."""
+    tracking.page.set_viewport_size({"width": 1024, "height": 768})
+    tracking.wait_for_loading_to_finish()
+    expect(tracking.map_region).to_be_visible()
+    expect(tracking.live_tracking_tab).to_be_visible()
+    expect(tracking.start_tracking_btn).to_be_visible()
 
-    login_page.open()
-    login_page.login(credentials["username"], credentials["password"])
-    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
-
-    tracking_page.open_tracking_page()
-    page.set_viewport_size({"width": 1024, "height": 768})
-    expect(tracking_page.map_container).to_be_visible()
+    tracking.page.set_viewport_size({"width": 390, "height": 844})
+    tracking.wait_for_loading_to_finish()
+    expect(tracking.map_region).to_be_visible()
+    expect(tracking.live_tracking_tab).to_be_visible()
