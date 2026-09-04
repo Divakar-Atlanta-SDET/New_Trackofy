@@ -1,5 +1,6 @@
 import re
 import pytest
+from config.config import REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -78,7 +79,7 @@ def test_rep_dl_132_133_download_only_report_flow(page, config, credentials):
     if not reports_page.is_standard_report_available("Work Hour"):
         pytest.skip("Work Hour report not available")
     reports_page.open_standard_report_form("Work Hour")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.click_fetch()
     page.wait_for_timeout(5000)
     # Check downloads page for new entry

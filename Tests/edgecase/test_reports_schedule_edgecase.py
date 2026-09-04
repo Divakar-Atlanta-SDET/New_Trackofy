@@ -19,14 +19,46 @@ def login_and_open_reports(page, config, credentials):
 @pytest.mark.edgecase
 @pytest.mark.reports
 @pytest.mark.parametrize("time_data", load_test_data("reports_edgecase.json", "schedule_boundary_times"))
-def test_rep_sch_014_boundary_schedule_times(page, config, credentials, time_data):
-    """REP-SCH-014: Schedule at boundary times (midnight, end of day)."""
+def test_rep_sch_boundary_schedule_times_accepted(page, config, credentials, time_data):
+    """Boundary Schedule Time values (00:00, 23:59) don't block submission on
+    their own. Not REP-SCH-014 (that ID is same-day custom *date* range, see
+    test_rep_sch_014_same_start_end_custom_date below) -- this test previously
+    claimed that ID by mistake, and never asserted anything at all."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_new_schedule_report_modal()
-    time_input = reports_page.page.get_by_role("combobox", name="Schedule Time")
-    reports_page.wait_for_visible(time_input)
-    time_input.fill(time_data["schedule_time"])
-    # Should accept boundary times without error
+    reports_page.fill_schedule_report_form(
+        report_scope="Standard Report",
+        report_name="Fleet Summary",
+        frequency="Daily",
+        schedule_time=time_data["schedule_time"],
+        email_1="test@example.com",
+        schedule_till_day_name="15",  # "Schedule Till" is required for Daily frequency
+    )
+    assert reports_page.schedule_submit_enabled(), (
+        f"Boundary schedule time '{time_data['schedule_time']}' should not block submission"
+    )
+    reports_page.close_dialog()
+
+
+@pytest.mark.edgecase
+@pytest.mark.reports
+def test_rep_sch_014_same_start_end_custom_date(page, config, credentials):
+    """REP-SCH-014: A same-day Custom schedule range follows defined behavior --
+    confirmed live this account accepts it (a single-day custom range is valid)."""
+    reports_page = login_and_open_reports(page, config, credentials)
+    reports_page.open_new_schedule_report_modal()
+    reports_page.fill_schedule_report_form(
+        report_scope="Standard Report",
+        report_name="Fleet Summary",
+        frequency="Custom",
+        schedule_time="08:00",
+        email_1="test@example.com",
+        from_date="01/09/2026",
+        to_date="01/09/2026",
+    )
+    assert reports_page.schedule_submit_enabled(), (
+        "A same-day custom schedule range should be accepted (Submit enabled)"
+    )
     reports_page.close_dialog()
 
 

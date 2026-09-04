@@ -1,5 +1,6 @@
 import re
 import pytest
+from config.config import REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -21,7 +22,7 @@ def test_rep_col_009_deselect_all_optional_columns(page, config, credentials):
     """REP-COL-009: Edge Case - Deselect all optional columns and generate report."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.uncheck_all_optional_columns()
     reports_page.click_fetch()
     reports_page.wait_for_table()

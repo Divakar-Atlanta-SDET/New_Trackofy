@@ -1,108 +1,85 @@
 {
   "standard_report_categories": [
-    {"category": "Fleet Performance", "report_count": 7, "description": "Fleet Performance category"},
-    {"category": "Trips & Movement", "report_count": 4, "description": "Trips & Movement category"},
-    {"category": "Driver & Safety", "report_count": 4, "description": "Driver & Safety category"},
-    {"category": "BMS & Sensors", "report_count": 6, "description": "BMS & Sensors category"}
-  ],
-  "standard_reports_with_config": [
     {
-      "report_name": "Fleet Summary",
-      "expected_fields": ["Select Vehicles", "Filter By", "Report columns"],
-      "description": "Fleet Summary configuration form fields"
+      "category": "Fleet Performance",
+      "report_count": 7,
+      "description": "Fleet Performance category"
     },
     {
-      "report_name": "Vehicle Summary",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date"],
-      "description": "Vehicle Summary configuration form fields"
+      "category": "Trips & Movement",
+      "report_count": 4,
+      "description": "Trips & Movement category"
     },
     {
-      "report_name": "Work Hour",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date", "From Time", "To Time"],
-      "description": "Work Hour configuration form fields"
+      "category": "Driver & Safety",
+      "report_count": 4,
+      "description": "Driver & Safety category"
     },
     {
-      "report_name": "Engine Hour",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date"],
-      "description": "Engine Hour configuration form fields"
-    },
-    {
-      "report_name": "Running Summary",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date"],
-      "description": "Running Summary configuration form fields"
-    },
-    {
-      "report_name": "Maxspeed Chart",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date"],
-      "description": "Maxspeed Chart configuration form fields"
-    },
-    {
-      "report_name": "Stoppage Summary",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date"],
-      "description": "Stoppage Summary configuration form fields"
-    },
-    {
-      "report_name": "Trip Report",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date"],
-      "description": "Trip Report configuration form fields"
-    },
-    {
-      "report_name": "Distance Chart",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date", "Minimum Distance", "Maximum Distance"],
-      "description": "Distance Chart configuration form fields"
-    },
-    {
-      "report_name": "Cumulative Distance",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date"],
-      "description": "Cumulative Distance configuration form fields"
-    },
-    {
-      "report_name": "Idle",
-      "expected_fields": ["Select Vehicles", "Time Interval Hour", "Time Interval Minute"],
-      "description": "Idle report configuration form fields"
-    },
-    {
-      "report_name": "Alert",
-      "expected_fields": ["Select Vehicles", "Start Date", "End Date", "Alert Name"],
-      "description": "Alert report configuration form fields"
-    },
-    {
-      "report_name": "Driver Report",
-      "expected_fields": ["Select Driver", "Start Date", "End Date"],
-      "description": "Driver Report configuration form fields"
-    },
-    {
-      "report_name": "Driver Performance",
-      "expected_fields": ["Start Date", "End Date"],
-      "description": "Driver Performance configuration form fields"
+      "category": "BMS & Sensors",
+      "report_count": 6,
+      "description": "BMS & Sensors category"
     }
   ],
   "report_tabs": [
-    {"tab_name": "Standard", "expected_path": "/reports/standard", "description": "Standard tab navigation"},
-    {"tab_name": "Custom", "expected_path": "/reports/custom", "description": "Custom tab navigation"},
-    {"tab_name": "Schedule", "expected_path": "/reports/scheduled", "description": "Schedule tab navigation"}
+    {
+      "tab_name": "Standard",
+      "expected_path": "/reports/standard",
+      "description": "Standard tab navigation"
+    },
+    {
+      "tab_name": "Custom",
+      "expected_path": "/reports/custom",
+      "description": "Custom tab navigation"
+    },
+    {
+      "tab_name": "Schedule",
+      "expected_path": "/reports/scheduled",
+      "description": "Schedule tab navigation"
+    }
   ],
   "rows_per_page_options": [
-    {"value": "10", "description": "10 rows per page"},
-    {"value": "25", "description": "25 rows per page"},
-    {"value": "50", "description": "50 rows per page"},
-    {"value": "100", "description": "100 rows per page"}
+    {
+      "value": "10",
+      "description": "10 rows per page"
+    },
+    {
+      "value": "25",
+      "description": "25 rows per page"
+    },
+    {
+      "value": "50",
+      "description": "50 rows per page"
+    },
+    {
+      "value": "100",
+      "description": "100 rows per page"
+    }
   ],
   "kpi_card_names": [
-    {"name": "Total Units", "description": "Total Units KPI card"},
-    {"name": "Ignition On", "description": "Ignition On KPI card"},
-    {"name": "Moving Units", "description": "Moving Units KPI card"},
-    {"name": "Avg Utilization", "description": "Avg Utilization KPI card"},
-    {"name": "Stale / Offline Units", "description": "Stale / Offline Units KPI card"},
-    {"name": "Active Alerts", "description": "Active Alerts KPI card"}
-  ],
-  "schedule_frequencies": [
-    {"frequency": "Daily", "description": "Daily frequency option"},
-    {"frequency": "Weekly", "description": "Weekly frequency option"},
-    {"frequency": "Monthly", "description": "Monthly frequency option"}
-  ],
-  "download_only_reports": [
-    {"report_name": "Work Hour", "description": "Work Hour is download-only"},
-    {"report_name": "Idle", "description": "Idle may be download-only"}
+    {
+      "name": "Total Units",
+      "description": "Total Units KPI card"
+    },
+    {
+      "name": "Ignition On",
+      "description": "Ignition On KPI card"
+    },
+    {
+      "name": "Moving Units",
+      "description": "Moving Units KPI card"
+    },
+    {
+      "name": "Avg Utilization",
+      "description": "Avg Utilization KPI card"
+    },
+    {
+      "name": "Stale / Offline Units",
+      "description": "Stale / Offline Units KPI card"
+    },
+    {
+      "name": "Active Alerts",
+      "description": "Active Alerts KPI card"
+    }
   ]
 }

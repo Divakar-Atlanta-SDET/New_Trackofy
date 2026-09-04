@@ -1,0 +1,250 @@
+﻿TC_ID,Module,Area,Test Scenario,Preconditions,Steps,Test Data,Expected Result,Priority,Test Type
+ADM-001,Administrator,Navigation,Open Administrator from top navigation,Logged-in administrator,Click Administrator,N/A,Administrator User Management page opens,High,Functional
+ADM-002,Administrator,Navigation,Verify User Management heading,Administrator page open,Observe page heading,N/A,User Management heading and user count are displayed,High,Functional
+ADM-003,Administrator,Navigation,Verify Add User button,Administrator page open,Observe top-right action,N/A,Add User button is visible and usable,High,Functional
+ADM-004,Administrator,User List,Verify table columns,Administrator page open,Inspect table header,N/A,"User Name, Password, Status, Created At, Permissions, Edit and Delete columns are displayed",High,Functional
+ADM-005,Administrator,User List,Verify existing user record,At least one user exists,Inspect record,Existing user,Correct user data is displayed,High,Functional
+ADM-006,Administrator,User List,Verify password is masked,User exists,Inspect password cell,N/A,Password is not exposed in plain text,High,Functional
+ADM-007,Administrator,User List,Verify password reveal control,User exists,Click password visibility control,N/A,Password visibility changes only when authorized control is used,High,Functional
+ADM-008,Administrator,Search,Search exact username,Multiple users exist,Enter exact username,Valid username,Matching user is displayed,High,Functional
+ADM-009,Administrator,Search,Search partial username,Multiple users exist,Enter partial value,Partial username,Matching records are displayed,High,Functional
+ADM-010,Administrator,Search,Search non-existing username,Users exist,Enter unmatched value,xyz_nonexistent,No matching records are displayed,High,Functional
+ADM-011,Administrator,Search,Clear search,Search applied,Clear search field,N/A,Full user list is restored,High,Functional
+ADM-012,Administrator,Search,Search with leading/trailing spaces,Users exist,Enter value with spaces, user01 ,Search handles spaces according to application rules without incorrect matches,High,Functional
+ADM-013,Administrator,Search,Search special characters,Users exist,Enter special characters,@#$%,No UI error or unintended record exposure occurs,High,Functional
+ADM-014,Administrator,Pagination,Change rows per page,More records than default page size,Change Rows value,10/25/50,Requested number of rows is displayed,High,Functional
+ADM-015,Administrator,Pagination,Navigate next page,Multiple pages,Click next,N/A,Next page loads correct records,High,Functional
+ADM-016,Administrator,Pagination,Navigate previous page,On page 2+,Click previous,N/A,Previous page loads correct records,High,Functional
+ADM-017,Administrator,Pagination,Navigate first page,On later page,Click first,N/A,First page is displayed,High,Functional
+ADM-018,Administrator,Pagination,Navigate last page,Multiple pages,Click last,N/A,Last page is displayed,High,Functional
+ADM-019,Administrator,Pagination,Pagination after search,Multiple records,Search then paginate,Search term,Pagination reflects filtered result set,High,Functional
+ADM-020,Administrator,Export,Export user data,Users exist,Use each available export action,N/A,Export contains the intended user data without unauthorized secrets,High,Functional
+ADM-021,Administrator,UI,Verify feedback widget does not obstruct actions,Administrator page open,Inspect right side,N/A,Feedback widget does not block core controls,High,Functional
+ADM-022,Administrator,Create User,Open Create User wizard,Administrator page open,Click Add User,N/A,Four-step Create User wizard opens,High,Functional
+ADM-023,Administrator,Create User - Step 1,Verify four-step progress indicator,Wizard open,Inspect left progress panel,N/A,"Personal Info, Menu access, General permission and Unit permission are shown",High,Functional
+ADM-024,Administrator,Step 1,Username required validation,Wizard open,Leave username blank; complete other required fields; continue,Blank username,Validation prevents progression/submission and identifies username,High,Functional
+ADM-025,Administrator,Step 1,Valid username accepted,Wizard open,Enter valid unique username,subuser01,Username is accepted,High,Functional
+ADM-026,Administrator,Step 1,Duplicate username rejected,Existing username exists,Enter existing username and continue,Existing username,Duplicate username is rejected,High,Functional
+ADM-027,Administrator,Step 1,Username boundary validation,Wizard open,Test minimum and maximum supported lengths,Boundary values,Application enforces configured length rules,High,Functional
+ADM-028,Administrator,Step 1,Username whitespace handling,Wizard open,Enter leading/trailing spaces, user01 ,Spaces are handled consistently and do not create ambiguous usernames,High,Functional
+ADM-029,Administrator,Step 1,Username special character validation,Wizard open,Enter special-character username,user@#$,Application accepts/rejects according to defined username rules without UI error,High,Functional
+ADM-030,Administrator,Step 1,Password required validation,Wizard open,Leave password blank and continue,Blank,Validation prevents continuation,High,Functional
+ADM-031,Administrator,Step 1,Confirm password required validation,Wizard open,Leave confirmation blank,Blank,Validation prevents continuation,High,Functional
+ADM-032,Administrator,Step 1,Matching password accepted,Wizard open,Enter identical password and confirmation,ValidPassword123!,Credentials pass validation,High,Functional
+ADM-033,Administrator,Step 1,Mismatched password rejected,Wizard open,Enter different password and confirmation,Password123! / Password456!,Mismatch validation is shown,High,Functional
+ADM-034,Administrator,Step 1,Password masking,Wizard open,Inspect password fields,Valid password,Password values are masked,High,Functional
+ADM-035,Administrator,Step 1,Password strength/boundary rules,Wizard open,Try weak and boundary values,Weak/long passwords,Configured password policy is enforced,High,Functional
+ADM-036,Administrator,Step 1,Select one vehicle,Vehicles exist,Open vehicle selector; select one,Vehicle A,Vehicle A is selected,High,Functional
+ADM-037,Administrator,Step 1,Select multiple vehicles,Multiple vehicles exist,Select multiple vehicles,"Vehicle A, Vehicle B",All selected vehicles are retained,High,Functional
+ADM-038,Administrator,Step 1,Remove selected vehicle,Vehicle selected,Remove selection,Vehicle A,Vehicle is removed,High,Functional
+ADM-039,Administrator,Step 1,Verify selected vehicles persist,Vehicle selected,Go to Step 2 then Back,Vehicle A,Vehicle selection remains,High,Functional
+ADM-040,Administrator,Step 1,Arm/Disarm Yes selection,Wizard open,Select Yes,Yes,Yes remains selected,High,Functional
+ADM-041,Administrator,Step 1,Arm/Disarm No selection,Wizard open,Select No,No,No remains selected,High,Functional
+ADM-042,Administrator,Step 1,Arm/Disarm selection persists,Selection made,Move through wizard and return,Yes/No,Selected value remains unchanged,High,Functional
+ADM-043,Administrator,Step 1,Arm/Disarm authorization is enforced,Created user with No,Login as sub-user and inspect command capability,Arm/Disarm=No,User cannot execute Arm/Disarm,High,Functional
+ADM-044,Administrator,Step 1,Arm/Disarm authorization granted,Created user with Yes,Login as sub-user and inspect command capability,Arm/Disarm=Yes,User can access the permitted Arm/Disarm capability for authorized units,High,Functional
+ADM-045,Administrator,Wizard Navigation,Step 1 to Step 2,Valid Step 1 data,Click Next Step,Valid data,Step 2 opens,High,Functional/State
+ADM-046,Administrator,Wizard Navigation,Step 2 to Step 3,Valid Step 2 data,Click Next Step,Selected group,Step 3 opens,High,Functional/State
+ADM-047,Administrator,Wizard Navigation,Step 3 to Step 4,Valid Step 3 data,Click Next Step,Permissions,Step 4 opens,High,Functional/State
+ADM-048,Administrator,Wizard Navigation,Step 4 Back to Step 3,Step 4 open,Click Back,N/A,Step 3 opens with selections retained,High,Functional/State
+ADM-049,Administrator,Wizard Navigation,Step 3 Back to Step 2,Step 3 open,Click Back,N/A,Step 2 opens with group retained,High,Functional/State
+ADM-050,Administrator,Wizard Navigation,Step 2 Back to Step 1,Step 2 open,Click Back,N/A,Step 1 opens with entered data retained,High,Functional/State
+ADM-051,Administrator,Wizard Navigation,Cancel from Step 1,Wizard open,Click Cancel,N/A,Wizard closes and no user is created,High,Functional/State
+ADM-052,Administrator,Wizard Navigation,Cancel from Step 3,Wizard open,Navigate to Step 3; click Cancel,N/A,Wizard closes without partial user creation,High,Functional/State
+ADM-053,Administrator,Wizard Navigation,Close wizard using X,Wizard open,Click X,N/A,Wizard closes according to application behavior without unintended creation,High,Functional/State
+ADM-054,Administrator,Wizard Navigation,Refresh during wizard,Wizard open,Refresh browser,N/A,No partial user is created; state behavior is handled safely,High,Functional/State
+ADM-055,Administrator,Wizard Navigation,Double-click Next Step,Valid data,Rapidly click Next Step twice,N/A,Only one step transition occurs and state remains consistent,High,Functional/State
+ADM-056,Administrator,Wizard Navigation,Double-click Submit,Valid final configuration,Rapidly click Submit twice,N/A,Only one user is created,High,Functional/State
+ADM-057,Administrator,Menu Access,Verify available groups list,Step 2 open,Inspect available groups,Existing groups,Available menu groups are listed,High,Functional
+ADM-058,Administrator,Menu Access,Select existing group,Existing group available,Select group,example21,Group becomes selected,High,Functional
+ADM-059,Administrator,Menu Access,Verify selected group details,Group selected,Inspect right panel,example21,Group name and assigned menus are displayed,High,Functional
+ADM-060,Administrator,Menu Access,Verify menu count,Group selected,Compare displayed count with visible configured menus,Configured group,Displayed menu count is consistent,High,Functional
+ADM-061,Administrator,Menu Access,Verify child menus,Group contains child menu,Inspect group details,Dashboard/Tabular,Child menu structure is displayed correctly,High,Functional
+ADM-062,Administrator,Menu Access,Change selected group,Group selected,Select another group,Full control,New group becomes selected and details update,High,Functional
+ADM-063,Administrator,Menu Access,Group selection persists,Group selected,Go Step 3; Back to Step 2,Selected group,Same group remains selected,High,Functional
+ADM-064,Administrator,Menu Access,No unintended group assignment,Multiple groups exist,Select one group and complete wizard,Group A,Only intended group is assigned,High,Functional
+ADM-065,Administrator,Menu Access,Create new group entry point,Step 2 open,Click Add Group,N/A,New-group workflow opens,High,Functional
+ADM-066,Administrator,Menu Access,New group appears after creation,New group workflow available,Create valid group; return to group list,New group,New group is available for selection,High,Functional
+ADM-067,Administrator,Menu Access,New group duplicate handling,Existing group exists,Attempt duplicate group creation,Existing group name,Duplicate is rejected according to business rules,High,Functional
+ADM-068,Administrator,Menu Access,Menu group authorization,Created user with restricted group,Login as sub-user,Restricted group,Only assigned menus are accessible,High,Functional
+ADM-069,Administrator,Menu Access,Direct URL blocked for unassigned module,User lacks module access,Navigate directly to restricted module URL,Restricted URL,Access is denied/redirected,High,Functional
+ADM-070,Administrator,General Permissions,Expand Driver permission category,Step 3 open,Expand Driver,Driver,Driver permissions are displayed,High,Functional
+ADM-071,Administrator,General Permissions,Collapse Driver permission category,Category expanded,Collapse Driver,Driver,Driver permissions collapse without losing state,Medium,Functional
+ADM-072,Administrator,General Permissions,Select an individual Driver permission,Category expanded,Select one permission under Driver,Valid permission,Permission becomes selected,High,Functional
+ADM-073,Administrator,General Permissions,Unselect an individual Driver permission,Permission selected,Unselect one permission under Driver,Valid permission,Permission becomes unselected,High,Functional
+ADM-074,Administrator,General Permissions,Persist Driver permission selection,Permission selected,Go to Step 4 and Back,Selected permission,Driver permission selection remains,High,State
+ADM-075,Administrator,General Permissions,Enforce Driver permission,User created with permission configured,Login as sub-user and exercise relevant operation,Driver,Only granted Driver operation is available,Critical,Authorization
+ADM-076,Administrator,General Permissions,Expand Driver Management permission category,Step 3 open,Expand Driver Management,Driver Management,Driver Management permissions are displayed,High,Functional
+ADM-077,Administrator,General Permissions,Collapse Driver Management permission category,Category expanded,Collapse Driver Management,Driver Management,Driver Management permissions collapse without losing state,Medium,Functional
+ADM-078,Administrator,General Permissions,Select an individual Driver Management permission,Category expanded,Select one permission under Driver Management,Valid permission,Permission becomes selected,High,Functional
+ADM-079,Administrator,General Permissions,Unselect an individual Driver Management permission,Permission selected,Unselect one permission under Driver Management,Valid permission,Permission becomes unselected,High,Functional
+ADM-080,Administrator,General Permissions,Persist Driver Management permission selection,Permission selected,Go to Step 4 and Back,Selected permission,Driver Management permission selection remains,High,State
+ADM-081,Administrator,General Permissions,Enforce Driver Management permission,User created with permission configured,Login as sub-user and exercise relevant operation,Driver Management,Only granted Driver Management operation is available,Critical,Authorization
+ADM-082,Administrator,General Permissions,Expand Route Management permission category,Step 3 open,Expand Route Management,Route Management,Route Management permissions are displayed,High,Functional
+ADM-083,Administrator,General Permissions,Collapse Route Management permission category,Category expanded,Collapse Route Management,Route Management,Route Management permissions collapse without losing state,Medium,Functional
+ADM-084,Administrator,General Permissions,Select an individual Route Management permission,Category expanded,Select one permission under Route Management,Valid permission,Permission becomes selected,High,Functional
+ADM-085,Administrator,General Permissions,Unselect an individual Route Management permission,Permission selected,Unselect one permission under Route Management,Valid permission,Permission becomes unselected,High,Functional
+ADM-086,Administrator,General Permissions,Persist Route Management permission selection,Permission selected,Go to Step 4 and Back,Selected permission,Route Management permission selection remains,High,State
+ADM-087,Administrator,General Permissions,Enforce Route Management permission,User created with permission configured,Login as sub-user and exercise relevant operation,Route Management,Only granted Route Management operation is available,Critical,Authorization
+ADM-088,Administrator,General Permissions,Expand User permission category,Step 3 open,Expand User,User,User permissions are displayed,High,Functional
+ADM-089,Administrator,General Permissions,Collapse User permission category,Category expanded,Collapse User,User,User permissions collapse without losing state,Medium,Functional
+ADM-090,Administrator,General Permissions,Select an individual User permission,Category expanded,Select one permission under User,Valid permission,Permission becomes selected,High,Functional
+ADM-091,Administrator,General Permissions,Unselect an individual User permission,Permission selected,Unselect one permission under User,Valid permission,Permission becomes unselected,High,Functional
+ADM-092,Administrator,General Permissions,Persist User permission selection,Permission selected,Go to Step 4 and Back,Selected permission,User permission selection remains,High,State
+ADM-093,Administrator,General Permissions,Enforce User permission,User created with permission configured,Login as sub-user and exercise relevant operation,User,Only granted User operation is available,Critical,Authorization
+ADM-094,Administrator,General Permissions,Expand Sensor Configuration permission category,Step 3 open,Expand Sensor Configuration,Sensor Configuration,Sensor Configuration permissions are displayed,High,Functional
+ADM-095,Administrator,General Permissions,Collapse Sensor Configuration permission category,Category expanded,Collapse Sensor Configuration,Sensor Configuration,Sensor Configuration permissions collapse without losing state,Medium,Functional
+ADM-096,Administrator,General Permissions,Select an individual Sensor Configuration permission,Category expanded,Select one permission under Sensor Configuration,Valid permission,Permission becomes selected,High,Functional
+ADM-097,Administrator,General Permissions,Unselect an individual Sensor Configuration permission,Permission selected,Unselect one permission under Sensor Configuration,Valid permission,Permission becomes unselected,High,Functional
+ADM-098,Administrator,General Permissions,Persist Sensor Configuration permission selection,Permission selected,Go to Step 4 and Back,Selected permission,Sensor Configuration permission selection remains,High,State
+ADM-099,Administrator,General Permissions,Enforce Sensor Configuration permission,User created with permission configured,Login as sub-user and exercise relevant operation,Sensor Configuration,Only granted Sensor Configuration operation is available,Critical,Authorization
+ADM-100,Administrator,General Permissions,Expand Alert Configuration permission category,Step 3 open,Expand Alert Configuration,Alert Configuration,Alert Configuration permissions are displayed,High,Functional
+ADM-101,Administrator,General Permissions,Collapse Alert Configuration permission category,Category expanded,Collapse Alert Configuration,Alert Configuration,Alert Configuration permissions collapse without losing state,Medium,Functional
+ADM-102,Administrator,General Permissions,Select an individual Alert Configuration permission,Category expanded,Select one permission under Alert Configuration,Valid permission,Permission becomes selected,High,Functional
+ADM-103,Administrator,General Permissions,Unselect an individual Alert Configuration permission,Permission selected,Unselect one permission under Alert Configuration,Valid permission,Permission becomes unselected,High,Functional
+ADM-104,Administrator,General Permissions,Persist Alert Configuration permission selection,Permission selected,Go to Step 4 and Back,Selected permission,Alert Configuration permission selection remains,High,State
+ADM-105,Administrator,General Permissions,Enforce Alert Configuration permission,User created with permission configured,Login as sub-user and exercise relevant operation,Alert Configuration,Only granted Alert Configuration operation is available,Critical,Authorization
+ADM-106,Administrator,General Permissions,Expand Vehicle Group permission category,Step 3 open,Expand Vehicle Group,Vehicle Group,Vehicle Group permissions are displayed,High,Functional
+ADM-107,Administrator,General Permissions,Collapse Vehicle Group permission category,Category expanded,Collapse Vehicle Group,Vehicle Group,Vehicle Group permissions collapse without losing state,Medium,Functional
+ADM-108,Administrator,General Permissions,Select an individual Vehicle Group permission,Category expanded,Select one permission under Vehicle Group,Valid permission,Permission becomes selected,High,Functional
+ADM-109,Administrator,General Permissions,Unselect an individual Vehicle Group permission,Permission selected,Unselect one permission under Vehicle Group,Valid permission,Permission becomes unselected,High,Functional
+ADM-110,Administrator,General Permissions,Persist Vehicle Group permission selection,Permission selected,Go to Step 4 and Back,Selected permission,Vehicle Group permission selection remains,High,State
+ADM-111,Administrator,General Permissions,Enforce Vehicle Group permission,User created with permission configured,Login as sub-user and exercise relevant operation,Vehicle Group,Only granted Vehicle Group operation is available,Critical,Authorization
+ADM-112,Administrator,General Permissions,Expand Video Telematics permission category,Step 3 open,Expand Video Telematics,Video Telematics,Video Telematics permissions are displayed,High,Functional
+ADM-113,Administrator,General Permissions,Collapse Video Telematics permission category,Category expanded,Collapse Video Telematics,Video Telematics,Video Telematics permissions collapse without losing state,Medium,Functional
+ADM-114,Administrator,General Permissions,Select an individual Video Telematics permission,Category expanded,Select one permission under Video Telematics,Valid permission,Permission becomes selected,High,Functional
+ADM-115,Administrator,General Permissions,Unselect an individual Video Telematics permission,Permission selected,Unselect one permission under Video Telematics,Valid permission,Permission becomes unselected,High,Functional
+ADM-116,Administrator,General Permissions,Persist Video Telematics permission selection,Permission selected,Go to Step 4 and Back,Selected permission,Video Telematics permission selection remains,High,State
+ADM-117,Administrator,General Permissions,Enforce Video Telematics permission,User created with permission configured,Login as sub-user and exercise relevant operation,Video Telematics,Only granted Video Telematics operation is available,Critical,Authorization
+ADM-118,Administrator,General Permissions,Revoke Driver permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,Driver,Previously granted Driver capability is no longer available,Critical,Authorization
+ADM-119,Administrator,General Permissions,Grant Driver permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,Driver,Driver capability becomes available as intended,Critical,Authorization
+ADM-120,Administrator,General Permissions,Revoke Driver Management permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,Driver Management,Previously granted Driver Management capability is no longer available,Critical,Authorization
+ADM-121,Administrator,General Permissions,Grant Driver Management permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,Driver Management,Driver Management capability becomes available as intended,Critical,Authorization
+ADM-122,Administrator,General Permissions,Revoke Route Management permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,Route Management,Previously granted Route Management capability is no longer available,Critical,Authorization
+ADM-123,Administrator,General Permissions,Grant Route Management permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,Route Management,Route Management capability becomes available as intended,Critical,Authorization
+ADM-124,Administrator,General Permissions,Revoke User permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,User,Previously granted User capability is no longer available,Critical,Authorization
+ADM-125,Administrator,General Permissions,Grant User permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,User,User capability becomes available as intended,Critical,Authorization
+ADM-126,Administrator,General Permissions,Revoke Sensor Configuration permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,Sensor Configuration,Previously granted Sensor Configuration capability is no longer available,Critical,Authorization
+ADM-127,Administrator,General Permissions,Grant Sensor Configuration permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,Sensor Configuration,Sensor Configuration capability becomes available as intended,Critical,Authorization
+ADM-128,Administrator,General Permissions,Revoke Alert Configuration permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,Alert Configuration,Previously granted Alert Configuration capability is no longer available,Critical,Authorization
+ADM-129,Administrator,General Permissions,Grant Alert Configuration permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,Alert Configuration,Alert Configuration capability becomes available as intended,Critical,Authorization
+ADM-130,Administrator,General Permissions,Revoke Vehicle Group permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,Vehicle Group,Previously granted Vehicle Group capability is no longer available,Critical,Authorization
+ADM-131,Administrator,General Permissions,Grant Vehicle Group permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,Vehicle Group,Vehicle Group capability becomes available as intended,Critical,Authorization
+ADM-132,Administrator,General Permissions,Revoke Video Telematics permission after creation,Existing user has permission,Edit user; revoke permission; save; login as user,Video Telematics,Previously granted Video Telematics capability is no longer available,Critical,Authorization
+ADM-133,Administrator,General Permissions,Grant Video Telematics permission after creation,Existing user lacks permission,Edit user; grant permission; save; login as user,Video Telematics,Video Telematics capability becomes available as intended,Critical,Authorization
+ADM-134,Administrator,Unit Permission,Verify unit selector,Step 4 open,Open Select Units,Existing units,Available units are listed,High,Functional
+ADM-135,Administrator,Unit Permission,Select one unit,Units exist,Select one unit,Vehicle A,Vehicle A is selected,High,Functional
+ADM-136,Administrator,Unit Permission,Select multiple units,Multiple units exist,Select multiple units,Vehicle A/B,Selected units are displayed,High,Functional
+ADM-137,Administrator,Unit Permission,Remove unit selection,Unit selected,Remove selected unit,Vehicle A,Unit is removed,High,Functional
+ADM-138,Administrator,Unit Permission,Verify available permission panel,Unit selected,Inspect right panel,Vehicle A,Unit permissions are displayed,High,Functional
+ADM-139,Administrator,Unit Permission,Select Change Advanced Settings,Unit selected,Select permission,Change Advanced Settings,Permission becomes selected,High,Functional
+ADM-140,Administrator,Unit Permission,Select Change Icon,Unit selected,Select permission,Change Icon,Permission becomes selected,High,Functional
+ADM-141,Administrator,Unit Permission,Select Manage Services,Unit selected,Select permission,Manage Services,Permission becomes selected,High,Functional
+ADM-142,Administrator,Unit Permission,Unselect unit permission,Permission selected,Unselect permission,Manage Services,Permission becomes unselected,High,Functional
+ADM-143,Administrator,Unit Permission,Persist unit permission selections,Permissions selected,Back to Step 3; return Step 4,Selected permissions,Selections remain,High,Functional
+ADM-144,Administrator,Unit Permission,Persist selected units,Units selected,Back and forward,Vehicle A/B,Unit selection remains,High,Functional
+ADM-145,Administrator,Unit Permission,Apply permissions to multiple selected units,Multiple units selected,Grant one permission,Vehicle A/B + Change Icon,Permission applies only to intended selected units,High,Functional
+ADM-146,Administrator,Unit Permission,Assigned unit but permission denied,Unit assigned; permission denied,Login as sub-user and attempt operation,Vehicle A,Restricted unit operation is blocked,High,Functional
+ADM-147,Administrator,Unit Permission,Permission granted but unit not assigned,Permission exists; unit outside scope,Attempt operation on unassigned unit,Vehicle B,Operation is blocked,High,Functional
+ADM-148,Administrator,Unit Permission,Unit A scope isolation,User assigned Unit A only,Access Unit A and Unit B,A allowed/B not assigned,Unit A is accessible as configured; Unit B is inaccessible,High,Functional
+ADM-149,Administrator,Unit Permission,Unit permission edit and enforcement,Existing user,Change unit permission; save; login,Manage Services,New permission state is enforced,High,Functional
+ADM-150,Administrator,Submit,Submit complete valid configuration,All four steps valid,Click Submit,Valid user configuration,User is created successfully,High,Functional/Reliability
+ADM-151,Administrator,Submit,Verify created user in list,User creation successful,Return to User Management,New user,New user appears exactly once,High,Functional/Reliability
+ADM-152,Administrator,Submit,Verify user count increments,Existing users,Create one valid user,1 new user,User count increases by one,High,Functional/Reliability
+ADM-153,Administrator,Submit,Verify credentials work,User created,Login as new user,Valid credentials,Login succeeds,High,Functional/Reliability
+ADM-154,Administrator,Submit,Verify invalid credentials fail,User created,Attempt login with wrong password,Wrong password,Authentication fails,High,Functional/Reliability
+ADM-155,Administrator,Submit,Verify all configured permissions persist,User created,Open permissions/edit configuration,Known configuration,All configured values match submission,High,Functional/Reliability
+ADM-156,Administrator,Submit,Prevent duplicate submission,Valid final configuration,Double-click Submit,Same user data,No duplicate user is created,High,Functional/Reliability
+ADM-157,Administrator,Submit,Handle create API failure,Simulate server/API failure,Submit valid user,Valid data,Error is shown and user is not falsely reported as created,High,Functional/Reliability
+ADM-158,Administrator,Submit,Handle network interruption,Disconnect network during submit,Submit valid user,Valid data,Operation fails safely and no misleading success is shown,High,Functional/Reliability
+ADM-159,Administrator,Submit,Session expiry during submit,Session expires,Submit final configuration,Valid data,User is not partially/incorrectly created and session handling is clear,High,Functional/Reliability
+ADM-160,Administrator,Edit User,Open Edit for correct record,User exists,Click Edit on user,User A,Correct user's configuration opens,High,Functional
+ADM-161,Administrator,Edit User,Preserve existing username,User exists,Open Edit and inspect username,User A,Correct username is loaded,High,Functional
+ADM-162,Administrator,Edit User,Change password,User exists,Edit password and save,New password,New password works; old password no longer works if password replacement is intended,High,Functional
+ADM-163,Administrator,Edit User,Change Arm/Disarm permission,User exists,Edit Yes to No or vice versa,Yes/No,Updated command permission is persisted and enforced,High,Functional
+ADM-164,Administrator,Edit User,Change menu group,User exists,Edit group; save,New group,New group access is enforced,High,Functional
+ADM-165,Administrator,Edit User,Add general permission,User exists,Edit; grant permission; save,Permission X,Sub-user gains intended capability,High,Functional
+ADM-166,Administrator,Edit User,Remove general permission,User exists,Edit; revoke permission; save,Permission X,Sub-user loses intended capability,High,Functional
+ADM-167,Administrator,Edit User,Add unit assignment,User exists,Edit; add unit; save,Vehicle B,Sub-user can access Vehicle B only as configured,High,Functional
+ADM-168,Administrator,Edit User,Remove unit assignment,User has multiple units,Edit; remove unit; save,Vehicle B,Sub-user can no longer access Vehicle B,High,Functional
+ADM-169,Administrator,Edit User,Change unit permission,User exists,Edit unit permissions; save,Manage Services,Updated unit capability is enforced,High,Functional
+ADM-170,Administrator,Edit User,Cancel edit,User exists,Change fields; click Cancel,Changed values,Original configuration remains unchanged,High,Functional
+ADM-171,Administrator,Edit User,Edit does not affect another user,At least two users,Edit User A; save,User A,User B configuration remains unchanged,High,Functional
+ADM-172,Administrator,Permissions Action,Open Permissions action,User exists,Click permissions icon,User A,Correct user's permission configuration opens,High,Functional
+ADM-173,Administrator,Permissions Action,Load existing general permissions,User configured,Open Permissions,Known permissions,Existing permissions are accurately loaded,High,Functional
+ADM-174,Administrator,Permissions Action,Load existing unit assignments,User configured,Open Permissions,Known units,Existing unit scope is accurately loaded,High,Functional
+ADM-175,Administrator,Permissions Action,Save permission changes,User configured,Modify permission and save,Changed permission,Changes persist,High,Functional
+ADM-176,Administrator,Permissions Action,Cancel permission changes,User configured,Modify then cancel,Changed permission,No change is persisted,High,Functional
+ADM-177,Administrator,Delete User,Open delete action,User exists,Click Delete,User A,Correct deletion workflow opens,High,Functional/Reliability
+ADM-178,Administrator,Delete User,Cancel deletion,Delete confirmation shown,Click Cancel,User A,User remains,High,Functional/Reliability
+ADM-179,Administrator,Delete User,Confirm deletion,Delete confirmation shown,Confirm,User A,User is deleted,High,Functional/Reliability
+ADM-180,Administrator,Delete User,Deleted user removed from list,Deletion successful,Refresh/list,Deleted user,Deleted user no longer appears,High,Functional/Reliability
+ADM-181,Administrator,Delete User,Deleted credentials cannot login,User deleted,Attempt login,Deleted credentials,Authentication fails,High,Functional/Reliability
+ADM-182,Administrator,Delete User,Delete correct user only,Multiple users,Delete User A,User A,Only User A is deleted,High,Functional/Reliability
+ADM-183,Administrator,Delete User,Delete last record,One user exists,Delete user,Only user,Empty state is displayed correctly,High,Functional/Reliability
+ADM-184,Administrator,Delete User,Delete failure handling,Simulate delete API failure,Confirm delete,User A,Error shown; user remains if backend deletion failed,High,Functional/Reliability
+ADM-185,Administrator,Delete User,Concurrent deletion handling,User being edited is deleted elsewhere,Save edit,Deleted user,Application handles stale record safely,High,Functional/Reliability
+ADM-186,Administrator,Security,Sub-user cannot access Administrator without permission,Sub-user lacks admin access,Attempt Administrator menu/direct URL,Administrator URL,Access is denied,Critical,Security/Authorization
+ADM-187,Administrator,Security,Sub-user cannot access unassigned module by URL,Module not assigned,Open direct URL,Restricted module,Access denied,Critical,Security/Authorization
+ADM-188,Administrator,Security,Sub-user cannot access unassigned unit,Unit B not assigned,Attempt Unit B operation,Unit B,Backend blocks access,Critical,Security/Authorization
+ADM-189,Administrator,Security,Sub-user cannot invoke denied permission through API,Permission denied,Replay/manipulate relevant API request,Unauthorized action,Backend returns authorization failure,Critical,Security/Authorization
+ADM-190,Administrator,Security,Sub-user cannot invoke Arm/Disarm when denied,Arm/Disarm=No,Attempt command through UI/API,Arm/Disarm,Command is blocked,Critical,Security/Authorization
+ADM-191,Administrator,Security,Changing client-side permission state does not grant access,Permission denied,Modify browser/client state and retry operation,Tampered state,Backend still denies unauthorized operation,Critical,Security/Authorization
+ADM-192,Administrator,Security,Horizontal privilege escalation,User A and B exist,Use User A context to request User B data,User B,User B data/configuration is not exposed,Critical,Security/Authorization
+ADM-193,Administrator,Security,Vertical privilege escalation,Low-privilege user exists,Attempt administrator-only action,Admin action,Action is denied,Critical,Security/Authorization
+ADM-194,Administrator,Security,Password is not exposed in DOM unnecessarily,User list open,Inspect page/DOM/network where appropriate,N/A,Password is appropriately protected and not exposed unnecessarily,Critical,Security/Authorization
+ADM-195,Administrator,Security,Password is not exposed in export,Export available,Export user data,N/A,Export does not reveal plaintext credentials unless explicitly authorized by design,Critical,Security/Authorization
+ADM-196,Administrator,Security,XSS in username,Create user,Enter script payload in username and save,<script>alert(1)</script>,Payload is encoded/rejected and never executes,Critical,Security/Authorization
+ADM-197,Administrator,Security,XSS in group-related fields,Group creation available,Enter script payload,XSS payload,Payload is safely handled,Critical,Security/Authorization
+ADM-198,Administrator,Security,SQL injection in username,Create user,Enter SQL-like payload,' OR '1'='1,Input is safely handled; no authentication/data bypass,Critical,Security/Authorization
+ADM-199,Administrator,Security,SQL injection in search,User list open,Enter SQL-like search payload,' OR 1=1 --,No query manipulation or unauthorized records,Critical,Security/Authorization
+ADM-200,Administrator,Security,CSRF protection for state-changing operations,Authenticated admin,Attempt state-changing request without valid anti-CSRF mechanism where applicable,Forged request,Request is rejected according to security architecture,Critical,Security/Authorization
+ADM-201,Administrator,Security,Session expiration enforcement,Admin session expires,Attempt create/edit/delete,Expired session,Operation is rejected and user is redirected/re-authenticated,Critical,Security/Authorization
+ADM-202,Administrator,Security,Permission changes are audited if audit trail exists,Permission change performed,Inspect audit trail,User A,Change is recorded with appropriate actor/time/details if feature exists,Critical,Security/Authorization
+ADM-203,Administrator,Data Integrity,No partial user after failed Step 4 submission,Valid Steps 1-3; fail Step 4,Submit with simulated failure,Valid configuration,No incomplete user exists,High,Data Integrity
+ADM-204,Administrator,Data Integrity,Existing permissions not overwritten unintentionally,Existing user configured,Edit one permission only,Single change,Only intended permission changes,High,Data Integrity
+ADM-205,Administrator,Data Integrity,Group menus remain consistent after group change,Existing groups,Change assigned group,Group A→B,Effective menus match Group B,High,Data Integrity
+ADM-206,Administrator,Data Integrity,Unit permissions remain scoped after group change,User configured,Change menu group,Known units,Unit scope/permissions remain correct unless explicitly changed,High,Data Integrity
+ADM-207,Administrator,Data Integrity,Multiple administrators editing same user,Two admin sessions,Both modify same user,Conflicting changes,Application handles concurrency without silent corruption,High,Data Integrity
+ADM-208,Administrator,Data Integrity,Refresh after successful creation,User created,Refresh page,New user,Created user remains present,High,Data Integrity
+ADM-209,Administrator,Data Integrity,Refresh after permission update,Permissions changed,Refresh and reopen,Changed permission,Updated value remains,High,Data Integrity
+ADM-210,Administrator,Data Integrity,Browser back does not duplicate user,User created,Use browser back/forward,N/A,No duplicate creation or inconsistent state,High,Data Integrity
+ADM-211,Administrator,Accessibility,Keyboard navigation through User Management,Page open,Navigate controls using keyboard,N/A,Interactive controls are reachable in logical order,Medium,Non-Functional
+ADM-212,Administrator,Accessibility,Keyboard navigation through wizard,Wizard open,Navigate all fields/buttons with keyboard,N/A,All required controls are keyboard accessible,Medium,Non-Functional
+ADM-213,Administrator,Accessibility,Visible focus state,Page/wizard open,Tab through controls,N/A,Focused control is visually identifiable,Medium,Non-Functional
+ADM-214,Administrator,Accessibility,Form labels associated with fields,Wizard open,Inspect labels/assistive semantics,N/A,Fields have meaningful accessible labels,Medium,Non-Functional
+ADM-215,Administrator,Accessibility,Validation messages accessible,Invalid form,Trigger validation,Invalid input,Validation is understandable and accessible,Medium,Non-Functional
+ADM-216,Administrator,UI,Responsive User Management layout,Various viewport sizes,Open page at desktop/tablet/mobile widths,Responsive sizes,Controls/table remain usable without critical overlap,Medium,Non-Functional
+ADM-217,Administrator,UI,Responsive wizard layout,Various viewport sizes,Open wizard at multiple widths,Responsive sizes,All wizard controls remain usable,Medium,Non-Functional
+ADM-218,Administrator,UI,Long username display,User with long username exists,Open list,Long username,Text is handled without breaking table layout,Medium,Non-Functional
+ADM-219,Administrator,UI,Large user list rendering,Large dataset,Open User Management,Hundreds/thousands of users,Page remains usable and pagination/search work correctly,Medium,Non-Functional
+ADM-220,Administrator,Performance,Create user response time,Stable environment,Create valid user,Valid data,Response completes within agreed performance target,High,Non-Functional
+ADM-221,Administrator,Performance,Search response with large dataset,Large dataset,Search common term,Search term,Search completes within agreed performance target,High,Non-Functional
+ADM-222,Administrator,Performance,Permission page load,User has many permissions,Open Edit/Permissions,N/A,Permission configuration loads within agreed target,High,Non-Functional
+ADM-223,Administrator,Reliability,Retry after transient create failure,Transient API failure,Retry create,Valid data,Retry succeeds without duplicate records,High,Non-Functional
+ADM-224,Administrator,Reliability,API timeout handling,API timeout simulated,Create/edit/delete,Valid data,Timeout is handled gracefully without false success,High,Non-Functional
+ADM-225,Administrator,Authorization Combination,Menu allowed + general permission denied,Reports menu assigned but required permission removed,Login and open Reports,Configured combination,Reports may be visible according to menu configuration but restricted operation is denied,Critical,Authorization
+ADM-226,Administrator,Authorization Combination,Menu denied + general permission allowed,Reports permission granted but Reports menu absent,Directly navigate to Reports,Configured combination,Access remains denied,Critical,Authorization
+ADM-227,Administrator,Authorization Combination,Unit assigned + unit permission denied,Vehicle A assigned; Manage Services denied,Attempt Manage Services on A,Configured combination,Operation denied,Critical,Authorization
+ADM-228,Administrator,Authorization Combination,Unit not assigned + unit permission allowed,Vehicle B not assigned; Manage Services allowed,Attempt Manage Services on B,Configured combination,Operation denied,Critical,Authorization
+ADM-229,Administrator,Authorization Combination,Arm/Disarm denied + unit assigned,Vehicle assigned; Arm/Disarm No,Attempt Arm/Disarm,Configured combination,Command denied,Critical,Authorization
+ADM-230,Administrator,Authorization Combination,Arm/Disarm allowed + unit not assigned,Arm/Disarm Yes; vehicle outside scope,Attempt command on unassigned vehicle,Configured combination,Command denied,Critical,Authorization
+ADM-231,Administrator,Authorization Combination,Multiple units + mixed permissions,A and B assigned with different permissions,Attempt each operation on each unit,Configured combination,Each unit enforces its own configured scope,Critical,Authorization
+ADM-232,Administrator,Authorization Combination,Group change + permission revocation,Change group and revoke permission,Login as sub-user,Configured combination,Effective access reflects both changes,Critical,Authorization
+ADM-233,Administrator,Step 1,Submit with all required fields empty,Wizard open,Attempt Next Step,All blank,Required validation appears for applicable fields,High,Edge
+ADM-234,Administrator,Step 1,Confirm password after password change,Password entered,Change password after confirmation,Two different values,Mismatch is detected,High,Edge
+ADM-235,Administrator,Step 2,Select group then rapidly change group,Multiple groups,Click groups rapidly,A/B/C,Final selected group is applied without stale data,High,Edge
+ADM-236,Administrator,Step 3,Rapidly expand/collapse permission categories,Step 3 open,Click category repeatedly,N/A,UI remains stable and selection state is not corrupted,High,Edge
+ADM-237,Administrator,Step 4,Change selected units rapidly,Multiple units,Select different units quickly,A/B/C,Final unit selection is correct,High,Edge
+ADM-238,Administrator,Step 4,No permissions selected,Unit selected,Leave all permissions unchecked and proceed,None,Application follows defined business rule; no unintended permission is granted,High,Edge
+ADM-239,Administrator,Create User,Same username with different case,Existing user user01,Create USER01,USER01,Uniqueness/case rules are enforced consistently,High,Edge
+ADM-240,Administrator,Create User,Password containing username,Wizard open,Use username inside password,user01 + user01Password,Password policy is enforced according to configuration,High,Edge
+ADM-241,Administrator,Create User,Unicode username handling,Wizard open,Enter Unicode characters,测试用户,Accepted/rejected according to defined username policy without corruption,High,Edge
+ADM-242,Administrator,Delete User,Delete while search filter active,Users exist; search active,Delete matching user,Filtered user,Correct user is deleted and filtered list updates,High,Edge
+ADM-243,Administrator,Search,Search after create,New user created,Search new username,New username,New user is returned,Medium,Edge
+ADM-244,Administrator,Search,Search after delete,User deleted,Search deleted username,Deleted username,No deleted user is returned,Medium,Edge
+ADM-245,Administrator,Edit User,Save with unchanged values,Existing user,Open edit; save without changes,No changes,No unintended data modification occurs,High,Edge
+ADM-246,Administrator,Permissions Action,Permission update then refresh,Existing user,Change permission; save; refresh,Permission,Updated permission persists,High,Edge
+ADM-247,Administrator,Unit Permission,Unit assignment removal after permission grant,User has unit + permission,Remove unit; save; login,Unit removed,Permission cannot be used for removed unit,High,Edge
+ADM-248,Administrator,Security,Tamper unit identifier in request,User assigned Unit A,Change request to Unit B,Tampered unit ID,Backend rejects unauthorized scope,High,Edge/Security
+ADM-249,Administrator,Security,Tamper permission identifier in request,Permission not granted,Change request payload,Tampered permission ID,Backend rejects unauthorized privilege,High,Edge/Security

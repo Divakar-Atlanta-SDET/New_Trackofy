@@ -1,5 +1,6 @@
 import re
 import pytest
+from config.config import REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -15,7 +16,7 @@ def login_and_generate_fleet_summary(page, config, credentials):
         "Fleet Summary",
         start_date="01/09/2026",
         end_date="01/09/2026",
-        vehicle_name="GCBL10536MHG14AG04459",
+        vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )
     return reports_page

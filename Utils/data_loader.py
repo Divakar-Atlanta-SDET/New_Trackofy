@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from config.config import REPORT_TEST_DRIVER_NAME, REPORT_TEST_VEHICLE_NAME
+
 DATA_DIR = Path(__file__).parent.parent / "test_data"
 
 DEFAULT_DATASETS = {
@@ -122,12 +124,30 @@ DEFAULT_DATASETS = {
     },
     "reports_positive.json": {
         "valid_report_generation": [
-            {"report_name": "Fleet Summary", "vehicle_name": "GCBL10536MHG14AG04459", "driver_name": "", "start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Generate Fleet Summary with valid single-day range"},
-            {"report_name": "Vehicle Summary", "vehicle_name": "GCBL10536MHG14AG04459", "driver_name": "", "start_date": "25/08/2026", "end_date": "01/09/2026", "description": "Generate Vehicle Summary with valid multi-day range"},
-            {"report_name": "Running Summary", "vehicle_name": "GCBL10536MHG14AG04459", "driver_name": "", "start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Generate Running Summary with valid filters"}
+            {"report_name": "Fleet Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Generate Fleet Summary with valid single-day range"},
+            {"report_name": "Work Hour", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Work Hour with valid filters"},
+            {"report_name": "Vehicle Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "08/20/2026", "end_date": "08/28/2026", "description": "Generate Vehicle Summary with valid multi-day range (entered as MM/DD -- see Bug_Report.md #6 -- and kept out of the broken Mar-2026 partition, see Bug_Report.md #17)"},
+            {"report_name": "Maxspeed Chart", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Maxspeed Chart with valid filters"},
+            {"report_name": "Stoppage Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Stoppage Summary with valid filters"},
+            {"report_name": "Running Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Generate Running Summary with valid filters"},
+            {"report_name": "Engine Hour", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Engine Hour with valid filters"},
+            {"report_name": "Trip Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "08/20/2026", "end_date": "08/28/2026", "description": "Generate Trip Report with valid filters (entered as MM/DD -- see Bug_Report.md #6 -- and kept out of the broken Mar-2026 partition, see Bug_Report.md #17)"},
+            {"report_name": "Distance Chart", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Distance Chart with valid filters"},
+            {"report_name": "Cumulative Distance", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "08/20/2026", "end_date": "08/28/2026", "description": "Generate Cumulative Distance with valid filters (entered as MM/DD -- see Bug_Report.md #6 -- and kept out of the broken Mar-2026 partition, see Bug_Report.md #17)"},
+            {"report_name": "Idle", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Idle with valid filters"},
+            {"report_name": "Driver Report", "vehicle_name": "", "driver_name": REPORT_TEST_DRIVER_NAME, "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Driver Report with valid filters"},
+            {"report_name": "Driver Performance", "vehicle_name": "", "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Driver Performance with valid filters"},
+            {"report_name": "Alert", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Alert report with valid filters"},
+            {"report_name": "ADAS Alarm Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate ADAS Alarm Report with valid filters"},
+            {"report_name": "BMS Summary Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate BMS Summary Report with valid filters"},
+            {"report_name": "BMS Cell Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate BMS Cell Report with valid filters"},
+            {"report_name": "Battery Charging Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Battery Charging Summary with valid filters"},
+            {"report_name": "Temperature", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Temperature report with valid filters"},
+            {"report_name": "Humidity Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Humidity Report with valid filters"},
+            {"report_name": "Sensor Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "03/01/2026", "end_date": "03/10/2026", "description": "Generate Sensor Report with valid filters"}
         ],
         "valid_vehicle_selection": [
-            {"vehicle_name": "GCBL10536MHG14AG04459", "description": "Select valid single vehicle for report"}
+            {"vehicle_name": REPORT_TEST_VEHICLE_NAME, "description": "Select valid single vehicle for report"}
         ],
         "valid_date_ranges": [
             {"start_date": "01/09/2026", "end_date": "01/09/2026", "description": "Same day range"},
@@ -139,7 +159,7 @@ DEFAULT_DATASETS = {
             {"format": "PDF", "extension": ".pdf", "description": "Export to PDF format"}
         ],
         "valid_schedule_configs": [
-            {"report_scope": "Standard Report", "report_name": "Fleet Summary", "frequency": "Daily", "schedule_time": "08:00", "email_1": "test@trackofy.com", "description": "Schedule Fleet Summary daily"}
+            {"report_scope": "Standard Report", "report_name": "Fleet Summary", "frequency": "Daily", "schedule_time": "08:00", "email_1": "test@trackofy.com", "schedule_till_day_name": "15", "description": "Schedule Fleet Summary daily"}
         ],
         "valid_custom_report_templates": [
             {"template_name": "Automated Test Template", "template_description": "Template created by automation test suite", "description": "Create valid custom report template"}
@@ -149,6 +169,29 @@ DEFAULT_DATASETS = {
         "invalid_date_ranges": [
             {"start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
             {"start_date": "", "end_date": "01/09/2026", "description": "Empty start date"}
+        ],
+        "invalid_date_range_per_report": [
+            {"report_name": "Fleet Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Work Hour", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Vehicle Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Maxspeed Chart", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Stoppage Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Running Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Engine Hour", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Trip Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Distance Chart", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Cumulative Distance", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Idle", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Driver Report", "vehicle_name": "", "driver_name": REPORT_TEST_DRIVER_NAME, "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Driver Performance", "vehicle_name": "", "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Alert", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "ADAS Alarm Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "BMS Summary Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "BMS Cell Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Battery Charging Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Temperature", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Humidity Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"},
+            {"report_name": "Sensor Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "driver_name": "", "start_date": "10/09/2026", "end_date": "01/09/2026", "description": "Start date after end date"}
         ],
         "missing_required_fields": [
             {"report_name": "Fleet Summary", "field_missing": "vehicle", "description": "Generate report without selecting any vehicle"},
@@ -164,6 +207,10 @@ DEFAULT_DATASETS = {
         ]
     },
     "reports_functional.json": {
+        # standard_reports_with_config removed -- it drifted out of sync with the real
+        # 21-report catalog (only 13 entries) and the one test using it never even read
+        # its "expected_fields"; that test now parametrizes directly over
+        # data.reports.STANDARD_REPORT_NAMES instead of maintaining a second, driftable list.
         "standard_report_categories": [
             {"category": "Fleet Performance", "report_count": 7, "description": "Fleet Performance category"},
             {"category": "Trips & Movement", "report_count": 4, "description": "Trips & Movement category"},
@@ -196,10 +243,43 @@ DEFAULT_DATASETS = {
             {"start_date": "01/01/2026", "end_date": "01/09/2026", "description": "Very large date range spanning 8 months"}
         ],
         "empty_result_reports": [
-            {"report_name": "Vehicle Summary", "vehicle_name": "GCBL10536MHG14AG04459", "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"}
+            {"report_name": "Fleet Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Work Hour", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Vehicle Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Maxspeed Chart", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Stoppage Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Running Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Engine Hour", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Trip Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Distance Chart", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Cumulative Distance", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Idle", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Driver Report", "vehicle_name": "", "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": REPORT_TEST_DRIVER_NAME, "description": "Generate report for date range with no data"},
+            {"report_name": "Driver Performance", "vehicle_name": "", "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Alert", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "ADAS Alarm Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "BMS Summary Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "BMS Cell Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Battery Charging Summary", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Temperature", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Humidity Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"},
+            {"report_name": "Sensor Report", "vehicle_name": REPORT_TEST_VEHICLE_NAME, "start_date": "01/01/2020", "end_date": "02/01/2020", "driver_name": "", "description": "Generate report for date range with no data"}
         ],
         "custom_report_boundary_names": [
             {"template_name": "A", "template_description": "Minimum single character template name", "description": "Single character template name"}
+        ],
+        "large_vehicle_selection": [
+            {"select_all": True, "description": "Select all vehicles for maximum data load"}
+        ],
+        "rapid_filter_changes": [
+            {"report_name": "Fleet Summary", "rapid_clicks": 3, "description": "Rapidly toggle report selection multiple times"}
+        ],
+        "schedule_boundary_times": [
+            {"schedule_time": "00:00", "description": "Schedule at midnight boundary"},
+            {"schedule_time": "23:59", "description": "Schedule at end-of-day boundary"}
+        ],
+        "downloads_page_boundary": [
+            {"search_query": "nonexistent_report_xyz", "description": "Search for non-existent report in downloads"}
         ]
     }
 }

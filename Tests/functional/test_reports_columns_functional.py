@@ -1,6 +1,7 @@
 import re
 import pytest
 from playwright.sync_api import expect
+from config.config import REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -107,7 +108,7 @@ def test_rep_col_016_existing_report_unchanged_until_regenerated(page, config, c
     """REP-COL-016: Functional - Existing generated report remains unchanged until regenerated."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.click_fetch()
     reports_page.wait_for_table()
     initial_headers = reports_page.get_table_column_headers()

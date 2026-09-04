@@ -12,6 +12,17 @@ from Pages.login_page import LoginPage
 from Pages.unit_page import UnitPage
 from Pages.unit_settings_page import UnitSettingsPage
 from Pages.tracking_page import TrackingPage
+from Pages.settings_page import SettingsSideMenu
+from Pages.driver_page import DriverPage
+from Pages.driver_performance_page import DriverPerformancePage
+from Pages.vehicle_group_page import VehicleGroupPage
+from Pages.vehicle_performance_page import VehiclePerformancePage
+from Pages.location_control_page import LocationControlPage
+from Pages.alert_config_page import AlertConfigPage, GeofenceAlertPage, AisAlertPage
+from Pages.route_page import RouteManagementPage
+from Pages.reports_page import ReportsPage
+from Pages.home_page import HomePage
+from Pages.administrator_page import AdministratorPage
 
 
 load_dotenv()
@@ -101,6 +112,25 @@ def pytest_addoption(parser):
         default="staging",
         help="Environment to run tests against",
     )
+    parser.addoption(
+        "--session-mode",
+        action="store",
+        choices=["fresh", "single"],
+        default="fresh",
+        help=(
+            "fresh (default): every test logs in via the UI from scratch, matching "
+            "current/existing behavior. single: all tests share one cached login "
+            "session (one real UI login per worker, reused) -- faster, but less "
+            "representative of a real per-user session. Applies to every test via "
+            "the `page` and `authenticated_page` fixtures, with no per-test changes "
+            "needed."
+        ),
+    )
+
+
+@pytest.fixture(scope="session")
+def session_mode(request) -> str:
+    return request.config.getoption("--session-mode")
 
 
 def pytest_configure(config):
@@ -110,6 +140,8 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "edgecase: edge case boundary tests")
     config.addinivalue_line("markers", "reports: reports module tests")
     config.addinivalue_line("markers", "report_generation: report generation tests")
+    config.addinivalue_line("markers", "home: home module tests")
+    config.addinivalue_line("markers", "admin: administrator module tests")
     config.addinivalue_line(
         "markers", "allow_server_error: test intentionally mocks/triggers a server error, skip the global 5xx check"
     )
@@ -141,10 +173,18 @@ def browser(playwright, config):
 
 
 @pytest.fixture
-def page(request, browser, config):
+def page(request, browser, config, session_mode):
     from Utils.download_helper import attach_download_handler
 
-    context = browser.new_context(base_url=config["base_url"], accept_downloads=True)
+    context_kwargs = {"base_url": config["base_url"], "accept_downloads": True}
+    if session_mode == "single":
+        # Lazily resolve auth_storage_state only in single-session mode, so
+        # fresh mode (the default) never pays for the throwaway login that
+        # fixture performs on its first use each session.
+        auth_storage_state = request.getfixturevalue("auth_storage_state")
+        context_kwargs["storage_state"] = str(auth_storage_state)
+
+    context = browser.new_context(**context_kwargs)
 
     page = context.new_page()
     attach_download_handler(page)
@@ -182,15 +222,27 @@ def auth_storage_state(worker_id, playwright, config, credentials):
 
 
 @pytest.fixture
-def authenticated_page(request, browser, config, auth_storage_state):
+def authenticated_page(request, browser, config, credentials, session_mode):
     from Utils.download_helper import attach_download_handler
 
-    context = browser.new_context(
-        base_url=config["base_url"], accept_downloads=True, storage_state=str(auth_storage_state)
-    )
+    context_kwargs = {"base_url": config["base_url"], "accept_downloads": True}
+    if session_mode == "single":
+        auth_storage_state = request.getfixturevalue("auth_storage_state")
+        context_kwargs["storage_state"] = str(auth_storage_state)
+
+    context = browser.new_context(**context_kwargs)
     page = context.new_page()
     attach_download_handler(page)
     errors = _track_server_errors(page)
+
+    if session_mode == "fresh":
+        # This fixture's contract is "already logged in" -- in fresh mode
+        # there's no cached storage_state to provide that, so log in for
+        # real here instead of leaving callers to do it themselves.
+        login_page = LoginPage(page, config)
+        login_page.open()
+        login_page.login(credentials["username"], credentials["password"])
+        page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
 
     yield page
 
@@ -225,6 +277,149 @@ def tracking(authenticated_page):
     tracking_page.open_tracking_page()
     tracking_page.switch_to_live_tracking()
     return tracking_page
+
+
+@pytest.fixture
+def settings_menu(authenticated_page):
+    """Log in and open the Settings module. Returns the SettingsSideMenu,
+    ready to navigate to any submodule (open_driver(), open_alert(...), etc.)."""
+    menu = SettingsSideMenu(authenticated_page)
+    authenticated_page.goto("/settings")
+    menu.wait_for_visible(menu.driver_management_btn)
+    return menu
+
+
+@pytest.fixture
+def driver_page(settings_menu):
+    """Log in, open Settings, and land on the Driver list."""
+    settings_menu.open_driver()
+    page = DriverPage(settings_menu.page)
+    page.wait_for_visible(page.heading)
+    # The table body can be present-but-still-empty for a moment while the
+    # SPA populates it (confirmed live -- reading rows right after the
+    # container becomes visible was flaky), so give it a beat to settle.
+    page.page.wait_for_timeout(1000)
+    return page
+
+
+@pytest.fixture
+def driver_performance_page(settings_menu):
+    """Log in, open Settings, and land on the Driver Performance list.
+
+    The table can briefly still hold the previous route's content right
+    after navigating (confirmed live -- a table read immediately after
+    open_driver_performance() occasionally returned Driver's own table),
+    so wait for the real table body before handing the page back.
+    """
+    settings_menu.open_driver_performance()
+    page = DriverPerformancePage(settings_menu.page)
+    page.wait_for_visible(page.table.locator("tbody"))
+    # A 1s wait here was still occasionally flaky (confirmed live -- read
+    # the table before Angular finished populating it); this page in
+    # particular needs more settle time than Driver's does.
+    page.page.wait_for_timeout(3000)
+    return page
+
+
+@pytest.fixture
+def vehicle_group_page(settings_menu):
+    """Log in, open Settings, and land on the Vehicle Group list."""
+    settings_menu.open_vehicle_group()
+    page = VehicleGroupPage(settings_menu.page)
+    page.wait_for_visible(page.heading)
+    page.page.wait_for_timeout(1500)
+    return page
+
+
+@pytest.fixture
+def vehicle_performance_page(settings_menu):
+    """Log in, open Settings, and land on the Vehicle Performance list."""
+    settings_menu.open_vehicle_performance()
+    page = VehiclePerformancePage(settings_menu.page)
+    page.wait_for_visible(page.heading)
+    page.page.wait_for_timeout(1500)
+    return page
+
+
+@pytest.fixture
+def location_control_page(settings_menu):
+    """Log in, open Settings, and land on the Location Control list."""
+    settings_menu.open_location_control()
+    page = LocationControlPage(settings_menu.page)
+    page.wait_for_visible(page.heading)
+    page.page.wait_for_timeout(1500)
+    return page
+
+
+@pytest.fixture
+def alert_page(settings_menu):
+    """Log in, open Settings, and land on the given alert type's list.
+    Usage: alert_page("Speed Alert") -> a ready AlertConfigPage."""
+    def _open(alert_type: str) -> AlertConfigPage:
+        settings_menu.open_alert(alert_type)
+        page = AlertConfigPage(settings_menu.page, alert_type)
+        page.wait_for_visible(page.heading)
+        page.page.wait_for_timeout(1500)
+        return page
+    return _open
+
+
+@pytest.fixture
+def geofence_alert_page(settings_menu):
+    """Log in, open Settings, and land on the Geofence Alert list."""
+    settings_menu.open_alert("Geofence Alert")
+    page = GeofenceAlertPage(settings_menu.page)
+    page.wait_for_visible(page.heading)
+    page.page.wait_for_timeout(1500)
+    return page
+
+
+@pytest.fixture
+def ais_alert_page(settings_menu):
+    """Log in, open Settings, and land on the AIS Alert list."""
+    settings_menu.open_alert("AIS Alert")
+    page = AisAlertPage(settings_menu.page)
+    page.wait_for_visible(page.heading)
+    page.page.wait_for_timeout(1500)
+    return page
+
+
+@pytest.fixture
+def route_page(settings_menu):
+    """Log in, open Settings, and land on the Route Management list."""
+    settings_menu.open_route_management()
+    page = RouteManagementPage(settings_menu.page)
+    page.wait_for_visible(page.heading)
+    page.page.wait_for_timeout(1500)
+    return page
+
+
+@pytest.fixture
+def reports_page(authenticated_page):
+    """Log in and open the Reports module, defaulted to the Standard tab.
+
+    Replaces the per-file `login_and_open_reports(page, config, credentials)`
+    helper duplicated across every Reports test file.
+    """
+    reports_page = ReportsPage(authenticated_page)
+    reports_page.go_to_reports()
+    return reports_page
+
+
+@pytest.fixture
+def home_page(authenticated_page, config):
+    """Log in and open the Home module (fleet monitoring dashboard)."""
+    home_page = HomePage(authenticated_page)
+    home_page.open(config["base_url"])
+    return home_page
+
+
+@pytest.fixture
+def administrator_page(authenticated_page, config):
+    """Log in and open the Administrator module (sub-user management)."""
+    administrator_page = AdministratorPage(authenticated_page)
+    administrator_page.open(config["base_url"])
+    return administrator_page
 
 
 @pytest.fixture

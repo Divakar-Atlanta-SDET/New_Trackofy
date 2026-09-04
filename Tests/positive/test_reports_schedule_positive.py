@@ -29,6 +29,9 @@ def test_rep_sch_003_fill_valid_schedule_form(page, config, credentials, schedul
         frequency=schedule_data["frequency"],
         schedule_time=schedule_data["schedule_time"],
         email_1=schedule_data["email_1"],
+        # "Schedule Till" is a required field for Daily/Weekly/Monthly frequencies
+        # that fill_schedule_report_form only sets when explicitly asked.
+        schedule_till_day_name=schedule_data.get("schedule_till_day_name"),
     )
     assert reports_page.schedule_submit_enabled(), (
         "Schedule submit button not enabled after filling valid form"

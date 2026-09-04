@@ -1,5 +1,6 @@
 import re
 import pytest
+from config.config import REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -22,7 +23,7 @@ def test_rep_col_003_uncheck_one_column_absent_from_table(page, config, credenti
     """REP-COL-003: Positive - Uncheck one column and verify it is absent from generated table."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.toggle_report_column("Battery Voltage", check=False)
     reports_page.click_fetch()
     reports_page.wait_for_table()
@@ -37,7 +38,7 @@ def test_rep_col_004_uncheck_multiple_columns(page, config, credentials):
     """REP-COL-004: Positive - Uncheck multiple columns and verify all are absent from generated table."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.toggle_report_column("Battery Voltage", check=False)
     reports_page.toggle_report_column("Door Status", check=False)
     reports_page.click_fetch()
@@ -54,7 +55,7 @@ def test_rep_col_005_keep_only_one_optional_column(page, config, credentials):
     """REP-COL-005: Positive - Keep only one optional column selected."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.uncheck_all_optional_columns()
     reports_page.toggle_report_column("Distance", check=True)
     reports_page.click_fetch()
@@ -70,7 +71,7 @@ def test_rep_col_006_uncheck_and_recheck_column(page, config, credentials):
     """REP-COL-006: Positive - Uncheck and re-check a column, verify it appears in generated table."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     # Uncheck and then re-check
     reports_page.toggle_report_column("Distance", check=False)
     reports_page.toggle_report_column("Distance", check=True)
@@ -87,7 +88,7 @@ def test_rep_col_007_select_all_columns(page, config, credentials):
     """REP-COL-007: Positive - Select all columns and verify all appear in report."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.click_fetch()
     reports_page.wait_for_table()
 
@@ -101,7 +102,7 @@ def test_rep_col_011_regenerate_with_new_column_selection(page, config, credenti
     """REP-COL-011: Positive - Change column selection and regenerate report."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.toggle_report_column("Max Speed", check=False)
     reports_page.click_fetch()
     reports_page.wait_for_table()
@@ -116,7 +117,7 @@ def test_rep_col_018_export_report_respects_hidden_columns(page, config, credent
     """REP-COL-018: Positive - Exported CSV respects hidden column configuration."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.toggle_report_column("Battery Voltage", check=False)
     reports_page.click_fetch()
     reports_page.wait_for_table()
@@ -139,6 +140,6 @@ def test_rep_col_019_download_report_with_column_selection(page, config, credent
     """REP-COL-019: Positive - Download Work Hour report with custom column selections."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Work Hour")
-    reports_page.select_vehicle("GCBL10536MHG14AG04459")
+    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     reports_page.toggle_report_column("Status", check=False)
     assert reports_page.is_submit_enabled(), "Generate button should be enabled"

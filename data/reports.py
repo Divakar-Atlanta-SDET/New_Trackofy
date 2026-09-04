@@ -86,6 +86,17 @@ STANDARD_REPORTS = [
         "name": "ADAS Alarm Report",
         "fields": ["Select Alert Type", "Select Vehicle", "Start Date", "End Date"],
     },
+    {
+        "name": "Humidity Report",
+        "fields": [
+            "Select Vehicles *",
+            "Start Date",
+            "From Time (HH:mm)",
+            "End Date",
+            "To Time (HH:mm)",
+            "Report columns",
+        ],
+    },
 ]
 
 STANDARD_REPORT_NAMES = [report["name"] for report in STANDARD_REPORTS]

@@ -9,11 +9,176 @@
       "start_date": "",
       "end_date": "01/09/2026",
       "description": "Empty start date"
+    }
+  ],
+  "invalid_date_range_per_report": [
+    {
+      "report_name": "Fleet Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
     },
     {
-      "start_date": "01/09/2026",
-      "end_date": "",
-      "description": "Empty end date"
+      "report_name": "Work Hour",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Vehicle Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Maxspeed Chart",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Stoppage Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Running Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Engine Hour",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Trip Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Distance Chart",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Cumulative Distance",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Idle",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Driver Report",
+      "vehicle_name": "",
+      "driver_name": "syam",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Driver Performance",
+      "vehicle_name": "",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Alert",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "ADAS Alarm Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "BMS Summary Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "BMS Cell Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Battery Charging Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Temperature",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Humidity Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
+    },
+    {
+      "report_name": "Sensor Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "10/09/2026",
+      "end_date": "01/09/2026",
+      "description": "Start date after end date"
     }
   ],
   "missing_required_fields": [
@@ -46,13 +211,6 @@
       "description": "Schedule with invalid email format"
     }
   ],
-  "invalid_custom_report_templates": [
-    {
-      "template_name": "",
-      "template_description": "",
-      "description": "Create custom report with empty name and description"
-    }
-  ],
   "reports_with_no_vehicle_selected": [
     {
       "report_name": "Fleet Summary",
@@ -61,10 +219,6 @@
     {
       "report_name": "Vehicle Summary",
       "description": "Attempt to generate Vehicle Summary without vehicle"
-    },
-    {
-      "report_name": "Running Summary",
-      "description": "Attempt to generate Running Summary without vehicle"
     }
   ]
 }

@@ -44,8 +44,13 @@ def test_rep_sch_005_submit_without_email(page, config, credentials):
 @pytest.mark.negative
 @pytest.mark.reports
 @pytest.mark.parametrize("config_data", load_test_data("reports_negative.json", "invalid_schedule_configs"))
-def test_rep_sch_010_013_invalid_schedule_config(page, config, credentials, config_data):
-    """REP-SCH-010 to 013: Schedule with invalid configuration data."""
+def test_rep_sch_invalid_email_configs(page, config, credentials, config_data):
+    """Email-address validation variants for the schedule form (empty/malformed
+    email). Renamed from the old test_rep_sch_010_013_invalid_schedule_config,
+    which claimed REP-SCH-010/011/012/013 (missing report, missing frequency,
+    invalid/backwards custom range) but its backing data was 100% email
+    scenarios -- none of those 4 IDs ever actually ran. Real REP-SCH-010/011/012/013
+    tests are below."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_new_schedule_report_modal()
     reports_page.fill_schedule_report_form(
@@ -65,6 +70,66 @@ def test_rep_sch_010_013_invalid_schedule_config(page, config, credentials, conf
         assert reports_page.is_schedule_dialog_open() or len(validation) > 0, (
             f"Invalid schedule config accepted: {config_data['description']}"
         )
+    reports_page.close_dialog()
+
+
+@pytest.mark.negative
+@pytest.mark.reports
+def test_rep_sch_010_save_without_report_selected(page, config, credentials):
+    """REP-SCH-010: Save without selecting a report -- schedule not saved,
+    report validation is shown (Submit stays disabled)."""
+    reports_page = login_and_open_reports(page, config, credentials)
+    reports_page.open_new_schedule_report_modal()
+    reports_page.select_all_schedule_vehicles()
+    reports_page._open_combobox_options("Select Report Type")
+    reports_page._select_option("Standard Report")
+    # Deliberately skip selecting a specific report.
+    assert not reports_page.schedule_submit_enabled(), (
+        "Submit should be disabled without a specific report selected"
+    )
+    reports_page.close_dialog()
+
+
+@pytest.mark.negative
+@pytest.mark.reports
+def test_rep_sch_011_save_without_frequency(page, config, credentials):
+    """REP-SCH-011: Save without selecting frequency -- schedule not saved,
+    frequency validation is shown (Submit stays disabled)."""
+    reports_page = login_and_open_reports(page, config, credentials)
+    reports_page.open_new_schedule_report_modal()
+    reports_page.select_all_schedule_vehicles()
+    reports_page._open_combobox_options("Select Report Type")
+    reports_page._select_option("Standard Report")
+    reports_page._open_combobox_options("Select Standard Report")
+    reports_page._select_option("Fleet Summary")
+    # Deliberately skip selecting a frequency.
+    assert not reports_page.schedule_submit_enabled(), (
+        "Submit should be disabled without a frequency selected"
+    )
+    reports_page.close_dialog()
+
+
+@pytest.mark.negative
+@pytest.mark.reports
+def test_rep_sch_012_013_invalid_custom_date_range(page, config, credentials):
+    """REP-SCH-012/013: A Custom-frequency schedule with start date after end
+    date is rejected or shows validation."""
+    reports_page = login_and_open_reports(page, config, credentials)
+    reports_page.open_new_schedule_report_modal()
+    reports_page.fill_schedule_report_form(
+        report_scope="Standard Report",
+        report_name="Fleet Summary",
+        frequency="Custom",
+        schedule_time="08:00",
+        email_1="test@example.com",
+        from_date="10/09/2026",
+        to_date="01/09/2026",
+    )
+    submit_enabled = reports_page.schedule_submit_enabled()
+    validation = reports_page.validation_messages()
+    assert not submit_enabled or len(validation) > 0, (
+        "Custom schedule with start date after end date should be rejected or show validation"
+    )
     reports_page.close_dialog()
 
 

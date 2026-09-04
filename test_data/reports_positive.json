@@ -9,12 +9,36 @@
       "description": "Generate Fleet Summary with valid single-day range"
     },
     {
+      "report_name": "Work Hour",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Work Hour with valid filters"
+    },
+    {
       "report_name": "Vehicle Summary",
       "vehicle_name": "GCBL10536MHG14AG04459",
       "driver_name": "",
-      "start_date": "25/08/2026",
-      "end_date": "01/09/2026",
-      "description": "Generate Vehicle Summary with valid multi-day range"
+      "start_date": "08/20/2026",
+      "end_date": "08/28/2026",
+      "description": "Generate Vehicle Summary with valid multi-day range (entered as MM/DD -- see Bug_Report.md #6 -- and kept out of the broken Mar-2026 partition, see Bug_Report.md #17)"
+    },
+    {
+      "report_name": "Maxspeed Chart",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Maxspeed Chart with valid filters"
+    },
+    {
+      "report_name": "Stoppage Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Stoppage Summary with valid filters"
     },
     {
       "report_name": "Running Summary",
@@ -25,28 +49,124 @@
       "description": "Generate Running Summary with valid filters"
     },
     {
-      "report_name": "Stoppage Summary",
-      "vehicle_name": "GCBL10536MHG14AG04459",
-      "driver_name": "",
-      "start_date": "01/09/2026",
-      "end_date": "01/09/2026",
-      "description": "Generate Stoppage Summary with valid filters"
-    },
-    {
-      "report_name": "Maxspeed Chart",
-      "vehicle_name": "GCBL10536MHG14AG04459",
-      "driver_name": "",
-      "start_date": "01/09/2026",
-      "end_date": "01/09/2026",
-      "description": "Generate Maxspeed Chart with valid filters"
-    },
-    {
       "report_name": "Engine Hour",
       "vehicle_name": "GCBL10536MHG14AG04459",
       "driver_name": "",
-      "start_date": "01/09/2026",
-      "end_date": "01/09/2026",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
       "description": "Generate Engine Hour with valid filters"
+    },
+    {
+      "report_name": "Trip Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "08/20/2026",
+      "end_date": "08/28/2026",
+      "description": "Generate Trip Report with valid filters (entered as MM/DD -- see Bug_Report.md #6 -- and kept out of the broken Mar-2026 partition, see Bug_Report.md #17)"
+    },
+    {
+      "report_name": "Distance Chart",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Distance Chart with valid filters"
+    },
+    {
+      "report_name": "Cumulative Distance",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "08/20/2026",
+      "end_date": "08/28/2026",
+      "description": "Generate Cumulative Distance with valid filters (entered as MM/DD -- see Bug_Report.md #6 -- and kept out of the broken Mar-2026 partition, see Bug_Report.md #17)"
+    },
+    {
+      "report_name": "Idle",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Idle with valid filters"
+    },
+    {
+      "report_name": "Driver Report",
+      "vehicle_name": "",
+      "driver_name": "syam",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Driver Report with valid filters"
+    },
+    {
+      "report_name": "Driver Performance",
+      "vehicle_name": "",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Driver Performance with valid filters"
+    },
+    {
+      "report_name": "Alert",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Alert report with valid filters"
+    },
+    {
+      "report_name": "ADAS Alarm Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate ADAS Alarm Report with valid filters"
+    },
+    {
+      "report_name": "BMS Summary Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate BMS Summary Report with valid filters"
+    },
+    {
+      "report_name": "BMS Cell Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate BMS Cell Report with valid filters"
+    },
+    {
+      "report_name": "Battery Charging Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Battery Charging Summary with valid filters"
+    },
+    {
+      "report_name": "Temperature",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Temperature report with valid filters"
+    },
+    {
+      "report_name": "Humidity Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Humidity Report with valid filters"
+    },
+    {
+      "report_name": "Sensor Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "driver_name": "",
+      "start_date": "03/01/2026",
+      "end_date": "03/10/2026",
+      "description": "Generate Sensor Report with valid filters"
     }
   ],
   "valid_vehicle_selection": [
@@ -68,9 +188,21 @@
     }
   ],
   "valid_export_formats": [
-    {"format": "Excel", "extension": ".xlsx", "description": "Export to Excel format"},
-    {"format": "CSV", "extension": ".csv", "description": "Export to CSV format"},
-    {"format": "PDF", "extension": ".pdf", "description": "Export to PDF format"}
+    {
+      "format": "Excel",
+      "extension": ".xlsx",
+      "description": "Export to Excel format"
+    },
+    {
+      "format": "CSV",
+      "extension": ".csv",
+      "description": "Export to CSV format"
+    },
+    {
+      "format": "PDF",
+      "extension": ".pdf",
+      "description": "Export to PDF format"
+    }
   ],
   "valid_schedule_configs": [
     {
@@ -79,21 +211,14 @@
       "frequency": "Daily",
       "schedule_time": "08:00",
       "email_1": "test@trackofy.com",
+      "schedule_till_day_name": "15",
       "description": "Schedule Fleet Summary daily"
-    },
-    {
-      "report_scope": "Standard Report",
-      "report_name": "Vehicle Summary",
-      "frequency": "Weekly",
-      "schedule_time": "09:00",
-      "email_1": "test@trackofy.com",
-      "description": "Schedule Vehicle Summary weekly"
     }
   ],
   "valid_custom_report_templates": [
     {
       "template_name": "Automated Test Template",
-      "template_description": "Template created by automation test suite for validation",
+      "template_description": "Template created by automation test suite",
       "description": "Create valid custom report template"
     }
   ]

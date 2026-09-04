@@ -11,22 +11,41 @@
       "description": "Very large date range spanning 8 months"
     }
   ],
-  "large_vehicle_selection": [
-    {
-      "select_all": true,
-      "description": "Select all vehicles for maximum data load"
-    }
-  ],
-  "rapid_filter_changes": [
-    {
-      "report_name": "Fleet Summary",
-      "rapid_clicks": 3,
-      "description": "Rapidly toggle report selection multiple times"
-    }
-  ],
   "empty_result_reports": [
     {
+      "report_name": "Fleet Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Work Hour",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
       "report_name": "Vehicle Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Maxspeed Chart",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Stoppage Summary",
       "vehicle_name": "GCBL10536MHG14AG04459",
       "start_date": "01/01/2020",
       "end_date": "02/01/2020",
@@ -39,7 +58,127 @@
       "start_date": "01/01/2020",
       "end_date": "02/01/2020",
       "driver_name": "",
-      "description": "Generate Running Summary for empty date range"
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Engine Hour",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Trip Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Distance Chart",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Cumulative Distance",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Idle",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Driver Report",
+      "vehicle_name": "",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "syam",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Driver Performance",
+      "vehicle_name": "",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Alert",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "ADAS Alarm Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "BMS Summary Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "BMS Cell Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Battery Charging Summary",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Temperature",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Humidity Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
+    },
+    {
+      "report_name": "Sensor Report",
+      "vehicle_name": "GCBL10536MHG14AG04459",
+      "start_date": "01/01/2020",
+      "end_date": "02/01/2020",
+      "driver_name": "",
+      "description": "Generate report for date range with no data"
     }
   ],
   "custom_report_boundary_names": [
@@ -47,11 +186,19 @@
       "template_name": "A",
       "template_description": "Minimum single character template name",
       "description": "Single character template name"
-    },
+    }
+  ],
+  "large_vehicle_selection": [
     {
-      "template_name": "Test Template With A Very Long Name That Could Potentially Exceed UI Boundaries And Cause Layout Issues",
-      "template_description": "Testing maximum length template name for edge case validation",
-      "description": "Very long template name boundary"
+      "select_all": true,
+      "description": "Select all vehicles for maximum data load"
+    }
+  ],
+  "rapid_filter_changes": [
+    {
+      "report_name": "Fleet Summary",
+      "rapid_clicks": 3,
+      "description": "Rapidly toggle report selection multiple times"
     }
   ],
   "schedule_boundary_times": [

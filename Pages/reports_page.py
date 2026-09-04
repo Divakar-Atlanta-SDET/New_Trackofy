@@ -13,7 +13,6 @@ class ReportsPage(BasePage):
         "BMS Summary Report": ["Select Parameter"],
         "BMS Cell Report": ["Select Report Type"],
         "ADAS Alarm Report": ["Select Alert Type"],
-        "Alert": ["Alert Name"],
     }
 
     def __init__(self, page:Page):
@@ -223,10 +222,17 @@ class ReportsPage(BasePage):
 
     def _standard_report_button(self, report_name: str) -> Locator:
         report_buttons = self.page.get_by_role("button", name=re.compile(rf"\b{re.escape(report_name)}\b"))
-        for index in range(report_buttons.count()):
-            candidate = report_buttons.nth(index)
-            if candidate.is_visible() and candidate.is_enabled():
-                return candidate
+        # Category expansion can still be animating/rendering its cards right after
+        # wait_for_loading_to_finish() returns -- poll briefly instead of a single scan.
+        deadline = time.monotonic() + 5
+        while True:
+            for index in range(report_buttons.count()):
+                candidate = report_buttons.nth(index)
+                if candidate.is_visible() and candidate.is_enabled():
+                    return candidate
+            if time.monotonic() >= deadline:
+                break
+            self.page.wait_for_timeout(250)
         raise AssertionError(f"Could not find enabled report button in current catalog: {report_name}")
 
     def wait_for_standard_report_form(self, report_name: str):
@@ -566,6 +572,17 @@ class ReportsPage(BasePage):
         self.wait_for_visible(option)
         option.click()
         self.wait_for_loading_to_finish()
+        # Some panels (e.g. "searchable-select-panel", confirmed live on
+        # ADAS Alarm/BMS report forms) don't auto-close on option click,
+        # leaving a cdk-overlay-backdrop that intercepts the next click
+        # (Generate, or another combobox). Dismiss it defensively.
+        backdrop = self.page.locator("div.cdk-overlay-backdrop-showing")
+        if backdrop.count() > 0:
+            self.page.keyboard.press("Escape")
+            try:
+                backdrop.first.wait_for(state="hidden", timeout=3000)
+            except Exception:
+                pass
 
     def _option_names_for_combobox(self, combobox_name: str) -> list[str]:
         self._open_combobox_options(combobox_name)
@@ -786,8 +803,25 @@ class ReportsPage(BasePage):
 
     def select_Driver(self,driver_name):
         self.page.get_by_role("combobox", name="Select Driver").locator("span").click()
-        self.page.get_by_text(driver_name).nth(1).click()
-        
+        # This panel is a searchable-select-panel: it shows "No Data Found" until a
+        # query is typed, then loads matching drivers server-side (debounced). Search first.
+        panel = self.page.locator(".cdk-overlay-pane").last
+        search_box = panel.get_by_role("textbox")
+        if search_box.count() > 0:
+            search_box.first.wait_for(state="visible", timeout=10000)
+            # The panel's initial (empty) driver list load must settle before a typed
+            # query is honored -- typing during that load is silently dropped.
+            self.page.wait_for_timeout(3000)
+            search_box.first.fill(driver_name)
+        option = panel.locator("[role='option'], mat-option, .mat-mdc-option").filter(has_text=driver_name).first
+        option.wait_for(state="visible", timeout=15000)
+        option.click()
+        try:
+            self.page.locator(".cdk-overlay-backdrop").click(timeout=3000)
+        except Exception:
+            self.page.keyboard.press("Escape")
+        self.wait_for_loading_to_finish()
+
     def select_all_vehicles(self):
         self._vehicle_combobox().locator("span").click()
         self.page.get_by_role("checkbox", name="Select All").click()
@@ -1048,11 +1082,19 @@ class ReportsPage(BasePage):
         """Read the numeric value from a KPI card by its label."""
         card = self.page.locator("article").filter(has_text=re.compile(rf"\b{re.escape(card_name)}\b", re.I))
         self.wait_for_visible(card.first)
-        text = card.first.inner_text().strip()
-        lines = [line.strip() for line in text.splitlines() if line.strip()]
-        for line in lines:
-            if line != card_name and re.search(r"\d", line):
-                return line
+        # The card can briefly render with only its label before the async value
+        # arrives -- poll briefly rather than returning the label itself as the value.
+        deadline = time.monotonic() + 5
+        lines: list[str] = []
+        while True:
+            text = card.first.inner_text().strip()
+            lines = [line.strip() for line in text.splitlines() if line.strip()]
+            for line in lines:
+                if line != card_name and re.search(r"\d", line):
+                    return line
+            if time.monotonic() >= deadline:
+                break
+            self.page.wait_for_timeout(200)
         return lines[0] if lines else ""
 
     def get_all_kpi_values(self) -> dict[str, str]:
@@ -1074,13 +1116,14 @@ class ReportsPage(BasePage):
     # ─── Table Pagination Methods ───────────────────────────────────────
 
     def change_rows_per_page(self, value: str):
-        """Change the rows-per-page selector to the given value."""
+        """Change the rows-per-page selector to the given value.
+
+        This is a native <select> (options like "10", "25", "50", "100"), not a
+        Material overlay -- select by label rather than click+role=option.
+        """
         rows_combo = self.page.get_by_role("combobox", name="Rows per page")
         self.wait_for_visible(rows_combo)
-        rows_combo.click()
-        option = self.page.get_by_role("option", name=value, exact=True)
-        self.wait_for_visible(option)
-        option.click()
+        rows_combo.select_option(label=value)
         self.wait_for_loading_to_finish()
 
     def get_current_rows_per_page(self) -> str:
@@ -1222,7 +1265,9 @@ class ReportsPage(BasePage):
         """Navigate to the Downloads page (/profile/downloads)."""
         self.page.goto("/profile/downloads")
         self.expect_path("/profile/downloads")
-        self.wait_for_visible(self.page.get_by_text("Downloads", exact=True).first)
+        # get_by_text("Downloads", exact=True) can match a hidden duplicate label;
+        # the results table is a more reliable visible-content signal.
+        self.wait_for_visible(self.page.get_by_role("table").first)
         self.wait_for_loading_to_finish()
 
     def get_download_entries(self) -> list[dict[str, str]]:

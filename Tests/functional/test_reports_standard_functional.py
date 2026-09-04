@@ -4,7 +4,7 @@ from playwright.sync_api import expect
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
-from Utils.data_loader import load_test_data
+from data.reports import STANDARD_REPORT_NAMES
 
 
 def login_and_open_reports(page, config, credentials):
@@ -28,11 +28,13 @@ def test_rep_std_001_open_fleet_performance_category(page, config, credentials):
 
 @pytest.mark.functional
 @pytest.mark.reports
-@pytest.mark.parametrize("report_data", load_test_data("reports_functional.json", "standard_reports_with_config"))
-def test_rep_std_select_report_shows_config(page, config, credentials, report_data):
-    """REP-STD-002/006/010/014/018/022/027/031/035/039/043/048/052/056/060/065/069/073/077/081/085: Select report and verify config controls."""
+@pytest.mark.parametrize("report_name", STANDARD_REPORT_NAMES)
+def test_rep_std_select_report_shows_config(page, config, credentials, report_name):
+    """REP-STD-002/006/010/014/018/022/027/031/035/039/043/048/052/056/060/065/069/073/077/081/085:
+    Select report and verify config controls -- parametrized directly over the full 21-report
+    STANDARD_REPORT_NAMES catalog (data/reports.py) rather than a separate, previously-drifting
+    JSON list that only covered 13 of the 20-then-21 reports."""
     reports_page = login_and_open_reports(page, config, credentials)
-    report_name = report_data["report_name"]
     if not reports_page.is_standard_report_available(report_name):
         pytest.skip(f"Report '{report_name}' not available in current environment")
     reports_page.open_standard_report_form(report_name)
