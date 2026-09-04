@@ -1,0 +1,287 @@
+﻿TC_ID,Module,Area,Test Scenario,Preconditions,Steps,Test Data,Expected Result,Priority,Test Type
+MISC-001,Miscellaneous Pages,Account Menu,Open account menu,Authenticated user,Click account/avatar icon,N/A,Account menu opens,High,Functional
+MISC-002,Miscellaneous Pages,Account Menu,Close account menu,Account menu open,Click avatar/icon again,N/A,Menu closes,High,Functional
+MISC-003,Miscellaneous Pages,Account Menu,Close menu by clicking outside,Account menu open,Click outside menu,N/A,Menu closes without navigation,High,Functional
+MISC-004,Miscellaneous Pages,Account Menu,Open My Profile,Account menu open,Click My Profile,N/A,Profile & Account page opens,High,Functional
+MISC-005,Miscellaneous Pages,Account Menu,Open Downloads,Account menu open,Click Downloads,N/A,Downloads page opens,High,Functional
+MISC-006,Miscellaneous Pages,Account Menu,Open Support,Account menu open,Click Support,N/A,Support Management page opens,High,Functional
+MISC-007,Miscellaneous Pages,Account Menu,Open Change Password,Account menu open,Click Change Password,N/A,Change Password workflow opens,High,Functional
+MISC-008,Miscellaneous Pages,Account Menu,Open Appearance,Account menu open,Click Appearance,N/A,Appearance/theme control is shown/applied,High,Functional
+MISC-009,Miscellaneous Pages,Account Menu,Open Language,Account menu open,Click Language,N/A,Language control opens,High,Functional
+MISC-010,Miscellaneous Pages,Account Menu,Sign out,Authenticated user,Open menu; click Sign Out,N/A,Current session ends and login entry point is shown,High,Functional
+MISC-011,Miscellaneous Pages,Account Menu,Account menu keyboard navigation,Authenticated user,Open menu and tab through options,N/A,All menu options are keyboard accessible,High,Functional
+MISC-012,Miscellaneous Pages,Account Menu,Account menu responsive behavior,Authenticated user,Open menu at supported viewports,Desktop/tablet/mobile,Menu remains usable without clipping,High,Functional
+MISC-013,Miscellaneous Pages,My Profile,Verify page heading,Authenticated user,Open My Profile,N/A,Profile & Account heading is shown,High,Functional
+MISC-014,Miscellaneous Pages,My Profile,Verify profile name,Profile exists,Inspect profile header,Configured name,Correct name is displayed,High,Functional
+MISC-015,Miscellaneous Pages,My Profile,Verify account-holder indicator,Account holder,Inspect profile header,N/A,Account-holder label is displayed correctly,High,Functional
+MISC-016,Miscellaneous Pages,My Profile,Verify email,Profile exists,Inspect header/details,Configured email,Correct email is displayed,High,Functional
+MISC-017,Miscellaneous Pages,My Profile,Verify mobile,Profile exists,Inspect header/details,Configured mobile,Correct mobile is displayed,High,Functional
+MISC-018,Miscellaneous Pages,My Profile,Verify profile completion,Known profile data,Inspect completion indicator,100% or configured value,Displayed completion matches profile completeness,High,Functional
+MISC-019,Miscellaneous Pages,My Profile,Verify Devices usage,Account has device quota,Inspect Account Usage,Known quota/usage,Devices limit and usage are correct,High,Functional
+MISC-020,Miscellaneous Pages,My Profile,Verify SMS usage,Account has SMS quota,Inspect Account Usage,Known quota/usage,SMS limit and usage are correct,High,Functional
+MISC-021,Miscellaneous Pages,My Profile,Verify Sub Users usage,Account has sub-user quota,Inspect Account Usage,Known quota/usage,Sub-user limit and usage are correct,High,Functional
+MISC-022,Miscellaneous Pages,My Profile,Verify Email usage,Account has email quota,Inspect Account Usage,Known quota/usage,Email limit and usage are correct,High,Functional
+MISC-023,Miscellaneous Pages,My Profile,Zero usage display,New/unused account,Open Profile,0 usage,Zero usage and progress are displayed correctly,High,Functional
+MISC-024,Miscellaneous Pages,My Profile,Near-limit usage display,Account near limit,Open Profile,99% usage,Near-limit state is accurate,High,Functional
+MISC-025,Miscellaneous Pages,My Profile,Full-limit usage display,Account at limit,Open Profile,100% usage,Full-limit state is accurate,High,Functional
+MISC-026,Miscellaneous Pages,My Profile,Verify Personal & Preferences fields,Profile exists,Inspect section,Known profile data,"Name, Mobile, Email, WhatsApp, Timezone, Language, Currency and Address are correct",High,Functional
+MISC-027,Miscellaneous Pages,My Profile,Verify Billing Information,Billing data exists,Inspect section,Known billing data,"Company, Address, Billing Cycle, Payment Type and TIN/GST are correct",High,Functional
+MISC-028,Miscellaneous Pages,My Profile,Open Change Password from profile,Profile open,Click Change Password,N/A,Change Password workflow opens,High,Functional
+MISC-029,Miscellaneous Pages,My Profile,Profile data isolation,Two accounts exist,Login as Account A and inspect profile,Account A,Only Account A data is displayed,High,Functional
+MISC-030,Miscellaneous Pages,My Profile,Unauthorized profile URL access,Unauthenticated,Open profile URL directly,Profile URL,Access is denied/redirected,High,Functional
+MISC-031,Miscellaneous Pages,My Profile,Profile responsive layout,Profile open,Test supported viewports,Desktop/tablet/mobile,Sections remain readable and usable,High,Functional
+MISC-032,Miscellaneous Pages,Downloads,Open Downloads,Authenticated user,Navigate to Downloads,N/A,Downloads page opens,High,Functional
+MISC-033,Miscellaneous Pages,Downloads,Verify report count,Reports exist,Inspect heading count,Known count,Displayed count matches records,High,Functional
+MISC-034,Miscellaneous Pages,Downloads,Verify table columns,Downloads open,Inspect headers,N/A,"Report Name, Requested On, Duration, Status and Download are shown",High,Functional
+MISC-035,Miscellaneous Pages,Downloads,Verify Done status,Completed report exists,Inspect record,Done report,Status shows Done,High,Functional
+MISC-036,Miscellaneous Pages,Downloads,Download completed report,Done report exists,Click download icon,Completed report,Correct report file downloads,High,Functional
+MISC-037,Miscellaneous Pages,Downloads,Verify downloaded filename,Done report,Download file,Known report,Filename corresponds to expected report,High,Functional
+MISC-038,Miscellaneous Pages,Downloads,Verify downloaded content,Done report,Open downloaded file,Known filters/date range,File contains the expected report data,High,Functional
+MISC-039,Miscellaneous Pages,Downloads,Verify Pending status,Pending report exists,Inspect record,Pending report,Status shows Pending,High,Functional
+MISC-040,Miscellaneous Pages,Downloads,Pending report has no misleading download,Pending report exists,Inspect action column,Pending report,Download is unavailable/disabled or clearly not ready,High,Functional
+MISC-041,Miscellaneous Pages,Downloads,Pending becomes Done,Report processing active,Wait/refresh until completion,Pending report,Status transitions correctly when processing completes,High,Functional
+MISC-042,Miscellaneous Pages,Downloads,Search exact report name,Multiple downloads,Enter exact report name,Single Vehicle Idle Report,Matching downloads are shown,High,Functional
+MISC-043,Miscellaneous Pages,Downloads,Search partial report name,Multiple downloads,Enter partial name,Work Hour,Matching records are shown,High,Functional
+MISC-044,Miscellaneous Pages,Downloads,Search no result,Downloads exist,Enter unmatched term,NoSuchReport,Empty state is displayed,High,Functional
+MISC-045,Miscellaneous Pages,Downloads,Clear search,Search active,Clear search field,N/A,Full list returns,High,Functional
+MISC-046,Miscellaneous Pages,Downloads,Search special characters,Downloads exist,Enter special chars,@#$,No UI/query error occurs,High,Functional
+MISC-047,Miscellaneous Pages,Downloads,Change page size,More records than default,Change Rows value,10/25/50,Requested number of rows displays,High,Functional
+MISC-048,Miscellaneous Pages,Downloads,Next page,Multiple pages,Click next,N/A,Next page loads,High,Functional
+MISC-049,Miscellaneous Pages,Downloads,Previous page,Page 2+,Click previous,N/A,Previous page loads,High,Functional
+MISC-050,Miscellaneous Pages,Downloads,First page,Later page,Click first,N/A,First page loads,High,Functional
+MISC-051,Miscellaneous Pages,Downloads,Last page,Multiple pages,Click last,N/A,Last page loads,High,Functional
+MISC-052,Miscellaneous Pages,Downloads,Pagination after search,Multiple filtered records,Search then paginate,Search term,Pagination reflects filtered data,High,Functional
+MISC-053,Miscellaneous Pages,Downloads,No downloads empty state,Account has no generated reports,Open Downloads,0 reports,Clear empty state is shown,High,Functional
+MISC-054,Miscellaneous Pages,Downloads,Account isolation,Two accounts with reports,Login as Account A,Account A,Only Account A reports are visible,High,Functional/Security
+MISC-055,Miscellaneous Pages,Downloads,Unauthorized download URL,Known file exists,Use another account/session to access file URL,Foreign file URL,Access is denied,High,Functional/Security
+MISC-056,Miscellaneous Pages,Downloads,Corrupt downloaded file handling,Corrupt file generated,Download/open file,Corrupt report,Application does not falsely indicate a valid file; error is handled,High,Functional
+MISC-057,Miscellaneous Pages,Downloads,Repeated download,Done report,Download same report twice,Same report,Each download corresponds to same correct file,High,Functional
+MISC-058,Miscellaneous Pages,Downloads,Download API failure,Download endpoint fails,Click download,Done report,User sees failure; no false successful download indication,High,Functional
+MISC-059,Miscellaneous Pages,Support,Open Support Management,Authenticated user,Navigate to Support,N/A,Support Management page opens,High,Functional
+MISC-060,Miscellaneous Pages,Support,Verify ticket count,Tickets exist,Inspect heading,Known count,Count matches available tickets,High,Functional
+MISC-061,Miscellaneous Pages,Support,Verify ticket columns,Support open,Inspect headers,N/A,"Ticket No., Description, Raised On, Priority, Status, Attachment and History are shown",High,Functional
+MISC-062,Miscellaneous Pages,Support,Verify ticket number,Ticket exists,Inspect ticket,Known ticket,Correct ticket number displayed,High,Functional
+MISC-063,Miscellaneous Pages,Support,Verify description,Ticket exists,Inspect ticket,Known description,Correct description displayed,High,Functional
+MISC-064,Miscellaneous Pages,Support,Verify raised timestamp,Ticket exists,Inspect ticket,Known timestamp,Correct timestamp displayed,High,Functional
+MISC-065,Miscellaneous Pages,Support,Verify priority values,Tickets with priorities,Inspect records,Critical/High/Medium/NA,Correct priority badge is displayed,High,Functional
+MISC-066,Miscellaneous Pages,Support,Verify status values,Tickets exist,Inspect records,Known status,Correct status is displayed,High,Functional
+MISC-067,Miscellaneous Pages,Support,Verify attachment indicator,Ticket with attachment,Inspect row,Attachment,Attachment indicator is accurate,High,Functional
+MISC-068,Miscellaneous Pages,Support,Open ticket history/view,Ticket exists,Click history/view,Ticket A,Ticket A details/history opens,High,Functional
+MISC-069,Miscellaneous Pages,Support,Ticket detail isolation,Two accounts/tickets,Open Account A ticket,Account A,Only selected ticket information is displayed,High,Security/Functional
+MISC-070,Miscellaneous Pages,Support,Search exact ticket number,Tickets exist,Search exact number,TCKT/190126/14462,Correct ticket is shown,High,Functional
+MISC-071,Miscellaneous Pages,Support,Search description,Tickets exist,Search description text,device is offline,Matching ticket is shown,High,Functional
+MISC-072,Miscellaneous Pages,Support,Search no result,Tickets exist,Search unmatched,NoSuchTicket,Empty result is shown,High,Functional
+MISC-073,Miscellaneous Pages,Support,Clear search,Search active,Clear search,N/A,Full ticket list returns,High,Functional
+MISC-074,Miscellaneous Pages,Support,Change rows per page,Many tickets,Change rows,10/25/50,Requested page size applies,High,Functional
+MISC-075,Miscellaneous Pages,Support,Navigate next page,Many tickets,Click next,N/A,Next page loads,High,Functional
+MISC-076,Miscellaneous Pages,Support,Navigate previous page,Page 2+,Click previous,N/A,Previous page loads,High,Functional
+MISC-077,Miscellaneous Pages,Support,No tickets empty state,No tickets,Open Support,0 tickets,Clear empty state appears,High,Functional
+MISC-078,Miscellaneous Pages,Support,Open Raise Ticket,Support open,Click Raise Ticket,N/A,Raise Support Ticket dialog opens,High,Functional
+MISC-079,Miscellaneous Pages,Support,Account ticket isolation,Two accounts,Login Account A and inspect tickets,Account A,Account B tickets are not visible,High,Security/Functional
+MISC-080,Miscellaneous Pages,Raise Ticket,Open vehicle selector,Raise Ticket open,Click Select Vehicles,N/A,Vehicle list opens,High,Functional
+MISC-081,Miscellaneous Pages,Raise Ticket,Select one vehicle,Vehicles available,Select vehicle,Vehicle A,Vehicle is selected and count updates,High,Functional
+MISC-082,Miscellaneous Pages,Raise Ticket,Select multiple vehicles,Multiple vehicles,Select A and B,A/B,Both vehicles are selected and count is correct,High,Functional
+MISC-083,Miscellaneous Pages,Raise Ticket,Remove vehicle,Vehicle selected,Remove selected vehicle,Vehicle A,Vehicle is removed and count updates,High,Functional
+MISC-084,Miscellaneous Pages,Raise Ticket,Verify unauthorized vehicle unavailable,Account has restricted vehicle,Open selector,Foreign vehicle,Foreign vehicle is not selectable,High,Functional
+MISC-085,Miscellaneous Pages,Raise Ticket,Category required validation,Form open,Submit without category,Blank,Category validation is shown,High,Functional
+MISC-086,Miscellaneous Pages,Raise Ticket,Severity required validation,Form open,Submit without severity,Blank,Severity validation is shown,High,Functional
+MISC-087,Miscellaneous Pages,Raise Ticket,Comment required validation,Form open,Submit without comment,Blank,Comment validation is shown if required,High,Functional
+MISC-088,Miscellaneous Pages,Raise Ticket,Valid category selection,Form open,Select category,Valid category,Category is selected,High,Functional
+MISC-089,Miscellaneous Pages,Raise Ticket,Valid severity selection,Form open,Select severity,Valid severity,Severity is selected,High,Functional
+MISC-090,Miscellaneous Pages,Raise Ticket,Comment minimum valid value,Form open,Enter valid comment,Device is offline,Comment is accepted,High,Functional
+MISC-091,Miscellaneous Pages,Raise Ticket,Comment exactly 200 chars,Form open,Enter 200-character comment,200 chars,Input is accepted and counter shows 200/200,High,Functional
+MISC-092,Miscellaneous Pages,Raise Ticket,Comment over 200 chars,Form open,Paste >200 chars,>200 chars,Input is rejected/truncated according to design and cannot exceed limit,High,Functional
+MISC-093,Miscellaneous Pages,Raise Ticket,Comment whitespace only,Form open,Enter spaces/newlines,   ,Validation rejects meaningless required input,High,Functional
+MISC-094,Miscellaneous Pages,Raise Ticket,Comment special characters,Form open,Enter punctuation,!@#$%^&*(),Characters are safely handled,High,Functional
+MISC-095,Miscellaneous Pages,Raise Ticket,Comment Unicode,Form open,Enter Unicode text,Hindi/emoji text,Unicode is preserved safely,High,Functional
+MISC-096,Miscellaneous Pages,Raise Ticket,Comment XSS,Form open,Enter script payload,<script>alert(1)</script>,Payload is encoded/rejected and never executed,Critical,Security
+MISC-097,Miscellaneous Pages,Raise Ticket,Comment SQL injection,Form open,Enter SQL-like payload,' OR 1=1 --,Input does not alter backend query behavior,Critical,Security
+MISC-098,Miscellaneous Pages,Raise Ticket,Valid email,Form open,Enter valid email,qa@example.com,Email is accepted,High,Functional
+MISC-099,Miscellaneous Pages,Raise Ticket,Invalid email,Form open,Enter invalid email,qa@,Validation is shown,High,Functional
+MISC-100,Miscellaneous Pages,Raise Ticket,Empty email,Form open,Leave email blank,Blank,Required validation is shown,High,Functional
+MISC-101,Miscellaneous Pages,Raise Ticket,Email whitespace,Form open,Enter spaces around valid email, qa@example.com ,Handled consistently and validated correctly,High,Functional
+MISC-102,Miscellaneous Pages,Raise Ticket,Valid mobile,Form open,Enter valid mobile,9876543210,Mobile is accepted,High,Functional
+MISC-103,Miscellaneous Pages,Raise Ticket,Invalid mobile,Form open,Enter letters/invalid length,abc/123,Validation is shown,High,Functional
+MISC-104,Miscellaneous Pages,Raise Ticket,Empty mobile,Form open,Leave mobile blank,Blank,Required validation is shown,High,Functional
+MISC-105,Miscellaneous Pages,Raise Ticket,Submit valid ticket,All required fields valid,Click Submit Ticket,Valid data,Ticket is created successfully,High,Functional
+MISC-106,Miscellaneous Pages,Raise Ticket,Prevent duplicate ticket,Valid form,Double-click Submit Ticket,Valid data,Only one ticket is created,Critical,Functional
+MISC-107,Miscellaneous Pages,Raise Ticket,Cancel ticket creation,Form open,Click Cancel,Entered data,Dialog closes and ticket is not created,High,Functional
+MISC-108,Miscellaneous Pages,Raise Ticket,Close ticket form using X,Form open,Click X,Entered data,Dialog closes according to defined behavior without unintended submission,High,Functional
+MISC-109,Miscellaneous Pages,Raise Ticket,Network failure on submit,Valid form,Simulate network failure; submit,Valid data,Failure is shown and no false success is reported,High,Functional
+MISC-110,Miscellaneous Pages,Raise Ticket,API failure on submit,Valid form,Simulate server error,Valid data,Error is handled and duplicate/partial ticket is avoided,High,Functional
+MISC-111,Miscellaneous Pages,Raise Ticket,Session expires during submission,Session expires,Submit ticket,Valid data,Request is rejected and user is re-authenticated/redirected,Critical,Functional
+MISC-112,Miscellaneous Pages,Raise Ticket,Ticket appears after creation,Ticket successfully created,Return to Support,New ticket,New ticket appears exactly once,High,Functional
+MISC-113,Miscellaneous Pages,Raise Ticket,Ticket preserves selected unit,Ticket created with unit,Open ticket history,Vehicle A,Selected unit is preserved,High,Functional
+MISC-114,Miscellaneous Pages,Raise Ticket,Ticket preserves contact data,Ticket created,Open ticket,Known email/mobile,Submitted contact data is preserved,High,Functional
+MISC-115,Miscellaneous Pages,Change Password,Open Change Password,Authenticated user,Open workflow,N/A,Change Password dialog/page opens,High,Functional
+MISC-116,Miscellaneous Pages,Change Password,Current password required,Password form open,Click Verify with blank current password,Blank,Required validation appears,High,Functional
+MISC-117,Miscellaneous Pages,Change Password,Correct current password,Password known,Enter correct password; Verify,Correct password,Identity verification succeeds,High,Functional
+MISC-118,Miscellaneous Pages,Change Password,Incorrect current password,Password known,Enter wrong password; Verify,Wrong password,Verification fails,Critical,Security
+MISC-119,Miscellaneous Pages,Change Password,Current password masking,Password form open,Inspect current password field,N/A,Password is masked,High,Functional
+MISC-120,Miscellaneous Pages,Change Password,Current password visibility toggle,Password entered,Click visibility icon,Secret123!,Value visibility toggles without changing value,High,Functional
+MISC-121,Miscellaneous Pages,Change Password,New password required,Identity verified,Leave new password blank,Blank,Required validation appears,High,Functional
+MISC-122,Miscellaneous Pages,Change Password,Confirm password required,Identity verified,Leave confirmation blank,Blank,Required validation appears,High,Functional
+MISC-123,Miscellaneous Pages,Change Password,Matching new passwords,Identity verified,Enter same values,Password123!,Confirmation passes,High,Functional
+MISC-124,Miscellaneous Pages,Change Password,Mismatched new passwords,Identity verified,Enter different values,Password123!/Password456!,Mismatch validation appears,High,Functional
+MISC-125,Miscellaneous Pages,Change Password,8-character boundary,Identity verified,Enter 8-character password satisfying policy,Abcd123!,Password accepted if configured minimum is 8,High,Functional
+MISC-126,Miscellaneous Pages,Change Password,7-character password,Identity verified,Enter 7-character password,Abc12!x,8+ requirement remains unmet,High,Functional
+MISC-127,Miscellaneous Pages,Change Password,Missing uppercase,Identity verified,Enter password without uppercase,abcd123!,Uppercase requirement fails,High,Functional
+MISC-128,Miscellaneous Pages,Change Password,Missing lowercase,Identity verified,Enter password without lowercase,ABCD123!,Lowercase requirement fails,High,Functional
+MISC-129,Miscellaneous Pages,Change Password,Missing number,Identity verified,Enter password without number,AbcdEFG!,Number requirement fails,High,Functional
+MISC-130,Miscellaneous Pages,Change Password,Missing special character,Identity verified,Enter password without special char,Abcd1234,Special-character requirement fails,High,Functional
+MISC-131,Miscellaneous Pages,Change Password,All password rules satisfied,Identity verified,Enter strong password,Abcd123!,All password requirements are satisfied,High,Functional
+MISC-132,Miscellaneous Pages,Change Password,New password masking,New password entered,Inspect field,Secret123!,Password is masked,High,Functional
+MISC-133,Miscellaneous Pages,Change Password,New password visibility toggle,New password entered,Click eye,Secret123!,Only new password visibility changes,High,Functional
+MISC-134,Miscellaneous Pages,Change Password,Confirm password masking,Confirmation entered,Inspect field,Secret123!,Confirmation is masked,High,Functional
+MISC-135,Miscellaneous Pages,Change Password,Confirm visibility toggle,Confirmation entered,Click eye,Secret123!,Only confirmation visibility changes,High,Functional
+MISC-136,Miscellaneous Pages,Change Password,Old password reuse,Identity verified,Use current password as new password,Current password,Rejected if password reuse is prohibited by policy,High,Functional
+MISC-137,Miscellaneous Pages,Change Password,Very long password,Identity verified,Enter long valid/invalid value,Long string,Configured maximum policy is enforced,High,Functional
+MISC-138,Miscellaneous Pages,Change Password,Unicode password,Identity verified,Enter Unicode password,Unicode value,Handled according to password policy without corruption,High,Functional
+MISC-139,Miscellaneous Pages,Change Password,Whitespace password,Identity verified,Enter password with spaces,Password with spaces,Handled according to configured policy,High,Functional
+MISC-140,Miscellaneous Pages,Change Password,Successful update,All rules satisfied,Click Update Password,Valid new password,Password changes successfully,High,Functional
+MISC-141,Miscellaneous Pages,Change Password,Old password invalid after update,Password changed,Login using old password,Old password,Old password no longer authenticates when replacement invalidates it,Critical,Security
+MISC-142,Miscellaneous Pages,Change Password,New password authenticates,Password changed,Login using new password,New password,New password authenticates successfully,Critical,Security
+MISC-143,Miscellaneous Pages,Change Password,Server failure on update,Valid form,Simulate API failure; update,Valid data,Error shown; password is not falsely reported as changed,High,Functional
+MISC-144,Miscellaneous Pages,Change Password,Session expiry on update,Session expired,Attempt update,Valid data,Update rejected and authentication flow is enforced,High,Functional
+MISC-145,Miscellaneous Pages,Change Password,Repeated wrong current password,Security policy enabled,Attempt multiple wrong verifications,Wrong password,Rate limit/lockout/security control behaves as configured,Critical,Security
+MISC-146,Miscellaneous Pages,Appearance,Switch light to dark,Light mode active,Select Appearance/dark mode,Dark,Application switches to dark mode,High,Functional
+MISC-147,Miscellaneous Pages,Appearance,Switch dark to light,Dark mode active,Select Appearance/light mode,Light,Application switches to light mode,High,Functional
+MISC-148,Miscellaneous Pages,Appearance,Theme persists after refresh,Theme changed,Refresh page,Dark/Light,Selected theme persists according to design,Medium,Functional
+MISC-149,Miscellaneous Pages,Appearance,Theme persists across navigation,Theme changed,Navigate Home/Dashboard/Reports/Settings,Dark/Light,Theme remains consistent,Medium,Functional
+MISC-150,Miscellaneous Pages,Appearance,Theme applies to account menu,Dark mode active,Open account menu,Dark,Menu uses correct theme,Medium,Functional
+MISC-151,Miscellaneous Pages,Appearance,Theme applies to dialogs,Dark mode active,Open support/password/feedback dialog,Dark,Dialog uses correct theme,Medium,Functional
+MISC-152,Miscellaneous Pages,Appearance,Theme applies to tables,Dark mode active,Open Downloads/Support,Dark,Table remains readable,Medium,Functional
+MISC-153,Miscellaneous Pages,Appearance,Theme applies to map,Dark mode active,Open Home/Tracking,Dark,Map/UI treatment remains usable,Medium,Functional
+MISC-154,Miscellaneous Pages,Appearance,Theme contrast,Dark mode active,Inspect text/status badges,Dark,Text and controls meet readable contrast,Medium,Functional
+MISC-155,Miscellaneous Pages,Appearance,Theme preference isolation,Two accounts if account-level preference,Change theme for Account A; login B,A/B,Preference follows intended scope,Medium,Functional
+MISC-156,Miscellaneous Pages,Language,Open language selector,Authenticated user,Open Language option,N/A,Language control opens,Medium,Integration/Localization
+MISC-157,Miscellaneous Pages,Language,Select supported language,Language control open,Select supported language,Supported language,Translatable UI updates,High,Integration/Localization
+MISC-158,Miscellaneous Pages,Language,Switch back to English,Non-English active,Select English,English,UI returns to English,Medium,Integration/Localization
+MISC-159,Miscellaneous Pages,Language,Language persistence,Language changed,Refresh/reopen,Selected language,Preference persists according to design,Medium,Integration/Localization
+MISC-160,Miscellaneous Pages,Language,Navigation translation,Non-English active,Inspect nav,Selected language,Translatable nav labels update,Medium,Integration/Localization
+MISC-161,Miscellaneous Pages,Language,Form translation,Non-English active,Open forms,Selected language,Translatable labels/validation update,Medium,Integration/Localization
+MISC-162,Miscellaneous Pages,Language,Dialog translation,Non-English active,Open dialogs,Selected language,Dialog text updates,Medium,Integration/Localization
+MISC-163,Miscellaneous Pages,Language,Validation translation,Non-English active,Trigger validation,Selected language,Translated validation is displayed where supported,Medium,Integration/Localization
+MISC-164,Miscellaneous Pages,Language,Long translated text layout,Language with longer strings,Navigate through UI,Long translation,No clipping/overlap occurs,Medium,Integration/Localization
+MISC-165,Miscellaneous Pages,Language,Dynamic values preserved,Non-English active,Inspect dates/numbers/IDs,Known values,Dynamic data remains intact,Medium,Integration/Localization
+MISC-166,Miscellaneous Pages,Language,No raw translation placeholders,Non-English active,Inspect UI,N/A,No unexpected raw translation markers are shown,Medium,Integration/Localization
+MISC-167,Miscellaneous Pages,Language,Language switch does not logout,Authenticated user,Change language,Supported language,User remains authenticated,High,Integration/Localization
+MISC-168,Miscellaneous Pages,Language,Language switch does not clear filters,Filtered module open,Change language,Existing filter,Filter state follows intended behavior and is not unexpectedly lost,Medium,Integration/Localization
+MISC-169,Miscellaneous Pages,Language,Unsupported translation service failure,Translation service unavailable,Change language,N/A,Application fails gracefully without breaking core UI,Medium,Integration/Localization
+MISC-170,Miscellaneous Pages,Sign Out,Sign out successfully,Authenticated user,Account menu > Sign Out,N/A,User is logged out,High,Functional
+MISC-171,Miscellaneous Pages,Sign Out,Redirect after sign out,Authenticated user,Sign out,N/A,Login/authentication page is displayed,High,Functional
+MISC-172,Miscellaneous Pages,Sign Out,Back button after logout,Logged out,Click browser Back,N/A,Protected page is not usable,High,Security
+MISC-173,Miscellaneous Pages,Sign Out,Refresh after logout,Logged out,Refresh protected URL,Protected URL,Access is denied/redirected,High,Security
+MISC-174,Miscellaneous Pages,Sign Out,Direct protected URL after logout,Logged out,Open protected module URL,URL,Access is denied,Critical,Security
+MISC-175,Miscellaneous Pages,Sign Out,Token/session invalidation,Logged out,Reuse old authenticated request/session,Old token,Request is rejected according to session design,Critical,Security
+MISC-176,Miscellaneous Pages,Sign Out,Multiple tabs logout,Same user in two tabs,Logout in tab A; use tab B,N/A,Tab B follows session invalidation policy,High,Security
+MISC-177,Miscellaneous Pages,Sign Out,Login another user after logout,User A logged in,Logout; login User B,User B,User B sees only User B data,High,Security
+MISC-178,Miscellaneous Pages,Sign Out,Logout control keyboard accessible,Authenticated user,Navigate with keyboard,N/A,Sign Out is reachable and operable,High,Functional
+MISC-179,Miscellaneous Pages,Help Center,Open Help Center from 9-dot launcher,Authenticated user,Click grid/9-dot icon; select Help Center,N/A,Help Center opens,High,Functional
+MISC-180,Miscellaneous Pages,Help Center,Verify overview content,Help Center open,Inspect landing page,N/A,"Overview, Quick Links, Popular Sections and Common Issues are visible",Medium,Functional
+MISC-181,Miscellaneous Pages,Help Center,Search articles,Help Center open,Enter valid search,device setup,Relevant articles/results appear,Medium,Functional
+MISC-182,Miscellaneous Pages,Help Center,Search partial term,Help Center open,Enter partial term,sensor,Relevant results appear,Medium,Functional
+MISC-183,Miscellaneous Pages,Help Center,Search no result,Help Center open,Enter unmatched term,xyz-no-result,No-result state appears,Medium,Functional
+MISC-184,Miscellaneous Pages,Help Center,Search empty,Help Center open,Submit empty search,Blank,Default/search behavior is handled without error,Medium,Functional
+MISC-185,Miscellaneous Pages,Help Center,Search special characters,Help Center open,Search special characters,@#$,No UI error,Medium,Functional
+MISC-186,Miscellaneous Pages,Help Center,Open Device category,Help Center open,Click Device,N/A,Device content/category opens,Medium,Functional
+MISC-187,Miscellaneous Pages,Help Center,Open Sensor category,Help Center open,Click Sensor,N/A,Sensor content/category opens,Medium,Functional
+MISC-188,Miscellaneous Pages,Help Center,Quick Link Device Setup,Help Center open,Click Device Setup,N/A,Correct Device Setup content opens,Medium,Functional
+MISC-189,Miscellaneous Pages,Help Center,Quick Link Sensor Configuration,Help Center open,Click Sensor Configuration,N/A,Correct content opens,Medium,Functional
+MISC-190,Miscellaneous Pages,Help Center,Quick Link Reports,Help Center open,Click Reports,N/A,Correct Reports help content opens,Medium,Functional
+MISC-191,Miscellaneous Pages,Help Center,Quick Link Alerts,Help Center open,Click Alerts,N/A,Correct Alerts help content opens,Medium,Functional
+MISC-192,Miscellaneous Pages,Help Center,Quick Link Video Telematics,Help Center open,Click Video Telematics,N/A,Correct content opens,Medium,Functional
+MISC-193,Miscellaneous Pages,Help Center,Quick Link Live Tracking,Help Center open,Click Live Tracking,N/A,Correct content opens,Medium,Functional
+MISC-194,Miscellaneous Pages,Help Center,Popular Live Tracking section,Help Center open,Click section,N/A,Correct article/category opens,Medium,Functional
+MISC-195,Miscellaneous Pages,Help Center,Popular Device section,Help Center open,Click section,N/A,Correct article/category opens,Medium,Functional
+MISC-196,Miscellaneous Pages,Help Center,Popular Sensor section,Help Center open,Click section,N/A,Correct article/category opens,Medium,Functional
+MISC-197,Miscellaneous Pages,Help Center,Popular Reports section,Help Center open,Click section,N/A,Correct article/category opens,Medium,Functional
+MISC-198,Miscellaneous Pages,Help Center,Common issue live location,Help Center open,Click issue,Vehicle not showing live location,Correct troubleshooting content opens,Medium,Functional
+MISC-199,Miscellaneous Pages,Help Center,Common issue missing report,Help Center open,Click issue,Report data is missing,Correct troubleshooting content opens,Medium,Functional
+MISC-200,Miscellaneous Pages,Help Center,Common issue alert,Help Center open,Click issue,Alert is not triggering,Correct troubleshooting content opens,Medium,Functional
+MISC-201,Miscellaneous Pages,Help Center,Common issue sensor,Help Center open,Click issue,Sensor value looks incorrect,Correct troubleshooting content opens,Medium,Functional
+MISC-202,Miscellaneous Pages,Help Center,Home button,Help Center open,Click Home,N/A,Returns to Trackofy application/home destination,Medium,Functional
+MISC-203,Miscellaneous Pages,Help Center,Browser back from article,Article open,Click browser Back,N/A,Previous Help Center state is restored,Medium,Functional
+MISC-204,Miscellaneous Pages,Help Center,Help Center responsive,Help Center open,Test supported viewports,Desktop/tablet/mobile,Sidebar/content remain usable,Medium,Functional
+MISC-205,Miscellaneous Pages,Feedback Prompt,Display feedback prompt,Prompt eligibility condition met,Observe application,N/A,Feedback prompt is displayed,High,Functional
+MISC-206,Miscellaneous Pages,Feedback Prompt,Dismiss feedback prompt,Prompt visible,Click Dismiss,N/A,Prompt closes,High,Functional
+MISC-207,Miscellaneous Pages,Feedback Prompt,Give Feedback opens form,Prompt visible,Click Give Feedback,N/A,Feedback form opens,High,Functional
+MISC-208,Miscellaneous Pages,Feedback Prompt,Prompt does not block application,Prompt visible,Attempt core navigation,N/A,Core application remains usable,High,Functional
+MISC-209,Miscellaneous Pages,Feedback Form,Verify version options,Feedback form open,Inspect version preference,New/Old/Not sure,Three options are available,High,Functional
+MISC-210,Miscellaneous Pages,Feedback Form,Select New version,Form open,Select New,New,New is selected,High,Functional
+MISC-211,Miscellaneous Pages,Feedback Form,Select Old version,Form open,Select Old,Old,Old is selected,High,Functional
+MISC-212,Miscellaneous Pages,Feedback Form,Select Not sure,Form open,Select Not sure,Not sure,Not sure is selected,High,Functional
+MISC-213,Miscellaneous Pages,Feedback Form,Version selection changes correctly,One option selected,Select another option,New→Old,Selection moves to new option,High,Functional
+MISC-214,Miscellaneous Pages,Feedback Form,Verify five-star rating,Form open,Inspect rating,N/A,Five stars are available,High,Functional
+MISC-215,Miscellaneous Pages,Feedback Form,Rate 1 star,Form open,Click first star,1,One star selected,High,Functional
+MISC-216,Miscellaneous Pages,Feedback Form,Rate 5 stars,Form open,Click fifth star,5,Five stars selected,High,Functional
+MISC-217,Miscellaneous Pages,Feedback Form,Change rating,Rating selected,Select another rating,2→4,New rating replaces previous rating,High,Functional
+MISC-218,Miscellaneous Pages,Feedback Form,Positive tag Faster loading,Form open,Select tag,Faster loading,Tag selection is reflected,High,Functional
+MISC-219,Miscellaneous Pages,Feedback Form,Positive tag Better UI/UX,Form open,Select tag,Better UI/UX,Tag selection is reflected,High,Functional
+MISC-220,Miscellaneous Pages,Feedback Form,Positive tag Dashboard improved,Form open,Select tag,Dashboard improved,Tag selection is reflected,High,Functional
+MISC-221,Miscellaneous Pages,Feedback Form,Positive tag Reports improved,Form open,Select tag,Reports improved,Tag selection is reflected,High,Functional
+MISC-222,Miscellaneous Pages,Feedback Form,Positive tag Tracking improved,Form open,Select tag,Tracking improved,Tag selection is reflected,High,Functional
+MISC-223,Miscellaneous Pages,Feedback Form,Positive tag Settings easier,Form open,Select tag,Settings easier,Tag selection is reflected,High,Functional
+MISC-224,Miscellaneous Pages,Feedback Form,Negative tag Missing features,Form open,Select tag,Missing features,Tag selection is reflected,High,Functional
+MISC-225,Miscellaneous Pages,Feedback Form,Negative tag Confusing flow,Form open,Select tag,Confusing flow,Tag selection is reflected,High,Functional
+MISC-226,Miscellaneous Pages,Feedback Form,Negative tag Slow/lag,Form open,Select tag,Slow / lag,Tag selection is reflected,High,Functional
+MISC-227,Miscellaneous Pages,Feedback Form,Negative tag Bugs/errors,Form open,Select tag,Bugs / errors,Tag selection is reflected,High,Functional
+MISC-228,Miscellaneous Pages,Feedback Form,Negative tag Map issues,Form open,Select tag,Map issues,Tag selection is reflected,High,Functional
+MISC-229,Miscellaneous Pages,Feedback Form,Negative tag Report mismatch,Form open,Select tag,Report mismatch,Tag selection is reflected,High,Functional
+MISC-230,Miscellaneous Pages,Feedback Form,Multiple positive tags,Multi-select supported,Select multiple positive tags,Faster loading + Better UI/UX,All intended tags remain selected,High,Functional
+MISC-231,Miscellaneous Pages,Feedback Form,Multiple negative tags,Multi-select supported,Select multiple negative tags,Bugs + Map issues,All intended tags remain selected,High,Functional
+MISC-232,Miscellaneous Pages,Feedback Form,Suggestions empty,Form open,Leave Suggestions blank,Blank,Optional field permits blank,High,Functional
+MISC-233,Miscellaneous Pages,Feedback Form,Suggestions exactly 250 chars,Form open,Enter 250 chars,250 chars,Counter shows 250/250 and value is accepted,High,Functional
+MISC-234,Miscellaneous Pages,Feedback Form,Suggestions over 250 chars,Form open,Paste >250 chars,>250 chars,Input cannot exceed configured 250-character limit,High,Functional
+MISC-235,Miscellaneous Pages,Feedback Form,Suggestions special chars,Form open,Enter special chars,!@#$,Input is safely handled,High,Functional
+MISC-236,Miscellaneous Pages,Feedback Form,Suggestions Unicode,Form open,Enter Unicode,Hindi/emoji,Unicode is handled correctly,High,Functional
+MISC-237,Miscellaneous Pages,Feedback Form,Suggestions XSS,Form open,Enter script payload,<script>alert(1)</script>,Payload is safely encoded/rejected and never executes,Critical,Security
+MISC-238,Miscellaneous Pages,Feedback Form,Suggestions SQL injection,Form open,Enter SQL-like payload,' OR 1=1 --,Input is safely handled,Critical,Security
+MISC-239,Miscellaneous Pages,Feedback Form,Open attachment chooser,Form open,Click Choose File,N/A,File chooser opens,High,Functional
+MISC-240,Miscellaneous Pages,Feedback Form,Attach PNG,Form open,Choose PNG,Valid PNG <=5MB,File is accepted,High,Functional
+MISC-241,Miscellaneous Pages,Feedback Form,Attach JPG,Form open,Choose JPG,Valid JPG <=5MB,File is accepted,High,Functional
+MISC-242,Miscellaneous Pages,Feedback Form,Attach PDF,Form open,Choose PDF,Valid PDF <=5MB,File is accepted,High,Functional
+MISC-243,Miscellaneous Pages,Feedback Form,Reject file >5MB,Form open,Choose oversized file,PNG >5MB,File is rejected with clear validation,Critical,Functional
+MISC-244,Miscellaneous Pages,Feedback Form,Reject unsupported file type,Form open,Choose unsupported file,EXE/ZIP,File is rejected,High,Functional
+MISC-245,Miscellaneous Pages,Feedback Form,Reject spoofed MIME/extension,Form open,Upload mismatched content,Renamed executable as .png,File is rejected/safely handled,Critical,Security
+MISC-246,Miscellaneous Pages,Feedback Form,Reject corrupt image,Form open,Upload corrupt PNG/JPG,Corrupt file,File is rejected or safely handled,High,Functional
+MISC-247,Miscellaneous Pages,Feedback Form,Optional attachment,Form open,Submit without attachment,No file,Submission remains possible if other required fields are valid,High,Functional
+MISC-248,Miscellaneous Pages,Feedback Form,Verify Mobile field,Form open,Inspect/enter mobile,Valid mobile,Mobile is displayed/validated as configured,High,Functional
+MISC-249,Miscellaneous Pages,Feedback Form,Verify Email field,Form open,Inspect/enter email,Valid email,Email is displayed/validated as configured,High,Functional
+MISC-250,Miscellaneous Pages,Feedback Form,Invalid feedback email,Form open,Enter invalid email,qa@,Validation appears,High,Functional
+MISC-251,Miscellaneous Pages,Feedback Form,Invalid feedback mobile,Form open,Enter invalid mobile,abc,Validation appears,High,Functional
+MISC-252,Miscellaneous Pages,Feedback Form,Cancel feedback,Form open,Click Cancel,Entered data,Form closes without submission,High,Functional
+MISC-253,Miscellaneous Pages,Feedback Form,Close feedback using X,Form open,Click X,Entered data,Form closes without unintended submission,High,Functional
+MISC-254,Miscellaneous Pages,Feedback Form,Submit valid feedback,Required fields valid,Click Submit,Valid feedback,Feedback is submitted successfully,High,Functional
+MISC-255,Miscellaneous Pages,Feedback Form,Prevent duplicate feedback,Valid feedback,Double-click Submit,Valid data,Only one feedback submission is created,Critical,Functional
+MISC-256,Miscellaneous Pages,Feedback Form,Feedback API failure,Valid feedback,Simulate API failure; submit,Valid data,Failure is shown and no false success,High,Functional
+MISC-257,Miscellaneous Pages,Feedback Form,Feedback network interruption,Valid feedback,Disconnect network; submit,Valid data,Submission fails safely,High,Functional
+MISC-258,Miscellaneous Pages,Feedback Form,Feedback session expiry,Session expires,Submit feedback,Valid data,Authentication/session handling is enforced,Critical,Security
+MISC-259,Miscellaneous Pages,Cross Module,Account menu from Home,Authenticated user,Open Home; open account menu,N/A,Menu works,High,Cross Module
+MISC-260,Miscellaneous Pages,Cross Module,Account menu from Dashboard,Authenticated user,Open Dashboard; open account menu,N/A,Menu works,High,Cross Module
+MISC-261,Miscellaneous Pages,Cross Module,Account menu from Reports,Authenticated user,Open Reports; open account menu,N/A,Menu works,High,Cross Module
+MISC-262,Miscellaneous Pages,Cross Module,Account menu from Settings,Authenticated user,Open Settings; open account menu,N/A,Menu works,High,Cross Module
+MISC-263,Miscellaneous Pages,Security,Unauthenticated profile access,Logged out,Open profile URL,Protected URL,Access is denied,Critical,Security
+MISC-264,Miscellaneous Pages,Security,Unauthenticated downloads access,Logged out,Open downloads URL,Protected URL,Access is denied,Critical,Security
+MISC-265,Miscellaneous Pages,Security,Unauthenticated support access,Logged out,Open support URL,Protected URL,Access is denied,Critical,Security
+MISC-266,Miscellaneous Pages,Security,Cross-account profile access,Two accounts,Attempt Account B profile using Account A session,Foreign identifier,Access denied,Critical,Security
+MISC-267,Miscellaneous Pages,Security,Cross-account download access,Two accounts,Request Account B download as A,Foreign file,Access denied,Critical,Security
+MISC-268,Miscellaneous Pages,Security,Cross-account support access,Two accounts,Request Account B ticket as A,Foreign ticket,Access denied,Critical,Security
+MISC-269,Miscellaneous Pages,Security,Support attachment path traversal,Support ticket attachment exists,Manipulate download path,../foreign-file,Access denied,Critical,Security
+MISC-270,Miscellaneous Pages,Security,Feedback attachment path traversal,Feedback upload,Attempt malicious filename/path,../file,Path is sanitized/rejected,Critical,Security
+MISC-271,Miscellaneous Pages,Security,Search injection in downloads,Downloads open,Use SQL-like search,' OR 1=1 --,No query manipulation,Critical,Security
+MISC-272,Miscellaneous Pages,Security,Search injection in support,Support open,Use SQL-like search,' OR 1=1 --,No query manipulation,Critical,Security
+MISC-273,Miscellaneous Pages,Security,XSS in support search,Support open,Enter script search,<script>alert(1)</script>,No script execution,Critical,Security
+MISC-274,Miscellaneous Pages,Accessibility,Keyboard account menu,Authenticated user,Use Tab/Enter,N/A,Controls accessible,Medium,Accessibility
+MISC-275,Miscellaneous Pages,Accessibility,Keyboard profile actions,Profile open,Use keyboard,N/A,Actions accessible,Medium,Accessibility
+MISC-276,Miscellaneous Pages,Accessibility,Keyboard support form,Ticket form open,Tab through fields,N/A,Fields/buttons accessible in logical order,Medium,Accessibility
+MISC-277,Miscellaneous Pages,Accessibility,Keyboard feedback form,Feedback open,Tab through controls,N/A,Controls accessible,Medium,Accessibility
+MISC-278,Miscellaneous Pages,Accessibility,Visible focus,All pages,Tab through controls,N/A,Focus is visible,Medium,Accessibility
+MISC-279,Miscellaneous Pages,Accessibility,Dialog escape behavior,Dialog open,Press Escape,N/A,Dialog closes if Escape is supported,Medium,Accessibility
+MISC-280,Miscellaneous Pages,Responsive,Account menu mobile/tablet,Account menu open,Resize viewport,Supported sizes,No critical overflow,Medium,Responsive
+MISC-281,Miscellaneous Pages,Responsive,Support dialog responsive,Raise Ticket open,Resize viewport,Supported sizes,Form remains usable,Medium,Responsive
+MISC-282,Miscellaneous Pages,Responsive,Feedback dialog responsive,Feedback open,Resize viewport,Supported sizes,Form remains usable,Medium,Responsive
+MISC-283,Miscellaneous Pages,Reliability,Refresh after successful support ticket,Ticket created,Refresh Support page,New ticket,Ticket remains present,High,Reliability
+MISC-284,Miscellaneous Pages,Reliability,Refresh after password change,Password changed,Refresh/login,New password,Authentication follows expected policy,High,Reliability
+MISC-285,Miscellaneous Pages,Reliability,Refresh after theme change,Theme changed,Refresh,Dark/Light,Theme remains as designed,High,Reliability
+MISC-286,Miscellaneous Pages,Reliability,Refresh after language change,Language changed,Refresh,Selected language,Language remains as designed,High,Reliability

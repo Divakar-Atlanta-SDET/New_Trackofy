@@ -703,6 +703,208 @@ test suite itself and is not listed here. Reproduction is against
 
 ---
 
+## Miscellaneous Pages Module
+
+### 34. At mobile viewport widths, the Account menu (My Profile, Support, Change Password, Language, Sign Out) is not reachable through any UI control
+- **Test**: `Tests/functional/test_misc_account_menu_functional.py::
+  test_misc_012_account_menu_responsive` (regression pin)
+- **Symptom**: At a 390x844 (phone-sized) viewport, the desktop
+  `account_circle` avatar button that opens the Account menu becomes
+  genuinely invisible (confirmed live: `visible=False`, though the
+  element still exists in the DOM). In its place, the responsive layout
+  shows a hamburger ("menu") toggle and an inline "Actions" panel listing
+  only Applications, Appearance (relabelled "Light Mode" here), Chatbot,
+  Downloads, and Notifications. Clicking the hamburger toggle does not
+  reveal the missing items -- it only opens/closes the same primary nav
+  list already visible (Home/Dashboard/Unit/Tracking/Reports/Settings/
+  Administrator/Video Telematics). No alternative control anywhere in the
+  mobile layout was found that opens My Profile, Support, Change
+  Password, Language, or Sign Out.
+- **Impact**: A user on a phone-sized viewport cannot access their
+  profile, raise or view support tickets, change their password, change
+  their language, or **sign out** -- Sign Out being unreachable is a real
+  usability and security concern (a shared/borrowed mobile device can't
+  be logged out of through the normal UI at all). Downloads and
+  Appearance are the only Account-menu-equivalent items that did carry
+  over into the mobile "Actions" panel; the rest were simply dropped from
+  the responsive layout rather than relocated.
+
+### 35. [CRITICAL, escalated] Raise Support Ticket cannot be submitted -- "X selected" vehicle counter never updates, and Submit stays permanently disabled even when every field is genuinely valid
+- **Test**: not yet automated as a regression pin -- to be added to Phase 5
+  (`Tests/functional/test_misc_raise_ticket_functional.py`).
+- **Symptom (original, display-only)**: In the Raise Support Ticket
+  dialog's Unit Selection section, the vehicle multi-select genuinely
+  works correctly at the component level -- confirmed live: after
+  selecting 3 vehicles, the underlying `mat-select`'s own displayed value
+  correctly lists all three (`GCBL10536MHG26DG08215, 869630055281111,
+  GCBL10536MHG01DG07317`) and each clicked option's `aria-selected`
+  attribute correctly flips to `"true"` (persists correctly on reopening
+  the dropdown too). However, the separate "X selected" counter text
+  shown above the selector (design doc §6.1: "A selected-count indicator
+  is shown") stays permanently at **"0 selected"** no matter how many
+  vehicles are actually selected.
+- **Escalation -- Submit never enables**: while building out the full
+  submission flow, found that **the Submit Ticket button never becomes
+  enabled**, even with a completely valid form: a real vehicle selected
+  (confirmed `aria-selected="true"`), Category and Severity chosen
+  (confirmed selected text replaces the placeholders), a valid Comment
+  (confirmed its own 33/200 counter updates correctly), and valid
+  Email/Mobile values. Verified exhaustively across four different input
+  methods (`fill()`, `fill()` + Tab, real keyboard `type()`, and
+  click-to-focus + `type()` + click-elsewhere-to-blur) -- Submit stayed
+  disabled every time. Checked for validation errors directly (`mat-error`
+  elements): **zero found**. Checked Angular's own computed CSS state on
+  the Email field: `ng-dirty ng-valid ng-touched` -- Angular itself
+  considers that field valid. Despite every individual field passing its
+  own validation with no visible error anywhere, the Submit button's
+  `disabled` attribute never clears.
+- **Likely shared root cause**: the same broken "selected units" tracking
+  that produces the stuck "0 selected" counter is the most likely
+  explanation for Submit never enabling too -- if the button's enablement
+  logic checks that same broken counter/array (rather than the mat-select's
+  real value) for "at least one unit selected," a component-level
+  selection that never registers in that specific tracked variable would
+  explain both symptoms with one bug, not two.
+- **Impact**: If this reproduces for real users the way it does for this
+  automated (but otherwise standard Playwright fill/type/click)
+  interaction, **it may not be possible to raise a support ticket at all**
+  through this form -- a serious functional failure of a core, explicitly
+  "Critical priority" feature per the design doc's own priority model
+  (§17: state-changing operations). Recommend the product team verify
+  manually with a real mouse/keyboard session; if confirmed there too,
+  this blocks every downstream submission-dependent test case
+  (MISC-105/106/109/110/112/113/114) and, more importantly, blocks real
+  users from getting support.
+
+### 36. [Low] Raise Support Ticket's Comment field ignores any programmatic value change -- only real keystrokes register
+- **Test**: `Pages/base_page.py::type_into()` (workaround) is used by all
+  Comment-field tests in
+  `Tests/functional/test_misc_raise_ticket_functional.py` (MISC-090/091/
+  092/093/094/095/096/097/099/100/103/104 and `fill_valid_ticket()`).
+- **Symptom**: The Comment textarea in the Raise Support Ticket dialog
+  never registers a value set via a standard programmatic `value` +
+  `input`-event write (confirmed live with Playwright's `fill()`): the
+  textarea's own value stays empty immediately after the call, its
+  Angular-managed class list stays `ng-untouched ng-pristine ng-invalid`
+  (i.e. Angular's form control never even observes an attempt), and the
+  "X/200" counter stays at "0/200". The field is not disabled or
+  readonly. Simulating genuine keystrokes (Playwright's
+  `press_sequentially`, i.e. real `keydown`/`keypress`/`keyup` per
+  character) works correctly and updates the value, the counter, and
+  Angular's dirty/touched state as expected.
+- **Likely root cause**: the field (or a directive on it, e.g. the
+  character counter) appears to update its bound value from a keyboard
+  event handler (`keyup`/`keydown`) rather than the standard `input` or
+  `(ngModelChange)`/reactive-forms `valueChanges` binding, so any
+  non-keystroke value assignment -- programmatic writes, and by the same
+  mechanism likely also **paste** (right-click/context-menu paste,
+  browser autofill/form-fill extensions, voice-to-text, and some mobile
+  keyboards' predictive/swipe input, none of which dispatch a full
+  per-character `keydown`/`keyup` sequence) -- would silently fail to
+  register, leaving the field looking empty/untouched even though the OS
+  clipboard paste "succeeded" visually for a moment.
+- **Impact**: Low in isolation (typing normally works fine), but worth a
+  real fix: a real user who pastes a longer description (e.g. copying an
+  error message or VIN) into this field, or whose browser/OS autofills
+  it, may find their input silently doesn't register -- confusing,
+  and easy to miss since there's no error, the field just doesn't fill.
+  Recommend binding the counter/control to the standard `input` event
+  (or Angular's `(ngModelChange)`/reactive `valueChanges`) instead of a
+  keyboard-event handler.
+
+### 37. [CRITICAL] Change Password: "Verify" always rejects the correct current password -- the feature is completely unusable
+- **Test**: to be added as a regression pin in Phase 6
+  (`Tests/functional/test_misc_change_password_functional.py`).
+- **Symptom**: On the Change Password page (`/profile/change-password`),
+  Stage 1 ("Verify your identity") asks for the account's current
+  password before unlocking Stage 2 (New Password / Confirm New
+  Password, both genuinely `disabled` in the DOM until Stage 1 passes).
+  Entering the account's real, correct, currently-working password and
+  clicking Verify **always** returns a toast: "Unable to verify
+  password. Please try again." -- Stage 2 stays disabled. Confirmed on
+  two independent accounts:
+  1. The main test account (`tarun_01`) -- entered the exact password
+     used to log in successfully moments earlier (both via `fill()` and
+     via real keystrokes, with `input_value()` checked to genuinely match
+     before clicking Verify).
+  2. A brand-new sub-user, created live via the Administrator module's
+     Create User wizard with a fresh password, that immediately logged in
+     successfully with that same password in a brand-new browser context
+     -- then had that identical password rejected by Verify on this page.
+- **Ruled out**: this is not a Playwright-interaction-method artifact
+  (unlike Bug #36's textarea) -- confirmed with real keystrokes and a
+  verified `input_value()` match immediately before submitting, on an
+  account whose password was set seconds earlier by this same test.
+- **Impact**: Change Password is explicitly a Critical-priority module
+  per the design doc, and as far as this suite can exercise it, **no
+  user can change their password through this UI at all** -- Stage 1
+  never passes for anyone, so Stage 2 (where the actual new password
+  would be entered) is permanently unreachable. This blocks MISC-121
+  through MISC-145 entirely (every case that depends on Stage 2 being
+  enabled). Recommend the product team verify the current-password
+  verification endpoint/logic directly -- this looks like a
+  server-side bug (wrong hash comparison, wrong field mapping, or a
+  broken endpoint) rather than anything client-side, since the exact
+  authenticating password is rejected.
+
+### 38. [High] Help Center's main search always returns "0 found" -- breaks the primary search box and every Quick Link, Popular Section, and Common Issue shortcut
+- **Test**: to be added as a regression pin in Phase 9
+  (`Tests/functional/test_misc_help_center_functional.py`).
+- **Symptom**: The Help Center's main search ("Search articles, guides
+  and FAQs..." at the top of the page) never returns a real result --
+  confirmed by searching for `"device"`, a term guaranteed to match: it's
+  the literal name of a real category ("Device") that itself contains one
+  real, independently-browsable article ("L-400 Overview", confirmed by
+  clicking that category directly in the sidebar). Even this trivially-
+  matching search returns "0 found / No results found / Try another
+  keyword."
+  This same broken search is what backs every one of the page's labeled
+  shortcuts -- clicking any Quick Link (Device Setup, Sensor
+  Configuration, Reports, Alerts, Video Telematics, Live Tracking),
+  Popular Section (Live Tracking & Map, Device & Protocol Help, Sensors &
+  Parameters, Reports & Analytics), or Common Issue (Vehicle not showing
+  live location, Report data is missing, Alert is not triggering, Sensor
+  value looks incorrect) does not open any real content -- it silently
+  triggers the same broken search and lands on the identical "0 found"
+  dead end, confirmed for one representative item from each of the three
+  groups.
+- **Ruled out / isolates the bug**: the sidebar's own separate "Search
+  contents..." mini-filter (which narrows the Categories & Articles list
+  itself) works correctly -- searching "sensor" there correctly filters
+  the sidebar down to just the Sensor category. This proves the
+  underlying article/category data is real and at least one search code
+  path functions -- the bug is specific to the main search integration
+  (and everything wired to reuse it), not a data or content problem.
+- **Impact**: 14 of this section's labeled shortcuts (6 Quick Links + 4
+  Popular Sections + 4 Common Issues) and the primary search box itself
+  are effectively non-functional -- a user trying to quickly reach help
+  content via any of the page's own suggested starting points gets a
+  dead "no results" screen instead. Direct category browsing (the
+  sidebar's Device/Sensor list) is unaffected and works correctly, so
+  the page isn't completely broken, but its main discovery aids are.
+
+### 39. [Low] Help Center's category/article navigation doesn't push browser history -- Back leaves the page entirely instead of stepping back within it
+- **Test**: `test_misc_203_browser_back_from_article_restores_state`
+  (`Tests/functional/test_misc_help_center_functional.py`).
+- **Symptom**: Opening a category (e.g. clicking "Device" in the
+  sidebar) shows its article list purely as an in-page state change --
+  confirmed live the URL stays exactly `/help-center` before and after
+  (no query param, hash, or path change). Since no new history entry is
+  pushed, clicking the browser's Back button doesn't step back to the
+  Help Center landing view as the design doc expects -- it leaves Help
+  Center entirely and lands on whatever page was open before Help Center
+  was ever navigated to (confirmed live: landed on `/home`, the fleet
+  dashboard).
+- **Impact**: Low -- a user browsing a category and instinctively hitting
+  Back to return to the Help Center landing page instead gets kicked out
+  of Help Center altogether, which is surprising but not damaging (no
+  data loss, easily recoverable by reopening Help Center). Recommend
+  either pushing a real history entry (query param/hash) per in-page
+  navigation, or intercepting Back within Help Center to step back
+  through its own internal view stack first.
+
+---
+
 ## Test Suite Notes (not application bugs, for context)
 
 - **Correction**: General Permission (Step 3) and Unit Permission (Step 4)

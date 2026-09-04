@@ -23,6 +23,13 @@ from Pages.route_page import RouteManagementPage
 from Pages.reports_page import ReportsPage
 from Pages.home_page import HomePage
 from Pages.administrator_page import AdministratorPage
+from Pages.account_menu_page import AccountMenuPage
+from Pages.profile_page import ProfilePage
+from Pages.downloads_page import DownloadsPage
+from Pages.support_page import SupportPage
+from Pages.change_password_page import ChangePasswordPage
+from Pages.help_center_page import HelpCenterPage
+from Pages.feedback_page import FeedbackPage
 
 
 load_dotenv()
@@ -142,6 +149,9 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "report_generation: report generation tests")
     config.addinivalue_line("markers", "home: home module tests")
     config.addinivalue_line("markers", "admin: administrator module tests")
+    config.addinivalue_line("markers", "misc: miscellaneous pages module tests")
+    config.addinivalue_line("markers", "accessibility: accessibility smoke checks")
+    config.addinivalue_line("markers", "responsive: responsive-viewport smoke checks")
     config.addinivalue_line(
         "markers", "allow_server_error: test intentionally mocks/triggers a server error, skip the global 5xx check"
     )
@@ -420,6 +430,80 @@ def administrator_page(authenticated_page, config):
     administrator_page = AdministratorPage(authenticated_page)
     administrator_page.open(config["base_url"])
     return administrator_page
+
+
+@pytest.fixture
+def account_menu(authenticated_page, config):
+    """Log in and land on /home, ready to open the Account menu."""
+    authenticated_page.goto(f"{config['base_url']}/home")
+    menu = AccountMenuPage(authenticated_page)
+    menu.wait_until_ready()
+    # A fresh login shows a "Login successful" toast that can still be
+    # settling/overlapping the top-right nav icons right after load
+    # (confirmed live: the menu trigger intermittently failed to open when
+    # this fixture is the very first thing a test does) -- give it a beat.
+    authenticated_page.wait_for_timeout(1000)
+    return menu
+
+
+@pytest.fixture
+def profile_page(authenticated_page, config):
+    """Log in and open My Profile (/profile)."""
+    profile_page = ProfilePage(authenticated_page)
+    profile_page.open(config["base_url"])
+    return profile_page
+
+
+@pytest.fixture
+def downloads_page(authenticated_page, config):
+    """Log in and open Downloads (/profile/downloads)."""
+    downloads_page = DownloadsPage(authenticated_page)
+    downloads_page.open(config["base_url"])
+    return downloads_page
+
+
+@pytest.fixture
+def support_page(authenticated_page, config):
+    """Log in and open Support Management (/profile/support)."""
+    support_page = SupportPage(authenticated_page)
+    support_page.open(config["base_url"])
+    return support_page
+
+
+@pytest.fixture
+def change_password_page(authenticated_page, config):
+    """Log in and open Change Password (/profile/change-password)."""
+    change_password_page = ChangePasswordPage(authenticated_page)
+    change_password_page.open(config["base_url"])
+    return change_password_page
+
+
+@pytest.fixture
+def help_center_page(authenticated_page, config):
+    """Log in and open Help Center (/help-center)."""
+    help_center_page = HelpCenterPage(authenticated_page)
+    help_center_page.open(config["base_url"])
+    return help_center_page
+
+
+@pytest.fixture
+def feedback_prompt(authenticated_page, config):
+    """Log in and open the Feedback prompt. Confirmed live: the
+    persistent floating "FEEDBACK" nav button that triggers it lives on
+    /profile/* pages, not /home."""
+    authenticated_page.goto(f"{config['base_url']}/profile/change-password")
+    authenticated_page.wait_for_timeout(1500)
+    feedback_page = FeedbackPage(authenticated_page)
+    feedback_page.open_prompt()
+    return feedback_page
+
+
+@pytest.fixture
+def feedback_form(feedback_prompt):
+    """Log in and open the full Feedback form (via the prompt's Give
+    Feedback link)."""
+    feedback_prompt.open_form_from_prompt()
+    return feedback_prompt
 
 
 @pytest.fixture

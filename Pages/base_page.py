@@ -38,6 +38,15 @@ class BasePage:
         except TimeoutError:
             pass
 
+    def type_into(self, locator: Locator, text: str, delay: int = 15):
+        # Confirmed live: some Angular-bound fields (e.g. the Raise Ticket
+        # comment textarea) don't register Playwright's fill() as real
+        # input -- the control stays ng-pristine/ng-untouched and the
+        # value never sticks, even though it's not disabled/readonly. Real
+        # keystrokes via press_sequentially() work correctly.
+        locator.click()
+        locator.press_sequentially(text, delay=delay)
+
     def wait_for_visible(self, locator: Locator, timeout: int | None = None):
         locator.wait_for(state="visible", timeout=timeout or self.DEFAULT_TIMEOUT_MS)
 
@@ -98,6 +107,31 @@ class BasePage:
             return False
         body_text = self.visible_text()
         return any(text in body_text for text in texts)
+
+    def opaque_background_luminance(self, locator: Locator) -> float:
+        """Walks up from `locator` until it finds a non-transparent
+        background (menus/dialogs/tables are often transparent wrappers
+        over an ancestor that actually paints the surface color), and
+        returns that color's average RGB channel value -- a cheap
+        smoke-check signal for "did the theme actually apply here"
+        without hardcoding any specific dark/light color."""
+        return locator.evaluate(
+            """el => {
+                let node = el;
+                while (node) {
+                    const bg = getComputedStyle(node).backgroundColor;
+                    const match = bg.match(/rgba?\\((\\d+), *(\\d+), *(\\d+)(?:, *([\\d.]+))?\\)/);
+                    if (match) {
+                        const alpha = match[4] === undefined ? 1 : parseFloat(match[4]);
+                        if (alpha > 0) {
+                            return (parseInt(match[1]) + parseInt(match[2]) + parseInt(match[3])) / 3;
+                        }
+                    }
+                    node = node.parentElement;
+                }
+                return null;
+            }"""
+        )
 
     def validation_messages(self) -> list[str]:
         selectors = [
