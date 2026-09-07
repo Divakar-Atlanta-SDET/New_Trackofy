@@ -39,7 +39,7 @@ def test_tc038_submit_valid_fitness_certificate_data(unit_settings):
     try:
         expect(row).to_be_visible()
     finally:
-        unit_settings_page.delete_service_history_row(row)
+        unit_settings_page.delete_service_history_row_by_text(cost)
 
 
 @pytest.mark.positive
@@ -67,7 +67,7 @@ def test_tc101_submit_valid_pollution_certificate(unit_settings):
     try:
         expect(row).to_be_visible()
     finally:
-        unit_settings_page.delete_service_history_row(row)
+        unit_settings_page.delete_service_history_row_by_text(cert_no)
 
 
 @pytest.mark.positive
@@ -97,7 +97,7 @@ def test_tc087_fill_valid_insurance_data(unit_settings):
     try:
         expect(row).to_be_visible()
     finally:
-        unit_settings_page.delete_service_history_row(row)
+        unit_settings_page.delete_service_history_row_by_text(company)
 
 
 @pytest.mark.positive
@@ -133,4 +133,4 @@ def test_tc145_tc146_fill_valid_service_data_and_parts(unit_settings):
     try:
         expect(row).to_be_visible()
     finally:
-        unit_settings_page.delete_service_history_row(row)
+        unit_settings_page.delete_service_history_row_by_text(service_no)

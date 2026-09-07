@@ -363,6 +363,14 @@ class UnitSettingsPage(BasePage):
 
         Clicking the row's Delete icon opens a "Delete ..." confirmation dialog;
         confirming there is what actually removes the record.
+
+        `row_locator` must resolve to a real row *right now* -- if it was
+        captured earlier and the table has since re-paginated (e.g. a
+        wait_for_loading_to_finish() re-render reset back to page 1), this
+        hangs for the full default timeout waiting for a Delete button on a
+        row that no longer exists on the currently-displayed page. Prefer
+        delete_service_history_row_by_text() below, which re-locates the
+        row fresh immediately before deleting.
         """
         # A full-page loading overlay can still be fading out right after a
         # submit/page-navigation and blocks clicks until it's gone.
@@ -379,4 +387,15 @@ class UnitSettingsPage(BasePage):
         confirm_dialog.get_by_role("button", name=re.compile(r"^Delete$", re.I)).click()
         self.page.wait_for_timeout(1000)
         self.wait_for_loading_to_finish()
+
+    def delete_service_history_row_by_text(self, text: str, max_pages: int = 10):
+        """Re-locate a service history row by its own search text and delete
+        it -- safe against pagination having drifted since the row was first
+        found (see delete_service_history_row's docstring for why a
+        previously-captured row Locator can go stale and hang)."""
+        row = self.dialog.locator("tbody tr").filter(has_text=text)
+        if row.count() == 0:
+            row = self.find_service_history_row_on_last_page(text, max_pages=max_pages)
+        assert row.count() > 0, f"Could not re-locate the service history row for {text!r} to delete it"
+        self.delete_service_history_row(row)
 

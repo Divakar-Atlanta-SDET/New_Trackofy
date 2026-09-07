@@ -1,0 +1,223 @@
+﻿TC_ID,Module,Area,Test Scenario,Preconditions,Steps,Test Data,Expected Result,Priority,Test Type
+VT-001,Video Telematics,Navigation,Open Video Telematics,Authenticated user,Click Video Telematics,N/A,Video Telematics module opens,High,Functional
+VT-002,Video Telematics,Navigation,Dashboard navigation,Video Telematics open,Click Dashboard,N/A,Dashboard opens and is highlighted,High,Functional
+VT-003,Video Telematics,Navigation,Alert navigation,Video Telematics open,Click Alert,N/A,Alert Configuration opens and is highlighted,High,Functional
+VT-004,Video Telematics,Navigation,Playback navigation,Video Telematics open,Click Playback,N/A,Video Playback opens and is highlighted,High,Functional
+VT-005,Video Telematics,Navigation,Report navigation,Video Telematics open,Click Report,N/A,Video Telematics Reports opens and is highlighted,High,Functional
+VT-006,Video Telematics,Navigation,Switch modules repeatedly,Video Telematics open,Navigate Dashboard→Alert→Playback→Report→Dashboard,N/A,Each page loads without state corruption,High,Functional
+VT-007,Video Telematics,Dashboard,Verify Dashboard heading,Dashboard open,Inspect heading,N/A,Video Telematics Dashboard is displayed,High,Functional
+VT-008,Video Telematics,Dashboard,Verify Live Monitoring status,Dashboard open,Inspect status,N/A,Live Monitoring status is displayed,High,Functional
+VT-009,Video Telematics,Dashboard,Verify Total Vehicles KPI,Known fleet,Inspect KPI,Known count,Total Vehicles matches backend,High,Functional
+VT-010,Video Telematics,Dashboard,Verify Online KPI,Known fleet,Inspect KPI,Known online count,Online count is correct,High,Functional
+VT-011,Video Telematics,Dashboard,Verify Offline KPI,Known fleet,Inspect KPI,Known offline count,Offline count is correct,High,Functional
+VT-012,Video Telematics,Dashboard,Verify Alerts Today KPI,Known alerts,Inspect KPI,Known count,Alerts Today matches data,High,Functional
+VT-013,Video Telematics,Dashboard,Verify Critical KPI,Known alerts,Inspect KPI,Known count,Critical count is correct,High,Functional
+VT-014,Video Telematics,Dashboard,Verify Warning KPI,Known alerts,Inspect KPI,Known count,Warning count is correct,High,Functional
+VT-015,Video Telematics,Dashboard,Verify Info KPI,Known alerts,Inspect KPI,Known count,Info count is correct,High,Functional
+VT-016,Video Telematics,Dashboard,Zero KPI state,No vehicles/alerts,Open Dashboard,0 values,Zero values display correctly,High,Functional
+VT-017,Video Telematics,Dashboard,KPI refresh,Dashboard open,Change backend/event state; refresh,Updated data,KPI values update correctly,High,Functional
+VT-018,Video Telematics,Dashboard,Live video header,Dashboard open,Inspect Live Video panel,Vehicle + channel count + IMEI,Header displays correct context,High,Functional
+VT-019,Video Telematics,Dashboard,Select vehicle,Multiple authorized vehicles,Open vehicle dropdown; select vehicle,B123456,Selected vehicle updates video context,High,Functional
+VT-020,Video Telematics,Dashboard,Unauthorized vehicle unavailable,Restricted vehicle exists,Open vehicle selector,Foreign vehicle,Foreign vehicle cannot be selected,Critical,Functional
+VT-021,Video Telematics,Dashboard,Select channel,Vehicle with multiple channels,Open channel selector,Channel 1/2/3/4,Selected channel maps to correct feed,High,Functional
+VT-022,Video Telematics,Dashboard,Four-camera layout,Vehicle with four channels,Open Dashboard,4 channels,Four video panes are displayed,High,Functional
+VT-023,Video Telematics,Dashboard,Play video stream,Stream available,Click play on a tile,Camera 1,Correct camera stream starts,High,Functional
+VT-024,Video Telematics,Dashboard,Stop video stream,Stream playing,Click stop,Camera 1,Selected stream stops,High,Functional
+VT-025,Video Telematics,Dashboard,Mute/unmute,Audio supported,Toggle audio,Camera 1,Audio state changes correctly,High,Functional
+VT-026,Video Telematics,Dashboard,Snapshot live video,Stream available,Click snapshot,Camera 1,Snapshot corresponds to selected stream,High,Functional
+VT-027,Video Telematics,Dashboard,Fullscreen live video,Stream available,Click fullscreen,Camera 1,Selected video pane enters fullscreen,High,Functional
+VT-028,Video Telematics,Dashboard,Exit fullscreen,Fullscreen active,Exit fullscreen,N/A,Video returns to normal layout,High,Functional
+VT-029,Video Telematics,Dashboard,Offline vehicle stream,Vehicle offline,Select offline vehicle,Offline vehicle,UI clearly indicates unavailable/offline stream,High,Functional
+VT-030,Video Telematics,Dashboard,Stream timeout,Stream endpoint delayed,Start stream,Delayed stream,Loading/timeout handled without false playback,High,Functional
+VT-031,Video Telematics,Dashboard,Camera unavailable,One camera unavailable,Load dashboard,Unavailable camera,Only affected feed reports unavailable,High,Functional
+VT-032,Video Telematics,Dashboard,Switch vehicle while streaming,Stream active,Select another vehicle,Vehicle A→B,Feeds update to Vehicle B without cross-stream mix,High,Functional
+VT-033,Video Telematics,Dashboard,Alerts panel zero state,No alerts today,Inspect panel,0 alerts,No alerts found state is shown,High,Functional
+VT-034,Video Telematics,Dashboard,Alerts panel refresh,Alerts panel open,Trigger/insert alert; click refresh,1 alert,New alert state appears,High,Functional
+VT-035,Video Telematics,Dashboard,View alert history,Dashboard open,Click View alert history,N/A,Relevant alert history/report view opens,High,Functional
+VT-036,Video Telematics,Dashboard,Alert count consistency,Known alert dataset,Compare dashboard and relevant alert/report count,Known data,Counts follow configured business rules,High,Functional
+VT-037,Video Telematics,Alert,Verify alert count,Known configurations,Open Alert,106 or current count,Displayed count matches records,High,Functional
+VT-038,Video Telematics,Alert,Verify table columns,Alert page open,Inspect table,N/A,All configured columns are present,High,Functional
+VT-039,Video Telematics,Alert,Filter all vehicles,Alerts exist,Select All vehicles,All,All authorized vehicle alerts display,High,Functional
+VT-040,Video Telematics,Alert,Filter one vehicle,Alerts exist,Select vehicle,B123456,Only selected vehicle configurations display,High,Functional
+VT-041,Video Telematics,Alert,Filter critical priority,Mixed priorities,Select Critical,Critical,Only critical configurations display,High,Functional
+VT-042,Video Telematics,Alert,Filter warning priority,Mixed priorities,Select Warning,Warning,Only warning configurations display,High,Functional
+VT-043,Video Telematics,Alert,Search exact alert,Alerts exist,Search alert name,Impacting Pedestrians Start,Matching records display,High,Functional
+VT-044,Video Telematics,Alert,Search partial alert,Alerts exist,Search partial,Forward Collision,Matching records display,High,Functional
+VT-045,Video Telematics,Alert,Search no result,Alerts exist,Search unmatched,XYZ-NONE,Empty result state appears,High,Functional
+VT-046,Video Telematics,Alert,Search special characters,Alerts exist,Search special characters,@#$,No query/UI error,High,Functional
+VT-047,Video Telematics,Alert,Rows per page,More than default rows,Change rows,10/25/50,Requested row count is displayed,High,Functional
+VT-048,Video Telematics,Alert,Next page,Multiple pages,Click next,N/A,Next page loads,High,Functional
+VT-049,Video Telematics,Alert,Previous page,Page 2+,Click previous,N/A,Previous page loads,High,Functional
+VT-050,Video Telematics,Alert,First page,Later page,Click first,N/A,First page loads,High,Functional
+VT-051,Video Telematics,Alert,Last page,Multiple pages,Click last,N/A,Last page loads,High,Functional
+VT-052,Video Telematics,Alert,Export filtered data,Filter active,Export,Known filter,Export contains expected filtered data,High,Functional
+VT-053,Video Telematics,Alert,Open Create Alert,Alert page open,Click Add Alert,N/A,Create Video Alert dialog opens,High,Functional
+VT-054,Video Telematics,Alert Create,Vehicle selector,Create dialog open,Open Select Vehicles,N/A,Vehicle selector opens,High,Functional
+VT-055,Video Telematics,Alert Create,Select one vehicle,Vehicles available,Select vehicle,B123456,Vehicle selected and count becomes 1,High,Functional
+VT-056,Video Telematics,Alert Create,Select multiple vehicles,Multiple vehicles,Select A and B,A/B,Both are selected and count is accurate,High,Functional
+VT-057,Video Telematics,Alert Create,Remove vehicle,Vehicle selected,Remove vehicle,A,Vehicle removed and count updates,High,Functional
+VT-058,Video Telematics,Alert Create,Alert required,Create dialog open,Submit without alert,Blank,Required validation is shown,High,Functional
+VT-059,Video Telematics,Alert Create,Priority required,Create dialog open,Submit without priority,Blank,Required validation is shown,High,Functional
+VT-060,Video Telematics,Alert Create,Select alert,Create dialog open,Choose alert,Forward Collision Alarm Level Two Start,Alert is selected,High,Functional
+VT-061,Video Telematics,Alert Create,Select critical priority,Create dialog open,Choose priority,Critical,Critical is selected,High,Functional
+VT-062,Video Telematics,Alert Create,Select warning priority,Create dialog open,Choose priority,Warning,Warning is selected,High,Functional
+VT-063,Video Telematics,Alert Create,Application channel,Create dialog open,Select Application,Application,Application delivery is enabled,High,Functional
+VT-064,Video Telematics,Alert Create,Email channel,Create dialog open,Select Email,Email,Email delivery is enabled,High,Functional
+VT-065,Video Telematics,Alert Create,WhatsApp channel,Create dialog open,Select WhatsApp,WhatsApp,WhatsApp delivery is enabled,High,Functional
+VT-066,Video Telematics,Alert Create,Multiple channels,Create dialog open,Select Application + Email + WhatsApp,All,All selected channels remain selected,High,Functional
+VT-067,Video Telematics,Alert Create,No delivery channels,Create dialog open,Deselect all channels,None,Validation/business rule is enforced,High,Functional
+VT-068,Video Telematics,Alert Create,Real-time delivery,Create dialog open,Select Real time,Real time,Real-time mode is selected,High,Functional
+VT-069,Video Telematics,Alert Create,Interval delivery,Create dialog open,Select Interval,Interval,Interval mode is selected and relevant fields appear,High,Functional
+VT-070,Video Telematics,Alert Create,Cooldown valid,Real-time mode,Enter cooldown,30,Value is accepted,High,Functional
+VT-071,Video Telematics,Alert Create,Cooldown zero,Real-time mode,Enter 0,0,Behavior follows configured minimum/business rule,High,Functional
+VT-072,Video Telematics,Alert Create,Cooldown negative,Real-time mode,Enter -1,-1,Invalid value is rejected,High,Functional
+VT-073,Video Telematics,Alert Create,Cooldown decimal,Real-time mode,Enter decimal,1.5,Decimal is rejected/accepted per configured numeric rule,High,Functional
+VT-074,Video Telematics,Alert Create,Cooldown text,Real-time mode,Enter text,abc,Non-numeric input is rejected,High,Functional
+VT-075,Video Telematics,Alert Create,Enable alert,Create dialog open,Keep Enabled checked,Enabled,Status is enabled,High,Functional
+VT-076,Video Telematics,Alert Create,Disable alert,Create dialog open,Uncheck Enabled if supported,Disabled,Status is disabled,High,Functional
+VT-077,Video Telematics,Alert Create,Create valid alert,All required data valid,Click Create Alert,Valid configuration,Alert is created and appears in table,High,Functional
+VT-078,Video Telematics,Alert Create,Prevent duplicate creation,Valid form,Double-click Create Alert,Valid configuration,Only one configuration is created,Critical,Functional
+VT-079,Video Telematics,Alert Create,Create API failure,Valid form,Simulate API failure; submit,Valid configuration,Failure shown; no false success,Critical,Reliability
+VT-080,Video Telematics,Alert Create,Create network failure,Valid form,Disconnect network; submit,Valid configuration,Submission fails safely,High,Reliability
+VT-081,Video Telematics,Alert,Edit alert,Existing configuration,Click edit,Alert A,Edit form opens with Alert A values,High,Functional
+VT-082,Video Telematics,Alert,Edit vehicle,Edit form open,Change vehicle; save,Vehicle B,Only selected configuration changes,High,Functional
+VT-083,Video Telematics,Alert,Edit priority,Edit form open,Change priority; save,Warning→Critical,Priority updates correctly,High,Functional
+VT-084,Video Telematics,Alert,Edit channels,Edit form open,Change Email/WhatsApp,Known combination,Table reflects updated channels,High,Functional
+VT-085,Video Telematics,Alert,Edit delivery mode,Edit form open,Change Real time/Interval,Mode change,Saved mode is correct,High,Functional
+VT-086,Video Telematics,Alert,Edit cooldown,Edit form open,Change cooldown,30→60,Saved cooldown is correct,High,Functional
+VT-087,Video Telematics,Alert,Enable/disable existing alert,Existing alert,Toggle status; save,Enabled/Disabled,Status updates correctly,High,Functional
+VT-088,Video Telematics,Alert,Delete alert,Existing alert,Click delete; confirm,Alert A,Only Alert A is deleted,High,Functional
+VT-089,Video Telematics,Alert,Cancel delete,Delete prompt if present,Cancel deletion,Alert A,Alert remains,High,Functional
+VT-090,Video Telematics,Alert,Delete API failure,Existing alert,Simulate failure; delete,Alert A,Error shown and alert remains,Critical,Reliability
+VT-091,Video Telematics,Alert,Delete duplicate/stale record,Record already removed,Attempt delete,Alert A,Safe error/refresh behavior,Critical,Reliability
+VT-092,Video Telematics,Playback,Open Playback,Authenticated user,Click Playback,N/A,Playback page opens,High,Functional
+VT-093,Video Telematics,Playback,Verify empty state,No recordings,Open Playback,0 files,No playback files found is shown,High,Functional
+VT-094,Video Telematics,Playback,Verify no-selection state,No file selected,Inspect player,N/A,No playback selected is shown,High,Functional
+VT-095,Video Telematics,Playback,Open vehicle selector,Playback open,Open vehicle field,N/A,Vehicle selector opens,High,Functional
+VT-096,Video Telematics,Playback,Select vehicle,Multiple vehicles,Select vehicle,B123459,Selected vehicle updates,High,Functional
+VT-097,Video Telematics,Playback,Unauthorized vehicle,Restricted vehicle,Open selector,Foreign vehicle,Foreign vehicle unavailable,High,Functional
+VT-098,Video Telematics,Playback,Channel All Channels,Playback open,Inspect channel,All Channels,All Channels is available,High,Functional
+VT-099,Video Telematics,Playback,Select individual channel,Vehicle with channels,Select channel,Channel 1,Channel filter is applied,High,Functional
+VT-100,Video Telematics,Playback,Select date with recordings,Recordings exist,Choose date,Recording date,Date selected,High,Functional
+VT-101,Video Telematics,Playback,Future date,Playback open,Choose future date,Future date,No results/appropriate validation,High,Functional
+VT-102,Video Telematics,Playback,Historical date,Playback open,Choose old date,Historical date,Search supports historical date if data exists,High,Functional
+VT-103,Video Telematics,Playback,Full-day time range,Playback open,Set 00:00:00–23:59:59,Full day,Valid range accepted,High,Functional
+VT-104,Video Telematics,Playback,Start equals end,Playback open,Set same time,12:00:00–12:00:00,Behavior follows configured boundary rule,High,Functional
+VT-105,Video Telematics,Playback,Start greater than end,Playback open,Set invalid range,15:00–10:00,Validation/rejection occurs,High,Functional
+VT-106,Video Telematics,Playback,Find files valid criteria,Recordings exist,Click Find Files,Valid filters,Matching files are returned,High,Functional
+VT-107,Video Telematics,Playback,Find files no results,No recordings for filters,Click Find Files,No-result criteria,No playback files found is displayed,High,Functional
+VT-108,Video Telematics,Playback,Find files API failure,Playback open,Simulate API failure; Find Files,Valid filters,Error is shown,High,Functional
+VT-109,Video Telematics,Playback,Reset filters,Filters changed,Click Reset,Modified filters,Filters return to default state,High,Functional
+VT-110,Video Telematics,Playback,Select playback file,Files returned,Click a file,File A,Selected file is highlighted/loaded,High,Functional
+VT-111,Video Telematics,Playback,Load playback video,File selected,Inspect player,File A,Correct recording loads,High,Functional
+VT-112,Video Telematics,Playback,Play playback,Video loaded,Click play,File A,Recording plays,High,Functional
+VT-113,Video Telematics,Playback,Pause playback,Video playing,Click pause/stop control,File A,Playback pauses/stops,High,Functional
+VT-114,Video Telematics,Playback,Switch playback file,Multiple files,Select File B,File B,Player switches to File B,High,Functional
+VT-115,Video Telematics,Playback,Playback fullscreen,Video loaded,Click fullscreen,File A,Player enters fullscreen,High,Functional
+VT-116,Video Telematics,Playback,Playback unavailable,File invalid/unavailable,Select file,Unavailable file,Error/empty state is handled,High,Functional
+VT-117,Video Telematics,Playback,Vehicle/date integrity,Files returned,Compare file metadata,Known vehicle/date,File belongs to selected vehicle/date,High,Functional
+VT-118,Video Telematics,Playback,Playback cross-account access,Two accounts,Attempt foreign file access,Foreign file,Access is denied,Critical,Security
+VT-119,Video Telematics,Report,Open Report,Authenticated user,Click Report,N/A,Video Telematics Reports opens,High,Functional
+VT-120,Video Telematics,Report,Verify report count,Known data,Inspect heading,Known count,Count matches report records,High,Functional
+VT-121,Video Telematics,Report,Expand filters,Report open,Click Report Filters,N/A,Detailed filter controls appear,High,Functional
+VT-122,Video Telematics,Report,Collapse filters,Filters expanded,Click collapse,N/A,Filter area collapses,High,Functional
+VT-123,Video Telematics,Report,From date filter,Report open,Select From Date,Valid date,Date is selected,High,Functional
+VT-124,Video Telematics,Report,To date filter,Report open,Select To Date,Valid date,Date is selected,High,Functional
+VT-125,Video Telematics,Report,Invalid date range,Report open,Set From > To,Invalid range,Validation/blocked generation occurs,High,Functional
+VT-126,Video Telematics,Report,Vehicle all,Report open,Select All Vehicles,All,All authorized vehicle data is included,High,Functional
+VT-127,Video Telematics,Report,Vehicle specific,Report open,Select one vehicle,B123459,Only selected vehicle records appear,High,Functional
+VT-128,Video Telematics,Report,Alert type all,Report open,Select All Alerts,All,All alert types are included,High,Functional
+VT-129,Video Telematics,Report,Alert type specific,Report open,Select alert type,Speeding,Only matching alert records appear,High,Functional
+VT-130,Video Telematics,Report,Notification filter SENT,Mixed notifications,Select SENT,SENT,Only SENT records appear,High,Functional
+VT-131,Video Telematics,Report,Notification filter SKIPPED,Mixed notifications,Select SKIPPED,SKIPPED,Only SKIPPED records appear,High,Functional
+VT-132,Video Telematics,Report,Report Data Evidence,Report open,Select Evidence,Evidence,Evidence-related data is returned,High,Functional
+VT-133,Video Telematics,Report,Clear all filters,Filters active,Click Clear All,Multiple filters,Filters reset,High,Functional
+VT-134,Video Telematics,Report,Generate report default,Default criteria,Click Generate Report,Default,Report results load,High,Functional
+VT-135,Video Telematics,Report,Generate filtered report,Multiple filters,Set date+vehicle+alert; Generate,Known criteria,Only matching records display,High,Functional
+VT-136,Video Telematics,Report,Generate no-result report,No matching data,Generate,No-result criteria,Empty state/count is handled,High,Functional
+VT-137,Video Telematics,Report,Generate API failure,Report open,Simulate API failure; Generate,Valid criteria,Failure is communicated,High,Functional
+VT-138,Video Telematics,Report,Report table headers,Report loaded,Inspect table,N/A,"Sr No, Vehicle, Date/Time, Category, Alert, Location, Notification, Evidence are displayed",High,Functional
+VT-139,Video Telematics,Report,Verify vehicle and IMEI,Report loaded,Inspect row,Known event,Correct vehicle and device/IMEI display,High,Functional
+VT-140,Video Telematics,Report,Verify timestamp,Report loaded,Inspect row,Known event,Correct event timestamp displays,High,Functional
+VT-141,Video Telematics,Report,Verify category,Report loaded,Inspect row,ADAS,Correct category displays,High,Functional
+VT-142,Video Telematics,Report,Verify alert name,Report loaded,Inspect row,Forward Collision Warning (L1),Correct alert displays,High,Functional
+VT-143,Video Telematics,Report,Location load,Report loaded,Trigger address load,Known coordinates,Correct address resolves or clear fallback appears,High,Functional
+VT-144,Video Telematics,Report,Location missing,Event lacks address,Inspect location,No address,Missing location handled gracefully,High,Functional
+VT-145,Video Telematics,Report,Notification SENT state,Event sent,Inspect row,SENT,SENT status displays,High,Functional
+VT-146,Video Telematics,Report,Notification SKIPPED state,Event skipped,Inspect row,SKIPPED,SKIPPED status displays,High,Functional
+VT-147,Video Telematics,Report,Evidence available,Event with evidence,Inspect Evidence column,Evidence,Evidence action icons are available,High,Functional
+VT-148,Video Telematics,Report,No evidence state,Event without evidence,Inspect Evidence column,No evidence,No Evidence state is displayed,High,Functional
+VT-149,Video Telematics,Report,View all evidence,Event with evidence,Click eye icon,Event A,Correct event evidence opens,High,Functional
+VT-150,Video Telematics,Report,View all snapshots,Event with snapshots,Click image icon,Event A,Correct snapshots open,High,Functional
+VT-151,Video Telematics,Report,Play video evidence,Event with video,Click play icon,Event A,Correct video opens/plays,High,Functional
+VT-152,Video Telematics,Report,Evidence event integrity,Event A/B exist,Open evidence for A,Event A,Only A evidence is shown,Critical,Security
+VT-153,Video Telematics,Report,Missing video evidence,Event has no video,Click available evidence control if applicable,No video,Clear unavailable state is shown,High,Functional
+VT-154,Video Telematics,Report,Missing snapshot evidence,Event has no snapshots,Open snapshot action if applicable,No snapshots,Clear unavailable state is shown,High,Functional
+VT-155,Video Telematics,Report,Search exact vehicle,Report loaded,Search vehicle,B123459,Matching rows appear,High,Functional
+VT-156,Video Telematics,Report,Search partial alert,Report loaded,Search partial,Collision,Matching rows appear,High,Functional
+VT-157,Video Telematics,Report,Search no result,Report loaded,Search unmatched,XYZ-NONE,Empty state appears,High,Functional
+VT-158,Video Telematics,Report,Search special characters,Report loaded,Search special characters,@#$,No UI/query error,High,Functional
+VT-159,Video Telematics,Report,Rows per page,Large report,Change rows,50/25/10,Page size updates,High,Functional
+VT-160,Video Telematics,Report,Next page,More than one page,Click next,N/A,Next page loads,High,Functional
+VT-161,Video Telematics,Report,Previous page,Page 2+,Click previous,N/A,Previous page loads,High,Functional
+VT-162,Video Telematics,Report,First page,Later page,Click first,N/A,First page loads,High,Functional
+VT-163,Video Telematics,Report,Last page,Multiple pages,Click last,N/A,Last page loads,High,Functional
+VT-164,Video Telematics,Report,Pagination after filter,Large report,Apply filter; paginate,Filter,Pagination reflects filtered data,High,Functional
+VT-165,Video Telematics,Report,Pagination after search,Large report,Search; paginate,Search term,Pagination reflects search results,High,Functional
+VT-166,Video Telematics,Report,Export report,Report loaded,Click each export action,Filtered report,Correct data is exported,High,Functional
+VT-167,Video Telematics,Report,Export filtered report,Filters active,Export,Known filters,Export reflects intended filter scope,Critical,Functional
+VT-168,Video Telematics,Report,Export empty report,No results,Export,No results,Safe empty export or configured message,High,Functional
+VT-169,Video Telematics,Live Fleet Map,Map loads,Video Telematics open,Inspect Live Fleet Map,N/A,Map loads,High,Functional
+VT-170,Video Telematics,Live Fleet Map,LIVE indicator,Map loaded,Inspect status,N/A,LIVE status is displayed when live,Medium,Functional
+VT-171,Video Telematics,Live Fleet Map,Vehicle marker,Vehicle location available,Inspect map,Known vehicle,Correct marker is displayed,High,Functional
+VT-172,Video Telematics,Live Fleet Map,Cluster count,Multiple nearby vehicles,Inspect map,2 vehicles,Cluster count matches vehicles,Medium,Functional
+VT-173,Video Telematics,Live Fleet Map,Map view,Map loaded,Click Map,N/A,Map layer is active,Medium,Functional
+VT-174,Video Telematics,Live Fleet Map,Hybrid view,Map loaded,Click Hybrid,N/A,Hybrid layer is displayed,Medium,Functional
+VT-175,Video Telematics,Live Fleet Map,Zoom,Map loaded,Zoom in/out,N/A,Map zoom changes,Medium,Functional
+VT-176,Video Telematics,Live Fleet Map,Pan,Map loaded,Drag map,N/A,Map pans,Medium,Functional
+VT-177,Video Telematics,Live Fleet Map,Fullscreen,Map loaded,Click fullscreen,N/A,Map enters fullscreen,Medium,Functional
+VT-178,Video Telematics,Live Fleet Map,No location,Vehicle has no coordinates,Load map,No coordinates,No-location state handled,Medium,Functional
+VT-179,Video Telematics,Live Fleet Map,Map API failure,Map service unavailable,Load map,N/A,Failure is handled without breaking module,High,Reliability
+VT-180,Video Telematics,Security,Unauthenticated dashboard access,Logged out,Open dashboard URL,Protected URL,Access denied/redirected,Critical,Security
+VT-181,Video Telematics,Security,Unauthenticated alert access,Logged out,Open alert URL,Protected URL,Access denied/redirected,Critical,Security
+VT-182,Video Telematics,Security,Unauthenticated playback access,Logged out,Open playback URL,Protected URL,Access denied/redirected,Critical,Security
+VT-183,Video Telematics,Security,Unauthenticated report access,Logged out,Open report URL,Protected URL,Access denied/redirected,Critical,Security
+VT-184,Video Telematics,Security,Cross-account alert read,Two accounts,Request foreign alert,Foreign ID,Access denied,Critical,Security
+VT-185,Video Telematics,Security,Cross-account alert edit,Two accounts,Edit foreign alert,Foreign ID,Access denied,Critical,Security
+VT-186,Video Telematics,Security,Cross-account alert delete,Two accounts,Delete foreign alert,Foreign ID,Access denied,Critical,Security
+VT-187,Video Telematics,Security,Cross-account report read,Two accounts,Request foreign report data,Foreign data,Access denied,Critical,Security
+VT-188,Video Telematics,Security,Cross-account evidence read,Two accounts,Request foreign evidence,Foreign evidence ID,Access denied,Critical,Security
+VT-189,Video Telematics,Security,Cross-account video read,Two accounts,Request foreign video,Foreign video ID,Access denied,Critical,Security
+VT-190,Video Telematics,Security,IDOR vehicle,Two accounts,Tamper vehicle identifier,Foreign vehicle ID,Server rejects unauthorized object,Critical,Security
+VT-191,Video Telematics,Security,IDOR alert,Two accounts,Tamper alert identifier,Foreign alert ID,Server rejects unauthorized object,Critical,Security
+VT-192,Video Telematics,Security,IDOR evidence,Two accounts,Tamper evidence identifier,Foreign evidence ID,Server rejects unauthorized object,Critical,Security
+VT-193,Video Telematics,Security,Report search XSS,Report open,Search script,<script>alert(1)</script>,No script execution,Critical,Security
+VT-194,Video Telematics,Security,Alert search XSS,Alert open,Search script,<script>alert(1)</script>,No script execution,Critical,Security
+VT-195,Video Telematics,Security,Report search SQL injection,Report open,Search SQL payload,' OR 1=1 --,No query manipulation,Critical,Security
+VT-196,Video Telematics,Security,Alert search SQL injection,Alert open,Search SQL payload,' OR 1=1 --,No query manipulation,Critical,Security
+VT-197,Video Telematics,Security,Evidence URL authorization,Evidence exists,Open evidence URL without valid authorization,Evidence URL,Access denied,Critical,Security
+VT-198,Video Telematics,Security,Playback URL authorization,Playback exists,Open playback URL without authorization,Playback URL,Access denied,Critical,Security
+VT-199,Video Telematics,Cross Module,Alert to report,Alert exists,Create/trigger alert; generate report,Known event,Same event appears correctly in report,High,Cross Module
+VT-200,Video Telematics,Cross Module,Report to evidence,Evidence event exists,Generate report; open evidence,Known event,Evidence corresponds to report event,High,Cross Module
+VT-201,Video Telematics,Cross Module,Playback vehicle integrity,Recording exists,Search and play recording,Vehicle A,Playback belongs to selected vehicle,High,Cross Module
+VT-202,Video Telematics,Cross Module,Dashboard to alert history,Alert exists,Open dashboard; View alert history,Known alert,Relevant history opens,High,Cross Module
+VT-203,Video Telematics,Reliability,Session expiry during video,Session expires,Attempt stream action,Expired session,Action is rejected/reauthentication required,High,Reliability
+VT-204,Video Telematics,Reliability,Session expiry during report,Session expires,Generate report,Expired session,Action is rejected/reauthentication required,High,Reliability
+VT-205,Video Telematics,Reliability,Session expiry during alert create,Session expires,Create alert,Expired session,Alert is not falsely created,High,Reliability
+VT-206,Video Telematics,Reliability,Network interruption Dashboard,Dashboard open,Disconnect network,N/A,UI indicates unavailable state and remains usable,High,Reliability
+VT-207,Video Telematics,Reliability,Network interruption Playback,Playback open,Disconnect during playback,N/A,Playback fails gracefully,High,Reliability
+VT-208,Video Telematics,Reliability,Network interruption Evidence,Evidence open,Disconnect during evidence load,N/A,Evidence failure is handled,High,Reliability
+VT-209,Video Telematics,Performance,Dashboard initial load,Normal environment,Measure initial load,Baseline,Dashboard loads within accepted performance target,High,Performance
+VT-210,Video Telematics,Performance,Four stream startup,Four camera vehicle,Start all streams,4 streams,Streams initialize within accepted target,High,Performance
+VT-211,Video Telematics,Performance,Large alert table,100+ alerts,Open Alert,106+ records,Table remains responsive,High,Performance
+VT-212,Video Telematics,Performance,Large report,Large dataset,Generate report,1000+ records,Report remains usable within target,High,Performance
+VT-213,Video Telematics,Performance,Large report export,Large report,Export,1000+ records,Export completes within target,High,Performance
+VT-214,Video Telematics,Accessibility,Keyboard dashboard controls,Dashboard open,Tab through controls,N/A,Controls are keyboard accessible,Medium,Accessibility
+VT-215,Video Telematics,Accessibility,Keyboard alert form,Create dialog open,Tab through controls,N/A,Logical focus order,Medium,Accessibility
+VT-216,Video Telematics,Accessibility,Keyboard playback controls,Playback open,Tab through controls,N/A,Controls are keyboard accessible,Medium,Accessibility
+VT-217,Video Telematics,Accessibility,Keyboard report evidence,Report open,Tab through evidence icons,N/A,Evidence actions are keyboard accessible,Medium,Accessibility
+VT-218,Video Telematics,Accessibility,Evidence icon labels,Report open,Inspect icon accessibility,N/A,Eye/image/play actions have accessible names/tooltips,Medium,Accessibility
+VT-219,Video Telematics,Responsive,Dashboard responsive,Dashboard open,Test supported viewports,Desktop/tablet/mobile,Layout remains usable,Medium,Responsive
+VT-220,Video Telematics,Responsive,Alert dialog responsive,Create alert open,Resize viewport,Supported sizes,Dialog remains usable,Medium,Responsive
+VT-221,Video Telematics,Responsive,Playback responsive,Playback open,Resize viewport,Supported sizes,Panels remain usable,Medium,Responsive
+VT-222,Video Telematics,Responsive,Report responsive,Report open,Resize viewport,Supported sizes,Filters/table remain usable,Medium,Responsive

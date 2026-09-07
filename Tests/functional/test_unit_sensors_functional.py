@@ -133,9 +133,16 @@ def test_tc116_verify_sensor_pagination(unit_settings):
     unit_settings_page.switch_tab("Sensors")
     expect(unit_settings_page.sensor_items_per_page).to_be_visible()
     next_btn = unit_settings_page.next_page_btn
-    if next_btn.is_enabled():
-        next_btn.click()
-        unit_settings_page.wait_for_loading_to_finish()
-        expect(unit_settings_page.standard_sensor_rows.first).to_be_visible()
-    else:
+    # The paginator isn't rendered at all when everything fits on one page --
+    # count() must be checked before is_enabled(), which hangs until timeout
+    # on a zero-match locator (same issue documented and fixed in
+    # UnitSettingsPage.find_service_history_row_on_last_page).
+    if next_btn.count() == 0 or not next_btn.is_enabled():
         pytest.skip("Not enough sensors to exercise pagination")
+    first_page_first_row = unit_settings_page.standard_sensor_rows.first.inner_text()
+    next_btn.click()
+    unit_settings_page.wait_for_loading_to_finish()
+    expect(unit_settings_page.standard_sensor_rows.first).to_be_visible()
+    assert unit_settings_page.standard_sensor_rows.first.inner_text() != first_page_first_row, (
+        "Expected page 2 to show different rows than page 1"
+    )

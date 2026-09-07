@@ -9,6 +9,7 @@ from playwright.sync_api import sync_playwright
 
 from config.settings import load_config
 from Pages.login_page import LoginPage
+from Pages.forgot_password_page import ForgotPasswordPage
 from Pages.unit_page import UnitPage
 from Pages.unit_settings_page import UnitSettingsPage
 from Pages.tracking_page import TrackingPage
@@ -30,6 +31,15 @@ from Pages.support_page import SupportPage
 from Pages.change_password_page import ChangePasswordPage
 from Pages.help_center_page import HelpCenterPage
 from Pages.feedback_page import FeedbackPage
+from Pages.video_telematics_dashboard_page import VideoTelematicsDashboardPage
+from Pages.video_telematics_alert_page import VideoTelematicsAlertPage
+from Pages.video_telematics_playback_page import VideoTelematicsPlaybackPage
+from Pages.video_telematics_report_page import VideoTelematicsReportPage
+from Pages.admin_dashboard_page import AdminDashboardPage
+from Pages.admin_user_page import AdminUserPage
+from Pages.admin_device_page import AdminDevicePage
+from Pages.admin_plan_page import AdminPlanPage
+from Pages.admin_tax_page import AdminTaxPage
 
 
 load_dotenv()
@@ -150,6 +160,10 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "home: home module tests")
     config.addinivalue_line("markers", "admin: administrator module tests")
     config.addinivalue_line("markers", "misc: miscellaneous pages module tests")
+    config.addinivalue_line("markers", "video_telematics: video telematics module tests")
+    config.addinivalue_line("markers", "admin_panel: admin (back-office SaaS) panel module tests")
+    config.addinivalue_line("markers", "security: security-focused tests (authz, IDOR, injection, direct-URL access)")
+    config.addinivalue_line("markers", "login: login and authentication page tests")
     config.addinivalue_line("markers", "accessibility: accessibility smoke checks")
     config.addinivalue_line("markers", "responsive: responsive-viewport smoke checks")
     config.addinivalue_line(
@@ -253,6 +267,38 @@ def authenticated_page(request, browser, config, credentials, session_mode):
         login_page.open()
         login_page.login(credentials["username"], credentials["password"])
         page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
+
+    yield page
+
+    context.close()
+    _assert_no_server_errors(request, errors)
+
+
+@pytest.fixture(scope="session")
+def adas_credentials():
+    return {
+        "username": os.getenv("ADAS_TEST_USERNAME"),
+        "password": os.getenv("ADAS_TEST_PASSWORD"),
+    }
+
+
+@pytest.fixture
+def vt_authenticated_page(request, browser, config, adas_credentials):
+    """Video Telematics tests use a dedicated ADAS account (richer
+    Video Telematics data than the main test account, per the user) --
+    always a real, fresh UI login, independent of --session-mode's
+    cached storage state (which is keyed to the main account)."""
+    from Utils.download_helper import attach_download_handler
+
+    context = browser.new_context(base_url=config["base_url"], accept_downloads=True)
+    page = context.new_page()
+    attach_download_handler(page)
+    errors = _track_server_errors(page)
+
+    login_page = LoginPage(page, config)
+    login_page.open()
+    login_page.login(adas_credentials["username"], adas_credentials["password"])
+    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
 
     yield page
 
@@ -417,6 +463,24 @@ def reports_page(authenticated_page):
 
 
 @pytest.fixture
+def login_page(page, config):
+    """Open the public login page (always logged out -- `page` is a
+    fresh, unauthenticated context/page from pytest-playwright)."""
+    login_page = LoginPage(page, config)
+    login_page.open()
+    login_page.wait_for_visible(login_page.heading)
+    return login_page
+
+
+@pytest.fixture
+def forgot_password_page(login_page, config):
+    """Open the login page, then navigate to Forgot Password."""
+    forgot_password_page = ForgotPasswordPage(login_page.page)
+    forgot_password_page.open(config["base_url"])
+    return forgot_password_page
+
+
+@pytest.fixture
 def home_page(authenticated_page, config):
     """Log in and open the Home module (fleet monitoring dashboard)."""
     home_page = HomePage(authenticated_page)
@@ -484,6 +548,109 @@ def help_center_page(authenticated_page, config):
     help_center_page = HelpCenterPage(authenticated_page)
     help_center_page.open(config["base_url"])
     return help_center_page
+
+
+@pytest.fixture(scope="session")
+def admin_credentials():
+    return {
+        "username": os.getenv("ADMIN_TEST_USERNAME"),
+        "password": os.getenv("ADMIN_TEST_PASSWORD"),
+    }
+
+
+@pytest.fixture
+def admin_authenticated_page(request, browser, config, admin_credentials):
+    """Admin Panel tests use a dedicated back-office admin account -- a
+    genuinely separate app (/admin/*) from the main fleet-management SPA,
+    always a real, fresh UI login, independent of --session-mode's cached
+    storage state (which is keyed to the main account)."""
+    context = browser.new_context(base_url=config["base_url"])
+    page = context.new_page()
+    errors = _track_server_errors(page)
+
+    login_page = LoginPage(page, config)
+    login_page.open()
+    login_page.login(admin_credentials["username"], admin_credentials["password"])
+    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/admin/dashboard/?$"), timeout=15000)
+
+    yield page
+
+    context.close()
+    _assert_no_server_errors(request, errors)
+
+
+@pytest.fixture
+def admin_dashboard_page(admin_authenticated_page, config):
+    admin_dashboard_page = AdminDashboardPage(admin_authenticated_page)
+    admin_dashboard_page.open(config["base_url"])
+    return admin_dashboard_page
+
+
+@pytest.fixture
+def admin_user_page(admin_authenticated_page, config):
+    admin_user_page = AdminUserPage(admin_authenticated_page)
+    admin_user_page.open(config["base_url"], path="manage-user")
+    return admin_user_page
+
+
+@pytest.fixture
+def admin_dealer_page(admin_authenticated_page, config):
+    admin_dealer_page = AdminUserPage(admin_authenticated_page)
+    admin_dealer_page.open(config["base_url"], path="manage-dealer")
+    return admin_dealer_page
+
+
+@pytest.fixture
+def admin_device_page(admin_authenticated_page):
+    return AdminDevicePage(admin_authenticated_page)
+
+
+@pytest.fixture
+def admin_plan_page(admin_authenticated_page):
+    return AdminPlanPage(admin_authenticated_page)
+
+
+@pytest.fixture
+def admin_tax_page(admin_authenticated_page, config):
+    admin_tax_page = AdminTaxPage(admin_authenticated_page)
+    admin_tax_page.open(config["base_url"])
+    return admin_tax_page
+
+
+@pytest.fixture
+def vt_dashboard_page(vt_authenticated_page, config):
+    """Log in (ADAS account) and open Video Telematics Dashboard
+    (/video_telematics/dashboard)."""
+    vt_dashboard_page = VideoTelematicsDashboardPage(vt_authenticated_page)
+    vt_dashboard_page.open(config["base_url"])
+    return vt_dashboard_page
+
+
+@pytest.fixture
+def vt_alert_page(vt_authenticated_page, config):
+    """Log in (ADAS account) and open Video Telematics Alert Configuration
+    (/video_telematics/alert)."""
+    vt_alert_page = VideoTelematicsAlertPage(vt_authenticated_page)
+    vt_alert_page.open(config["base_url"])
+    return vt_alert_page
+
+
+@pytest.fixture
+def vt_playback_page(vt_authenticated_page, config):
+    """Log in (ADAS account) and open Video Telematics Playback
+    (/video_telematics/playback)."""
+    vt_playback_page = VideoTelematicsPlaybackPage(vt_authenticated_page)
+    vt_playback_page.open(config["base_url"])
+    return vt_playback_page
+
+
+@pytest.fixture
+def vt_report_page(vt_authenticated_page, config):
+    """Log in (ADAS account) and open Video Telematics Report
+    (/video_telematics/report)."""
+    vt_report_page = VideoTelematicsReportPage(vt_authenticated_page)
+    vt_report_page.open(config["base_url"])
+    return vt_report_page
 
 
 @pytest.fixture

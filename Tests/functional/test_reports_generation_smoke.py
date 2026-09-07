@@ -77,3 +77,42 @@ def test_standard_reports_generate_results(authenticated_page, report, network_m
         assert "downloads page" in result_surface["message"]
     else:
         assert result_surface["row_count"] == 0
+
+
+# Confirmed live: REPORT_START_DATE/END_DATE's default window (March 2026)
+# hits a real, pre-existing backend 500 for Vehicle Summary/Trip Report --
+# the underlying monthly telemetry partition table no longer exists for
+# that range (Bug_Report.md #17), returning 0 rows via a genuine server
+# error rather than a real "no data" result. A recent window in the
+# current month (confirmed live: late August 2026) reliably has real
+# telemetry and was used instead, per direct user instruction.
+NARROW_RANGE_PERFORMANCE_LIMIT_SECONDS = 5.0
+NARROW_RANGE_START_DATE = "08/25/2026"
+NARROW_RANGE_END_DATE = "08/28/2026"  # 4-day window
+
+
+@pytest.mark.functional
+@pytest.mark.reports
+@pytest.mark.report_generation
+def test_vehicle_summary_narrow_date_range_generates_within_5_seconds(authenticated_page):
+    """Confirmed live: a minimal 3-4 day date range on Vehicle Summary
+    consistently loads in ~2.2-2.7 seconds (4 samples taken during
+    investigation), well under the 5-second threshold set as this
+    report's performance bar. Regression-pins that threshold going
+    forward rather than re-measuring from scratch each time."""
+    reports_page = ReportsPage(authenticated_page)
+    reports_page.open_standard_reports()
+    load_time_seconds = reports_page.generate_standard_report(
+        "Vehicle Summary",
+        start_date=NARROW_RANGE_START_DATE,
+        end_date=NARROW_RANGE_END_DATE,
+        vehicle_name=REPORT_TEST_VEHICLE_NAME,
+        driver_name="",
+        measure_performance=True,
+    )
+    assert load_time_seconds is not None
+    assert load_time_seconds <= NARROW_RANGE_PERFORMANCE_LIMIT_SECONDS, (
+        f"Vehicle Summary for a {NARROW_RANGE_START_DATE}-{NARROW_RANGE_END_DATE} "
+        f"range took {load_time_seconds} seconds, exceeding the "
+        f"{NARROW_RANGE_PERFORMANCE_LIMIT_SECONDS}-second performance bar for a minimal date range."
+    )
