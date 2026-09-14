@@ -1,3 +1,4 @@
+import re
 import pytest
 from playwright.sync_api import expect
 
@@ -39,4 +40,46 @@ def test_open_and_switch_unit_settings_tabs(unit_settings):
     unit_settings_page.switch_tab("General")
 
     unit_settings_page.close_modal()
+    expect(unit_page.unit_list_heading).to_be_visible()
+
+
+@pytest.mark.functional
+def test_unit_list_accessible_via_direct_url(authenticated_page, config):
+    """Regression test for retest_bug_report.md NEW-1 (2026-09-11, confirmed
+    app-wide on both Dashboard and Unit): a module must be reachable by
+    navigating straight to its URL, not only via an in-app nav-link click.
+    Deliberately uses page.goto() directly (not unit_page.open_unit_list(),
+    which works around this exact bug by clicking the nav link instead) --
+    this test exists specifically to catch a regression on direct URL
+    access itself.
+
+    Expected to FAIL until the underlying app bug is fixed: as of this
+    writing, a direct goto("/unit") silently redirects to /home instead of
+    loading the Unit list.
+    """
+    page = authenticated_page
+    page.goto(f"{config['base_url']}/unit")
+    page.wait_for_timeout(3000)
+
+    expect(page).to_have_url(re.compile(rf"{re.escape(config['base_url'])}/unit/?$"))
+    expect(UnitPage(page).unit_list_heading).to_be_visible()
+
+
+@pytest.mark.functional
+def test_unit_list_survives_page_refresh(authenticated_page, config):
+    """Regression test for retest_bug_report.md NEW-1 (2026-09-11): once on
+    the Unit list, a plain browser refresh must keep the user there, not
+    silently bounce them back to /home.
+
+    Expected to FAIL until the underlying app bug is fixed.
+    """
+    page = authenticated_page
+    unit_page = UnitPage(page)
+    unit_page.open_unit_list()
+    expect(unit_page.unit_list_heading).to_be_visible()
+
+    page.reload(wait_until="load")
+    page.wait_for_timeout(3000)
+
+    expect(page).to_have_url(re.compile(rf"{re.escape(config['base_url'])}/unit/?$"))
     expect(unit_page.unit_list_heading).to_be_visible()

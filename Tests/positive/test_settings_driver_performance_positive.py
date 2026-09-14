@@ -71,7 +71,7 @@ def test_set_062_edit_performance_configuration(driver_performance_page):
         driver_performance_page.save_btn.click()
         driver_performance_page.wait_for_dialog_closed()
 
-        driver_performance_page.page.reload()
+        driver_performance_page.page.reload(); driver_performance_page.reopen()
         driver_performance_page.wait_for_loading_to_finish()
         driver_performance_page.wait_for_visible(driver_performance_page.row_containing(category))
         expect(driver_performance_page.row_containing(category)).to_contain_text("80")

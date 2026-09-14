@@ -290,15 +290,28 @@ class UnitSettingsPage(BasePage):
         self.switch_tab("Sensors")
         self.custom_sensors_tab.click()
         self.wait_for_loading_to_finish()
-        row = self.get_custom_sensor_row(sensor_name)
+        # A just-created sensor is appended to the LAST page, not page 1 --
+        # confirmed live 2026-09-11 (same pagination gotcha as Service
+        # History rows).
+        row = self.find_custom_sensor_row_on_last_page(sensor_name)
         row.locator("button[mattooltip='Edit Sensor']").click()
         self.wait_for_visible(self.sensor_name_input)
 
     def select_sensor_type(self, sensor_type: str):
-        """Select a Sensor Type option in the open Add Sensor form."""
-        self.sensor_type_select.click()
+        """Select a Sensor Type option in the open Add Sensor form.
+
+        Confirmed live 2026-09-11: the dropdown occasionally doesn't open
+        on the first click (observed intermittently, ~1 in 4 runs) -- one
+        bounded self-heal retry, matching the pattern already established
+        elsewhere in this repo for occasional stalled-open dropdowns/dialogs.
+        """
         option = self.page.get_by_role("option", name=sensor_type, exact=True).first
-        self.wait_for_visible(option)
+        self.sensor_type_select.click()
+        try:
+            self.wait_for_visible(option, timeout=5000)
+        except Exception:
+            self.sensor_type_select.click()
+            self.wait_for_visible(option)
         option.click()
 
     def fill_sensor_basic_info(self, name: str, sensor_type: str = "Gauge"):
@@ -312,8 +325,33 @@ class UnitSettingsPage(BasePage):
         self.liter_spin.nth(row_index).fill(liter_value)
 
     def get_custom_sensor_row(self, sensor_name: str):
-        """Return the Custom Sensors table row locator for a named sensor."""
+        """Return the Custom Sensors table row locator for a named sensor,
+        on the CURRENTLY displayed page only. Use
+        find_custom_sensor_row_on_last_page() to locate a just-created
+        sensor, which is appended to the last page, not page 1 (confirmed
+        live 2026-09-11 -- same pagination gotcha already documented for
+        Service History rows, see find_service_history_row_on_last_page)."""
         return self.custom_sensor_rows.filter(has_text=sensor_name)
+
+    def find_custom_sensor_row_on_last_page(self, sensor_name: str, max_pages: int = 15):
+        """Find a just-created Custom Sensor by paging to the end of the
+        table -- new sensors are appended (not prepended), so a
+        just-created one is on the LAST page, not page 1 (confirmed live
+        2026-09-11)."""
+        row = self.get_custom_sensor_row(sensor_name)
+        if row.count() > 0:
+            return row
+        next_btn = self.next_page_btn
+        for _ in range(max_pages):
+            if next_btn.count() > 0 and next_btn.is_enabled():
+                next_btn.click()
+                self.page.wait_for_timeout(600)
+                row = self.get_custom_sensor_row(sensor_name)
+                if row.count() > 0:
+                    return row
+            else:
+                break
+        return self.get_custom_sensor_row(sensor_name)
 
     def confirm_pending_delete(self):
         """Click Delete/Confirm/Yes on whatever delete-confirmation dialog is open, if any."""
@@ -329,8 +367,10 @@ class UnitSettingsPage(BasePage):
         self.confirm_pending_delete()
 
     def delete_custom_sensor(self, sensor_name: str):
-        """Delete a custom sensor by name via its row's Delete Sensor action."""
-        self.delete_custom_sensor_row(self.get_custom_sensor_row(sensor_name))
+        """Delete a custom sensor by name via its row's Delete Sensor
+        action -- pages to the last page first since a just-created sensor
+        is appended there, not page 1 (confirmed live 2026-09-11)."""
+        self.delete_custom_sensor_row(self.find_custom_sensor_row_on_last_page(sensor_name))
         self.page.wait_for_timeout(1000)
         self.wait_for_loading_to_finish()
 

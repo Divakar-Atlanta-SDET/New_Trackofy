@@ -1,6 +1,6 @@
 import re
 
-from playwright.sync_api import Locator, Page
+from playwright.sync_api import Locator, Page, expect
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from Pages.base_page import BasePage
@@ -68,13 +68,10 @@ class HomePage(BasePage):
         self.pagination_summary = page.get_by_text(re.compile(r"Showing \d+ - \d+ of \d+ vehicles"))
 
         # --- Alerts & Notifications ---
-        # No ^/$ anchors: Playwright's has_text/get_by_text regex has no
-        # multiline flag, so an anchored pattern only matches the very
-        # start/end of an element's whole flattened text -- these labels
-        # are not always the first/only line of their containing element
-        # (confirmed live the same way as the group status chips).
-        self.alerts_tab_link = page.get_by_text(re.compile(r"Alerts\s*\(\d+\)"))
-        self.acknowledged_tab_link = page.get_by_text(re.compile(r"Acknowledged\s*\(\d+\)"))
+        # Current staging omits the old numeric suffix. Use the button's
+        # accessible name while retaining compatibility with counted tabs.
+        self.alerts_tab_link = page.get_by_role("button", name=re.compile(r"^Alerts(?:\s*\(\d+\))?$"))
+        self.acknowledged_tab_link = page.get_by_role("button", name=re.compile(r"^Acknowledged(?:\s*\(\d+\))?$"))
         self.view_all_alerts_link = page.get_by_text("View all alerts", exact=True)
         self.live_alerts_button = page.get_by_text("Live", exact=True).last
 
@@ -194,7 +191,11 @@ class HomePage(BasePage):
         # can lag a few hundred ms behind the click (confirmed live) --
         # poll until it settles at the max instead of trusting the click to
         # be synchronous.
-        self.kpi_settings_dialog().get_by_text("Select All", exact=True).click()
+        select_all = self.kpi_settings_dialog().get_by_role("checkbox", name="Select All", exact=True)
+        if select_all.count():
+            select_all.check()
+        else:
+            self.kpi_settings_dialog().get_by_text("Select All", exact=True).click()
         total_options = len(self.CONFIGURABLE_KPIS) + 1
         for _ in range(20):
             if self.kpi_settings_selected_count() == total_options:
@@ -242,6 +243,19 @@ class HomePage(BasePage):
         label = self.KPI_SETTINGS_LABEL_FOR.get(kpi_name, kpi_name)
         return self.kpi_settings_dialog().get_by_role("checkbox", name=label)
 
+    def kpi_settings_snapshot(self) -> dict[str, bool]:
+        return {name: self.kpi_settings_checkbox(name).is_checked()
+                for name in self.CONFIGURABLE_KPIS + ["Total Fleet"]}
+
+    def restore_kpi_settings(self, selections: dict[str, bool]):
+        self.open_kpi_settings()
+        self.kpi_settings_check_all()
+        for name, selected in selections.items():
+            if not selected:
+                self.kpi_settings_checkbox(name).uncheck()
+        self.kpi_settings_save()
+        self.wait_for_hidden(self.kpi_settings_dialog())
+
     def kpi_settings_selected_count(self) -> int:
         text = self.kpi_settings_dialog().inner_text()
         match = re.search(r"Currently selected:\s*(\d+)", text)
@@ -284,15 +298,55 @@ class HomePage(BasePage):
     def home_settings_reset(self):
         self.home_settings_dialog().get_by_role("button", name="Reset").click()
 
+    def map_mode_is_selected(self, mode: str) -> bool:
+        control = self.map_mode_button if mode == "Map" else self.hybrid_mode_button
+        return "bg-(--mat-sys-primary-container)" in (control.get_attribute("class") or "")
+
+    def collapse_left_panel(self):
+        self.page.get_by_role("button", name="Collapse left panel").click()
+
+    def expand_left_panel(self):
+        self.page.get_by_role("button", name="Expand left panel").click()
+
+    def focus_is_inside(self, dialog: Locator) -> bool:
+        return dialog.evaluate("e => e.contains(document.activeElement)")
+
     # ------------------------------------------------------------- Search
 
     def search(self, query: str):
         self.search_input.fill(query)
+        # Search is debounced; the global spinner can be absent throughout.
+        self.page.wait_for_timeout(700)
         self.wait_for_loading_to_finish()
 
     def clear_search(self):
-        self.search_input.fill("")
-        self.wait_for_loading_to_finish()
+        self.search("")
+
+    def rendered_entity_names(self, entity: str) -> list[str]:
+        """Read card titles, keeping DOM details out of the test cases."""
+        if entity == "Fleet":
+            return self.visible_vehicle_ids()
+        cards = self.group_cards() if entity == "Groups" else self.driver_cards()
+        return [lines[1].strip() for text in cards.all_inner_texts()
+                if len(lines := text.splitlines()) > 1]
+
+    def search_empty_state(self) -> Locator:
+        return self.page.get_by_text(re.compile(r"No (vehicles|groups|drivers|results)|not found", re.I)).first
+
+    def fleet_status_count(self, name: str) -> int:
+        match = re.search(r"\((\d+)\)", self.fleet_status_filter(name).inner_text())
+        if not match:
+            raise AssertionError(f"No numeric count on {name} filter")
+        return int(match.group(1))
+
+    def rendered_vehicle_statuses(self) -> list[str]:
+        statuses = []
+        for text in self.vehicle_cards().all_inner_texts():
+            match = re.search(r"^(Running|Idle|Stopped|No Data|Expired)$", text, re.M)
+            if not match:
+                raise AssertionError("Vehicle card has no recognizable status label")
+            statuses.append(match.group(1))
+        return statuses
 
     # ------------------------------------------------------------- Fleet filters
 
@@ -500,7 +554,9 @@ class HomePage(BasePage):
         return self.page.locator(".cdk-overlay-container").filter(has_text="Driver Assignment")
 
     def assignment_selected_vehicle(self) -> str:
-        return self.driver_assignment_dialog().get_by_role("combobox", name="Select Vehicle").inner_text()
+        selected = self.driver_assignment_dialog().get_by_role("combobox", name="Select Vehicle")
+        expect(selected).to_contain_text(re.compile(r"\S"), timeout=self.DEFAULT_TIMEOUT_MS)
+        return selected.inner_text()
 
     def assignment_cancel(self):
         self.driver_assignment_dialog().get_by_role("button", name="Cancel").click()
@@ -579,12 +635,14 @@ class HomePage(BasePage):
         return self.page.locator("article.tx-card-hover")
 
     def alerts_count(self) -> int:
-        match = re.search(r"Alerts\s*\((\d+)\)", self.visible_text())
-        return int(match.group(1)) if match else 0
+        """Header total on older builds; rendered latest-feed count otherwise."""
+        match = re.search(r"Alerts\s*\((\d+)\)", self.alerts_tab_link.inner_text())
+        return int(match.group(1)) if match else self.alert_cards().count()
 
     def acknowledged_count(self) -> int:
-        match = re.search(r"Acknowledged\s*\((\d+)\)", self.visible_text())
-        return int(match.group(1)) if match else 0
+        """Call while the Acknowledged tab is active on builds without totals."""
+        match = re.search(r"Acknowledged\s*\((\d+)\)", self.acknowledged_tab_link.inner_text())
+        return int(match.group(1)) if match else self.alert_cards().count()
 
     def acknowledge_alert(self, index: int = 0):
         # Confirmed live: each alert card has a "done" (acknowledge) icon
@@ -677,6 +735,13 @@ class HomePage(BasePage):
     def fill_geolink_expiry(self, days: int = 0, hours: int = 1):
         self.geolinks_dialog().get_by_label("Expiry days").fill(str(days))
         self.geolinks_dialog().get_by_label("Expiry hours").fill(str(hours))
+
+    def geolink_expiry_field(self, unit: str) -> Locator:
+        return self.geolinks_dialog().get_by_label(f"Expiry {unit}")
+
+    def geolink_expiry_is_valid(self) -> bool:
+        return all(self.geolink_expiry_field(unit).evaluate("e => e.checkValidity()")
+                   for unit in ("days", "hours")) and self.geolink_create_button_enabled()
 
     def select_geolink_access(self, level: str):
         # level: "Map only" or "Map and details"

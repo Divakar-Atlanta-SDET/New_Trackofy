@@ -41,7 +41,13 @@ class VideoTelematicsDashboardPage(VideoTelematicsBasePage):
         self.live_video_refresh_button = page.get_by_text("refresh", exact=True).nth(0).locator("xpath=ancestor::button[1]")
 
     def open(self, base_url: str):
-        self.page.goto(f"{base_url}/video_telematics/dashboard")
+        # NEW-1: a raw page.goto() to any /video_telematics/* route
+        # silently bounces to /home (confirmed live 2026-09-14, same
+        # app-wide SPA routing defect already fixed in Settings/
+        # Administrator/Reports/etc.) -- route through the real nav bar
+        # instead, which lands on Dashboard (VT's default sub-page).
+        from components.navbar import Navbar
+        Navbar(self.page).go_to("Video Telematics")
         self.expect_path("/video_telematics/dashboard")
         self.wait_for_visible(self.heading)
 

@@ -63,7 +63,7 @@ def test_adm_username_case_sensitivity_uniqueness(administrator_page):
         admin.close_wizard()
         admin.page.wait_for_timeout(500)
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.search(base)
@@ -95,7 +95,7 @@ def test_adm_bug31_unicode_username_corrupted_to_question_marks(administrator_pa
     try:
         admin.create_user(unicode_username, "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.search(unique_suffix)
@@ -129,7 +129,7 @@ def test_adm_browser_back_after_submit_does_not_duplicate(administrator_page):
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         after_count = int(admin.user_count_text() or "0")
@@ -154,7 +154,7 @@ def test_adm_noop_permissions_save_does_not_change_config(administrator_page):
             toggle_general_permissions=["Driver"],
         )
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -166,7 +166,7 @@ def test_adm_noop_permissions_save_does_not_change_config(administrator_page):
         before_state = admin.is_checkbox_checked(admin.permissions_category_checkbox("Driver"))
         admin.save_permissions_dialog()
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.clear_search()
@@ -197,7 +197,7 @@ def test_adm_unit_scope_persists_after_menu_group_change(administrator_page):
     try:
         admin.create_user(username, password, ["HP12G9691"], arm_disarm="No", menu_group="example21")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -207,7 +207,7 @@ def test_adm_unit_scope_persists_after_menu_group_change(administrator_page):
         admin.permissions_dialog_select_menu_group("Full control")
         admin.save_permissions_dialog()
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.clear_search()

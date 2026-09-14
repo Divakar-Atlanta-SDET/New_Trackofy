@@ -34,7 +34,10 @@ def test_tc123_create_sensor_configuration_with_valid_basic_data(unit_settings):
     unit_settings_page.custom_sensors_tab.click()
     unit_settings_page.wait_for_loading_to_finish()
     try:
-        expect(unit_settings_page.get_custom_sensor_row(name)).to_be_visible()
+        # A just-created sensor is appended to the LAST page, not page 1 --
+        # confirmed live 2026-09-11 (same pagination gotcha as Service
+        # History rows).
+        expect(unit_settings_page.find_custom_sensor_row_on_last_page(name)).to_be_visible()
     finally:
         unit_settings_page.delete_custom_sensor(name)
 
@@ -55,7 +58,10 @@ def test_tc124_add_configuration_expression(unit_settings):
     unit_settings_page.custom_sensors_tab.click()
     unit_settings_page.wait_for_loading_to_finish()
     try:
-        row = unit_settings_page.get_custom_sensor_row(name)
+        # A just-created sensor is appended to the LAST page, not page 1 --
+        # confirmed live 2026-09-11 (same pagination gotcha as Service
+        # History rows).
+        row = unit_settings_page.find_custom_sensor_row_on_last_page(name)
         expect(row).to_be_visible()
         row.locator("button[mattooltip='View Sensor Details']").click()
         detail = unit_settings_page.topmost_dialog
@@ -82,7 +88,10 @@ def test_tc125_add_calibration_row(unit_settings):
     unit_settings_page.custom_sensors_tab.click()
     unit_settings_page.wait_for_loading_to_finish()
     try:
-        expect(unit_settings_page.get_custom_sensor_row(name)).to_be_visible()
+        # A just-created sensor is appended to the LAST page, not page 1 --
+        # confirmed live 2026-09-11 (same pagination gotcha as Service
+        # History rows).
+        expect(unit_settings_page.find_custom_sensor_row_on_last_page(name)).to_be_visible()
     finally:
         unit_settings_page.delete_custom_sensor(name)
 
@@ -139,6 +148,9 @@ def test_tc126_add_multiple_calibration_rows(unit_settings):
     unit_settings_page.custom_sensors_tab.click()
     unit_settings_page.wait_for_loading_to_finish()
     try:
-        expect(unit_settings_page.get_custom_sensor_row(name)).to_be_visible()
+        # A just-created sensor is appended to the LAST page, not page 1 --
+        # confirmed live 2026-09-11 (same pagination gotcha as Service
+        # History rows).
+        expect(unit_settings_page.find_custom_sensor_row_on_last_page(name)).to_be_visible()
     finally:
         unit_settings_page.delete_custom_sensor(name)

@@ -1,2 +1,12 @@
 .env
 .auth/
+__pycache__/
+*.pyc
+*.log
+downloads/*
+.pytest_cache/
+.playwright-mcp/
+.claude/worktrees/
+venv1/
+venv/
+.venv/

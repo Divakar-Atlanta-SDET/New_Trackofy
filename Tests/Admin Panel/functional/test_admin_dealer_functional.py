@@ -170,3 +170,49 @@ def test_admin_dealer_007_status_toggle_reversible(dummy_dealer):
     assert page.is_status_active(row) != original
     page.status_toggle(row).click()
     page.page.wait_for_timeout(1200)
+
+
+@pytest.mark.negative
+@pytest.mark.admin_panel
+def test_admin_dealer_008_bug82_invalid_pin_code_silently_does_nothing_on_submit(admin_dealer_page):
+    """Bug_Report.md #82. Reverified live 2026-09-14: with every other
+    field validly filled, an invalid (non-numeric) PIN Code no longer
+    triggers the originally-reported raw SQL error (Bug #58) -- but
+    Submit, which still reports as enabled, fires zero network requests
+    and shows zero visible feedback when clicked. Uses the create FORM
+    only -- since the whole point of this bug is that nothing gets
+    submitted, no new permanent dealer record is created here."""
+    import re
+
+    admin_dealer_page.open_create()
+    admin_dealer_page.fill_personal_info("Bug82Regression", "bug82regression@example.com", "7000000082")
+    admin_dealer_page.wizard_next_button().click()
+    admin_dealer_page.page.wait_for_timeout(1000)
+    admin_dealer_page.fill_billing_info_minimal("Bug82RegressionCo")
+
+    dialog = admin_dealer_page.wizard_dialog()
+    all_textboxes = dialog.get_by_role("textbox")
+    for i in range(all_textboxes.count()):
+        box = all_textboxes.nth(i)
+        placeholder = box.get_attribute("placeholder") or ""
+        if "PIN Code" in placeholder:
+            box.fill("AutoQA123")
+            break
+
+    submit_btn = dialog.get_by_role("button", name=re.compile("Create Dealer", re.IGNORECASE))
+    assert submit_btn.is_enabled(), "Expected Submit to (still) report as enabled with an invalid PIN Code"
+
+    create_dealer_calls = []
+    admin_dealer_page.page.on(
+        "response",
+        lambda resp: create_dealer_calls.append(resp.url) if "create-dealer" in resp.url.lower() else None,
+    )
+    submit_btn.click()
+    admin_dealer_page.page.wait_for_timeout(2500)
+
+    assert not create_dealer_calls, (
+        f"Bug regression: expected an invalid PIN Code to (still) fire no create-dealer request at all -- "
+        f"if one now fired, the server-side validation/error handling may have changed. Got: {create_dealer_calls}"
+    )
+    assert dialog.is_visible(), "Expected the dialog to (still) stay open with no visible change on this silent failure"
+    admin_dealer_page.close_wizard_dialog()

@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
 from config.settings import load_config
+from components.navbar import Navbar
 from Pages.login_page import LoginPage
 from Pages.forgot_password_page import ForgotPasswordPage
 from Pages.unit_page import UnitPage
@@ -40,6 +41,12 @@ from Pages.admin_user_page import AdminUserPage
 from Pages.admin_device_page import AdminDevicePage
 from Pages.admin_plan_page import AdminPlanPage
 from Pages.admin_tax_page import AdminTaxPage
+from Pages.can_dashboard_page import CanDashboardPage
+from Pages.can_unit_page import CanUnitPage
+from Pages.can_trends_page import CanTrendsPage
+from Pages.can_report_page import CanReportPage
+from Pages.can_alerts_page import CanAlertsPage
+from Pages.can_settings_page import CanSettingsPage
 
 
 load_dotenv()
@@ -162,6 +169,9 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "misc: miscellaneous pages module tests")
     config.addinivalue_line("markers", "video_telematics: video telematics module tests")
     config.addinivalue_line("markers", "admin_panel: admin (back-office SaaS) panel module tests")
+    config.addinivalue_line("markers", "can: CAN module tests")
+    config.addinivalue_line("markers", "dashboard: dashboard module tests")
+    config.addinivalue_line("markers", "smoke: smoke tests")
     config.addinivalue_line("markers", "security: security-focused tests (authz, IDOR, injection, direct-URL access)")
     config.addinivalue_line("markers", "login: login and authentication page tests")
     config.addinivalue_line("markers", "accessibility: accessibility smoke checks")
@@ -338,9 +348,15 @@ def tracking(authenticated_page):
 @pytest.fixture
 def settings_menu(authenticated_page):
     """Log in and open the Settings module. Returns the SettingsSideMenu,
-    ready to navigate to any submodule (open_driver(), open_alert(...), etc.)."""
+    ready to navigate to any submodule (open_driver(), open_alert(...), etc.).
+
+    Routes through the nav-bar link, not page.goto("/settings") -- confirmed
+    live (2026-09-13) that a direct goto to /settings (bare, no sub-path)
+    also hits NEW-1 (retest_bug_report.md) and silently bounces to /home,
+    same as every other module's direct-URL case.
+    """
     menu = SettingsSideMenu(authenticated_page)
-    authenticated_page.goto("/settings")
+    Navbar(authenticated_page).go_to("Settings")
     menu.wait_for_visible(menu.driver_management_btn)
     return menu
 
@@ -355,6 +371,10 @@ def driver_page(settings_menu):
     # SPA populates it (confirmed live -- reading rows right after the
     # container becomes visible was flaky), so give it a beat to settle.
     page.page.wait_for_timeout(1000)
+    # A raw page.reload() hits NEW-1 (retest_bug_report.md) and bounces to
+    # /home -- tests that need a real reload call page.reopen() afterward
+    # to recover via the settings nav instead of a second raw reload/goto.
+    page.reopen = settings_menu.open_driver
     return page
 
 
@@ -374,7 +394,40 @@ def driver_performance_page(settings_menu):
     # the table before Angular finished populating it); this page in
     # particular needs more settle time than Driver's does.
     page.page.wait_for_timeout(3000)
-    return page
+    # See driver_page's reopen comment -- same NEW-1 workaround.
+    page.reopen = settings_menu.open_driver_performance
+
+    # Category is a fixed 4-value enum (Poor/Average/Good/Excellent) --
+    # "Configure Driver" correctly disables once all 4 already have a
+    # configuration (confirmed live: this is real, intentional behavior,
+    # not a bug), which blocks any test that needs to open the Add form.
+    # Accumulated prior test runs left this account with all 4 configured;
+    # free POOR for the test and restore its original values afterward.
+    freed_poor = False
+    if not page.add_btn.is_enabled() and page.row_containing("POOR").count() > 0:
+        page.delete_configuration("POOR")
+        freed_poor = True
+
+    yield page
+
+    if freed_poor:
+        # Best-effort restore: the table displays the category in all caps
+        # ("POOR") via CSS, but the dropdown option's real text is title
+        # case ("Poor") -- select_category needs the latter. Wrapped so a
+        # restore hiccup leaves a data-cleanup debt, not a broken test run.
+        try:
+            page.close_dialog()  # the test itself may have left its own dialog open
+            page.reopen()
+            page.wait_for_loading_to_finish()
+            if page.row_containing("POOR").count() == 0:
+                page.open_configure_form()
+                page.select_category("Poor")
+                page.select_parameter("Overspeed Limit")
+                page.configure_parameter("Overspeed Limit", Limit="80", Count="2")
+                page.save_btn.click()
+                page.wait_for_dialog_closed()
+        except Exception:
+            pass
 
 
 @pytest.fixture
@@ -384,6 +437,8 @@ def vehicle_group_page(settings_menu):
     page = VehicleGroupPage(settings_menu.page)
     page.wait_for_visible(page.heading)
     page.page.wait_for_timeout(1500)
+    # See driver_page's reopen comment -- same NEW-1 workaround.
+    page.reopen = settings_menu.open_vehicle_group
     return page
 
 
@@ -394,7 +449,38 @@ def vehicle_performance_page(settings_menu):
     page = VehiclePerformancePage(settings_menu.page)
     page.wait_for_visible(page.heading)
     page.page.wait_for_timeout(1500)
-    return page
+    # See driver_page's reopen comment -- same NEW-1 workaround.
+    page.reopen = settings_menu.open_vehicle_performance
+
+    # Same fixed 4-value Category enum as Driver Performance -- see that
+    # fixture's comment. Free POOR if all 4 are already configured, restore
+    # its original values (Distance 0-1000, Halt/Idle/Running Time 0-24)
+    # afterward.
+    freed_poor = False
+    if not page.add_btn.is_enabled() and page.row_containing("POOR").count() > 0:
+        page.delete_configuration("POOR")
+        freed_poor = True
+
+    yield page
+
+    if freed_poor:
+        # Best-effort restore -- see driver_performance_page's matching
+        # comment on the all-caps-table vs title-case-dropdown mismatch.
+        try:
+            page.close_dialog()  # the test itself may have left its own dialog open
+            page.reopen()
+            page.wait_for_loading_to_finish()
+            if page.row_containing("POOR").count() == 0:
+                page.open_configure_form()
+                page.select_category("Poor")
+                page.set_range("distance", 0, 1000)
+                page.set_range("halt time", 0, 24)
+                page.set_range("idle time", 0, 24)
+                page.set_range("running time", 0, 24)
+                page.create_btn.click()
+                page.wait_for_dialog_closed()
+        except Exception:
+            pass
 
 
 @pytest.fixture
@@ -404,6 +490,8 @@ def location_control_page(settings_menu):
     page = LocationControlPage(settings_menu.page)
     page.wait_for_visible(page.heading)
     page.page.wait_for_timeout(1500)
+    # See driver_page's reopen comment -- same NEW-1 workaround.
+    page.reopen = settings_menu.open_location_control
     return page
 
 
@@ -416,6 +504,8 @@ def alert_page(settings_menu):
         page = AlertConfigPage(settings_menu.page, alert_type)
         page.wait_for_visible(page.heading)
         page.page.wait_for_timeout(1500)
+        # See driver_page's reopen comment -- same NEW-1 workaround.
+        page.reopen = lambda: settings_menu.open_alert(alert_type)
         return page
     return _open
 
@@ -447,6 +537,8 @@ def route_page(settings_menu):
     page = RouteManagementPage(settings_menu.page)
     page.wait_for_visible(page.heading)
     page.page.wait_for_timeout(1500)
+    # See driver_page's reopen comment -- same NEW-1 workaround.
+    page.reopen = settings_menu.open_route_management
     return page
 
 
@@ -493,6 +585,12 @@ def administrator_page(authenticated_page, config):
     """Log in and open the Administrator module (sub-user management)."""
     administrator_page = AdministratorPage(authenticated_page)
     administrator_page.open(config["base_url"])
+    # A raw page.reload() hits NEW-1 (retest_bug_report.md) and bounces to
+    # /home -- same workaround as every other module's .reopen pattern.
+    # AdministratorPage.open() is already NEW-1-safe (goes via /home + the
+    # nav-bar link, never a direct goto to /administrator), so it doubles
+    # as the re-entry point after any test-triggered reload.
+    administrator_page.reopen = lambda: administrator_page.open(config["base_url"])
     return administrator_page
 
 
@@ -617,12 +715,93 @@ def admin_tax_page(admin_authenticated_page, config):
     return admin_tax_page
 
 
+@pytest.fixture(scope="session")
+def can_credentials():
+    return {
+        "username": os.getenv("CAN_TEST_USERNAME"),
+        "password": os.getenv("CAN_TEST_PASSWORD"),
+    }
+
+
+@pytest.fixture
+def can_authenticated_page(request, browser, config, can_credentials):
+    """CAN module tests use a dedicated account with the CAN module
+    enabled (the main TEST_USERNAME account has no CAN nav entry) --
+    always a real, fresh UI login, independent of --session-mode's
+    cached storage state (which is keyed to the main account)."""
+    from Utils.download_helper import attach_download_handler
+
+    context = browser.new_context(base_url=config["base_url"], accept_downloads=True)
+    page = context.new_page()
+    attach_download_handler(page)
+    errors = _track_server_errors(page)
+
+    login_page = LoginPage(page, config)
+    login_page.open()
+    login_page.login(can_credentials["username"], can_credentials["password"])
+    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
+
+    yield page
+
+    context.close()
+    _assert_no_server_errors(request, errors)
+
+
+@pytest.fixture
+def can_dashboard_page(can_authenticated_page, config):
+    """Log in (CAN account) and open CAN Dashboard (/can/dashboard)."""
+    can_dashboard_page = CanDashboardPage(can_authenticated_page)
+    can_dashboard_page.open(config["base_url"])
+    return can_dashboard_page
+
+
+@pytest.fixture
+def can_unit_page(can_authenticated_page, config):
+    """Log in (CAN account) and open CAN Unit list (/can/units)."""
+    can_unit_page = CanUnitPage(can_authenticated_page)
+    can_unit_page.open(config["base_url"])
+    return can_unit_page
+
+
+@pytest.fixture
+def can_trends_page(can_authenticated_page, config):
+    """Log in (CAN account) and open CAN Trends (/can/trends)."""
+    can_trends_page = CanTrendsPage(can_authenticated_page)
+    can_trends_page.open(config["base_url"])
+    return can_trends_page
+
+
+@pytest.fixture
+def can_report_page(can_authenticated_page, config):
+    """Log in (CAN account) and open CAN Reports (/can/report)."""
+    can_report_page = CanReportPage(can_authenticated_page)
+    can_report_page.open(config["base_url"])
+    return can_report_page
+
+
+@pytest.fixture
+def can_alerts_page(can_authenticated_page, config):
+    """Log in (CAN account) and open CAN Alerts (/can/alerts)."""
+    can_alerts_page = CanAlertsPage(can_authenticated_page)
+    can_alerts_page.open(config["base_url"])
+    return can_alerts_page
+
+
+@pytest.fixture
+def can_settings_page(can_authenticated_page, config):
+    """Log in (CAN account) and open CAN Settings (/can/settings)."""
+    can_settings_page = CanSettingsPage(can_authenticated_page)
+    can_settings_page.open(config["base_url"])
+    return can_settings_page
+
+
 @pytest.fixture
 def vt_dashboard_page(vt_authenticated_page, config):
     """Log in (ADAS account) and open Video Telematics Dashboard
     (/video_telematics/dashboard)."""
     vt_dashboard_page = VideoTelematicsDashboardPage(vt_authenticated_page)
     vt_dashboard_page.open(config["base_url"])
+    vt_dashboard_page.reopen = lambda: vt_dashboard_page.open(config["base_url"])
     return vt_dashboard_page
 
 
@@ -632,6 +811,7 @@ def vt_alert_page(vt_authenticated_page, config):
     (/video_telematics/alert)."""
     vt_alert_page = VideoTelematicsAlertPage(vt_authenticated_page)
     vt_alert_page.open(config["base_url"])
+    vt_alert_page.reopen = lambda: vt_alert_page.open(config["base_url"])
     return vt_alert_page
 
 
@@ -641,6 +821,7 @@ def vt_playback_page(vt_authenticated_page, config):
     (/video_telematics/playback)."""
     vt_playback_page = VideoTelematicsPlaybackPage(vt_authenticated_page)
     vt_playback_page.open(config["base_url"])
+    vt_playback_page.reopen = lambda: vt_playback_page.open(config["base_url"])
     return vt_playback_page
 
 
@@ -650,6 +831,7 @@ def vt_report_page(vt_authenticated_page, config):
     (/video_telematics/report)."""
     vt_report_page = VideoTelematicsReportPage(vt_authenticated_page)
     vt_report_page.open(config["base_url"])
+    vt_report_page.reopen = lambda: vt_report_page.open(config["base_url"])
     return vt_report_page
 
 
@@ -674,8 +856,20 @@ def feedback_form(feedback_prompt):
 
 
 @pytest.fixture
-def network_monitor(page):
-    monitor = NetworkMonitor(page)
+def network_monitor(request):
+    # Every real caller drives its interactions through authenticated_page
+    # (or a page fixture built on top of one), not the bare `page` fixture --
+    # each of those creates its OWN separate browser context/tab. Watching
+    # `page` while the test acts on a different page silently captures zero
+    # events. Attach to whichever page-like fixture the test actually asked
+    # for instead of assuming `page`.
+    for fixture_name in ("authenticated_page", "can_authenticated_page", "vt_authenticated_page", "page"):
+        if fixture_name in request.fixturenames:
+            target_page = request.getfixturevalue(fixture_name)
+            break
+    else:
+        target_page = request.getfixturevalue("page")
+    monitor = NetworkMonitor(target_page)
     yield monitor
     monitor.stop()
 

@@ -427,6 +427,7 @@ def _create_into_freed_slot(vt_alert_page, vehicle: str, alert_name: str) -> boo
     vt_alert_page.submit_create(dialog)
     vt_alert_page.page.wait_for_timeout(2000)
     vt_alert_page.page.reload()
+    vt_alert_page.reopen()
     vt_alert_page.wait_for_visible(vt_alert_page.heading)
     vt_alert_page.page.wait_for_timeout(1500)
     after = vt_alert_page.alert_count()
@@ -462,6 +463,7 @@ def test_vt_077_create_valid_alert(vt_alert_page, freed_alert_slot):
         assert not dialog.is_visible(), "Expected the dialog to close after a valid create"
 
         vt_alert_page.page.reload()
+        vt_alert_page.reopen()
         vt_alert_page.wait_for_visible(vt_alert_page.heading)
         vt_alert_page.page.wait_for_timeout(1500)
         after = vt_alert_page.alert_count()
@@ -495,6 +497,7 @@ def test_vt_078_prevent_duplicate_creation(vt_alert_page, freed_alert_slot):
         vt_alert_page.page.wait_for_timeout(2000)
 
         vt_alert_page.page.reload()
+        vt_alert_page.reopen()
         vt_alert_page.wait_for_visible(vt_alert_page.heading)
         vt_alert_page.page.wait_for_timeout(1500)
         after = vt_alert_page.alert_count()
@@ -530,6 +533,7 @@ def test_vt_079_create_api_failure(vt_alert_page, freed_alert_slot):
         vt_alert_page.page.wait_for_timeout(500)
 
         vt_alert_page.page.reload()
+        vt_alert_page.reopen()
         vt_alert_page.wait_for_visible(vt_alert_page.heading)
         vt_alert_page.page.wait_for_timeout(1500)
         after = vt_alert_page.alert_count()
@@ -562,6 +566,7 @@ def test_vt_080_create_network_failure(vt_alert_page, freed_alert_slot):
         vt_alert_page.page.wait_for_timeout(500)
 
         vt_alert_page.page.reload()
+        vt_alert_page.reopen()
         vt_alert_page.wait_for_visible(vt_alert_page.heading)
         vt_alert_page.page.wait_for_timeout(1500)
         after = vt_alert_page.alert_count()
@@ -575,16 +580,19 @@ def test_vt_080_create_network_failure(vt_alert_page, freed_alert_slot):
 def test_vt_081_082_083_084_085_086_087_edit_alert_full_flow(vt_alert_page, freed_alert_slot):
     """VT-081: Edit opens pre-filled with the real configuration.
 
-    VT-082/083/084/085 (vehicle/priority/channels/delivery mode):
-    confirmed live via a read-only probe across multiple real rows/alert
-    types that Vehicle, Priority, all three delivery-channel checkboxes,
-    and both delivery-mode radios are ALL genuinely disabled in the
-    Update Video Alert dialog -- not specific to this one alert type.
-    This contradicts the CSV test cases' own "change X; save" framing
-    for these four (logged as Bug #41, Medium, in Bug_Report.md); the
-    real edit form only ever lets you change Cooldown and Status. Each
-    is checked here as "correctly pre-filled but locked" rather than
-    attempting a real change.
+    VT-082/083/084/085 (vehicle/priority/channels/delivery mode).
+    Reverified 2026-09-14: ✅ Bug #41 is now FIXED, and in a stronger
+    way than simply re-enabling the fields -- the Update Video Alert
+    dialog was redesigned to REMOVE Vehicle/Alert Type/Priority/Delivery
+    Channels/Delivery Mode from the form entirely (confirmed live:
+    `role=combobox` count is 0 in the dialog now), replaced with an
+    explicit info banner: "Only Cooldown Minutes and Status can be
+    updated. Vehicle, Alert Type, Priority, Delivery Channels, and
+    Delivery Mode cannot be changed after the alert configuration is
+    created." This resolves the original complaint (fields looked
+    editable but silently rejected interaction) more thoroughly than a
+    plain disabled-state fix would have -- there's nothing left to
+    click that looks like it should work but doesn't.
 
     VT-086/087 (cooldown/status): the only two fields genuinely
     editable -- changed and verified to actually save."""
@@ -601,30 +609,20 @@ def test_vt_081_082_083_084_085_086_087_edit_alert_full_flow(vt_alert_page, free
 
         vt_alert_page.open_edit_dialog(row)
         edit_dialog = vt_alert_page.edit_dialog()
-        # VT-081: pre-filled with the real configuration
-        assert vehicle in vt_alert_page.vehicle_combobox(edit_dialog).inner_text(), (
-            "VT-081: expected the edit form pre-filled with the real vehicle"
-        )
-        assert alert_name in vt_alert_page.alert_combobox(edit_dialog).inner_text(), (
-            "VT-081: expected the edit form pre-filled with the real alert"
-        )
-        assert vt_alert_page.channel_checkbox(edit_dialog, "Application").is_checked(), (
-            "VT-081: expected the edit form pre-filled with the real (default) channel state"
-        )
 
-        # VT-082/083/084/085: Bug #41 -- confirmed disabled, not editable
-        assert vt_alert_page.vehicle_combobox(edit_dialog).get_attribute("aria-disabled") == "true", (
-            "VT-082: expected the edit form's vehicle selector to be locked (aria-disabled)"
+        # VT-081/082/083/084/085: the non-editable fields are gone from
+        # the dialog entirely now, replaced by an explicit banner naming
+        # them -- this is both VT-081's "shows the real config" (via the
+        # banner text and the table row itself, already captured above)
+        # and VT-082/083/084/085's "locked" checks in one confirmation.
+        dialog_text = edit_dialog.inner_text()
+        assert edit_dialog.get_by_role("combobox").count() == 0, (
+            "Bug #41 regression: expected no editable comboboxes (Vehicle/Alert Type/Priority) in the edit dialog"
         )
-        assert vt_alert_page.priority_combobox(edit_dialog).get_attribute("aria-disabled") == "true", (
-            "VT-083: expected the edit form's priority selector to be locked (aria-disabled)"
-        )
-        assert not vt_alert_page.channel_checkbox(edit_dialog, "Email").is_enabled(), (
-            "VT-084: expected the edit form's delivery-channel checkboxes to be locked"
-        )
-        assert not vt_alert_page.delivery_mode_radio(edit_dialog, "Interval").is_enabled(), (
-            "VT-085: expected the edit form's delivery-mode radios to be locked"
-        )
+        for locked_field in ["Vehicle", "Alert Type", "Priority", "Delivery Channels", "Delivery Mode"]:
+            assert locked_field in dialog_text, (
+                f"Expected the edit dialog's info banner to name {locked_field!r} as non-editable"
+            )
 
         # VT-086: change cooldown (one of only two genuinely editable fields)
         vt_alert_page.cooldown_input(edit_dialog).fill("5")
@@ -636,14 +634,32 @@ def test_vt_081_082_083_084_085_086_087_edit_alert_full_flow(vt_alert_page, free
         assert not edit_dialog.is_visible(), "Expected the edit dialog to close after saving"
 
         vt_alert_page.page.reload()
+        vt_alert_page.reopen()
         vt_alert_page.wait_for_visible(vt_alert_page.heading)
         vt_alert_page.page.wait_for_timeout(1500)
+        # NEW-13 (Bug_Report.md): confirmed live the toggle_adas_alert_config
+        # call itself succeeds immediately (server response already
+        # confirms is_active:0), but the alert LIST endpoint is
+        # eventually-consistent and can still show the old status for
+        # several seconds -- same shape as the already-documented Bug #60
+        # (device assignment). Poll with reloads rather than a single
+        # fixed wait, since a genuine single-reload check would flake.
+        for _ in range(5):
+            updated_row = _find_test_alert_row(vt_alert_page, vehicle, alert_name)
+            if updated_row is not None and vt_alert_page.row_status(updated_row) == "Disabled":
+                break
+            vt_alert_page.page.wait_for_timeout(1500)
+            vt_alert_page.page.reload()
+            vt_alert_page.reopen()
+            vt_alert_page.wait_for_visible(vt_alert_page.heading)
         updated_row = _find_test_alert_row(vt_alert_page, vehicle, alert_name)
         assert updated_row is not None, "Expected the edited alert still filed under the same vehicle"
         assert vt_alert_page.row_priority_text(updated_row) == original_priority, (
             "VT-083: expected priority to remain unchanged (locked in edit mode)"
         )
-        assert vt_alert_page.row_status(updated_row) == "Disabled", "VT-087: expected status now Disabled"
+        assert vt_alert_page.row_status(updated_row) == "Disabled", (
+            "VT-087: expected status now Disabled (even after polling for eventual consistency, see NEW-13)"
+        )
 
         # VT-086 verification: cooldown isn't a table column, reopen to confirm it saved
         vt_alert_page.open_edit_dialog(updated_row)
@@ -672,6 +688,7 @@ def test_vt_088_delete_alert(vt_alert_page, freed_alert_slot):
     vt_alert_page.page.wait_for_timeout(1000)
 
     vt_alert_page.page.reload()
+    vt_alert_page.reopen()
     vt_alert_page.wait_for_visible(vt_alert_page.heading)
     vt_alert_page.page.wait_for_timeout(1500)
     after = vt_alert_page.alert_count()
@@ -728,6 +745,7 @@ def test_vt_090_delete_api_failure(vt_alert_page, freed_alert_slot):
         vt_alert_page.page.wait_for_timeout(500)
 
         vt_alert_page.page.reload()
+        vt_alert_page.reopen()
         vt_alert_page.wait_for_visible(vt_alert_page.heading)
         vt_alert_page.page.wait_for_timeout(1500)
         assert vt_alert_page.alert_count() == before, "Expected the alert to remain after a failed delete"

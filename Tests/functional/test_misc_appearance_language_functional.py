@@ -314,7 +314,7 @@ def test_misc_162_dialog_translation(account_menu):
     account_menu.wait_for_visible(account_menu.sign_out_confirm_dialog())
     translated_text = account_menu.sign_out_confirm_dialog().inner_text()
     assert translated_text.strip() != "", "Expected the sign-out confirmation dialog to render some content"
-    assert "Are you sure you want to logout" not in translated_text or account_menu.is_page_translated()
+    assert "Are you sure you want to sign out" not in translated_text or account_menu.is_page_translated()
     # Dialog is already open (from sign_out_item.click() above) -- dismiss it
     # directly via Escape rather than routing through cancel_sign_out(),
     # which would try to re-open the Account menu while this dialog's own

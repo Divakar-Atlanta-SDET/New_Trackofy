@@ -25,7 +25,11 @@ def test_trk_live_010_prevent_duplicate_vehicle_selection(tracking):
     tracking.open_vehicle_dropdown()
     same_option = tracking.vehicle_options.first
     same_option_text = same_option.inner_text().strip()
-    same_option.click()
+    # A plain .click() races the vehicle listbox's own periodic re-render
+    # (each row has a live "recently active" indicator) and can hit a
+    # detached-node timeout -- an in-page click dispatch sidesteps that,
+    # same fix already applied in TrackingPage._click_vehicle_option().
+    same_option.evaluate("el => el.click()")
     tracking.wait_for_loading_to_finish()
     selected_after_repeat, _ = tracking.read_selected_vehicles_counter()
 
@@ -67,10 +71,16 @@ def test_trk_live_032_rapid_start_tracking_clicks(tracking):
     if tracking.available_vehicle_count() == 0:
         pytest.skip("No vehicles available on this account")
     vehicle_name = tracking.select_vehicle_by_index(0)
+    # Confirmed live 2026-09-12: the button disables itself immediately
+    # after the first successful click (a real, correct duplicate-request
+    # guard), so a plain .click() on later iterations times out waiting for
+    # it to be enabled -- force=True bypasses that actionability wait so
+    # this test can actually attempt rapid-fire clicks against it, which is
+    # the point of this test (verifying the guard holds, not working around it).
     for _ in range(4):
-        tracking.start_tracking_btn.click(no_wait_after=True)
+        tracking.start_tracking_btn.click(no_wait_after=True, force=True)
     tracking.wait_for_loading_to_finish()
-    tracking.page.wait_for_timeout(1000)
+    expect(tracking.vehicle_marker_on_map(vehicle_name)).to_be_visible()
     assert tracking.vehicle_marker_on_map(vehicle_name).count() == 1
 
 

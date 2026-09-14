@@ -1,4 +1,5 @@
 import pytest
+from uuid import uuid4
 
 
 @pytest.mark.functional
@@ -61,7 +62,7 @@ def test_home_0237_0245_0270_create_list_and_delete_geolink(home_page):
     """
     home_page.open_geolinks()
     before_count = home_page.geolinks_count()
-    title = "pytest-home-geolink-crud"
+    title = f"pytest-home-geolink-{uuid4().hex[:8]}"
 
     try:
         home_page.click_create_geolink()
@@ -95,21 +96,11 @@ def test_home_0237_0245_0270_create_list_and_delete_geolink(home_page):
 @pytest.mark.functional
 @pytest.mark.home
 @pytest.mark.negative
-def test_home_0260_map_only_geolink_does_not_expose_vehicle_details(home_page, browser, config):
-    """Regression pin for Bug #23 (Bug_Report.md, Home Module): a GeoLink
-    created with 'Map only' access (labeled "Vehicle location without
-    details") should not expose the vehicle's identifying registration
-    string to an anonymous visitor of the public share URL -- but confirmed
-    live that it currently does. This asserts the confirmed-broken behavior;
-    it should start failing (and be flipped to assert the identifier is
-    NOT present) once the app is fixed.
-
-    Uses a genuinely fresh, unauthenticated browser context (no storage
-    state / cookies from this test's own login) to visit the real public
-    URL, matching how an actual recipient would open the link.
-    """
+def test_home_0261_map_only_geolink_does_not_expose_vehicle_details(home_page, browser, config):
+    """HOME-0261: a Map-only link must not expose restricted identifying
+    details to an anonymous visitor. Regression for Bug #23."""
     home_page.open_geolinks()
-    title = "pytest-home-geolink-security"
+    title = f"pytest-home-security-{uuid4().hex[:8]}"
     vehicle_id = home_page.visible_vehicle_ids(max_count=1)[0]
 
     try:
@@ -136,12 +127,10 @@ def test_home_0260_map_only_geolink_does_not_expose_vehicle_details(home_page, b
                     break
                 anon_page.wait_for_timeout(1000)
             anon_body = anon_page.locator("body").inner_text()
-            assert vehicle_id in anon_body, (
-                "Bug #23: a 'Map only' GeoLink should currently (still) expose the vehicle "
-                f"identifier '{vehicle_id}' to an anonymous visitor -- it was NOT found on the "
-                "public page. If this is no longer present, the bug is fixed and this test "
-                "should be flipped to assert the identifier is absent instead."
-            )
+            assert "Verifying geolink" not in anon_body, "Public link never finished loading"
+            if vehicle_id in anon_body:
+                anon_page.screenshot(path="Tests/home_geolink_access_astra.png", full_page=True)
+            assert vehicle_id not in anon_body, "Map-only GeoLink exposes a restricted vehicle identifier"
         finally:
             anon_context.close()
     finally:
@@ -153,3 +142,22 @@ def test_home_0260_map_only_geolink_does_not_expose_vehicle_details(home_page, b
             home_page.open_geolinks()
         if home_page.geolink_row(title).count() > 0:
             home_page.delete_geolink(title)
+
+
+@pytest.mark.functional
+@pytest.mark.home
+@pytest.mark.parametrize("days,hours,valid", [(0,1,True),(1,0,True),(2,0,True),(2,1,False),(3,0,False),(-1,1,False),(0,-1,False)])
+def test_home_0246_0251_geolink_expiry_boundaries(home_page, days, hours, valid):
+    """Validate 1/24/48-hour and invalid expiry boundaries without creating a link."""
+    vehicle = home_page.visible_vehicle_ids()[0]
+    home_page.open_geolinks()
+    home_page.click_create_geolink()
+    try:
+        home_page.fill_geolink_share_name("pytest-expiry-validation")
+        home_page.select_geolink_vehicle(vehicle)
+        home_page.fill_geolink_expiry(days, hours)
+        home_page.page.keyboard.press("Tab")
+        home_page.page.wait_for_timeout(300)
+        assert home_page.geolink_expiry_is_valid() == valid, f"Unexpected validity for {days} days + {hours} hours"
+    finally:
+        home_page.cancel_geolink_form()

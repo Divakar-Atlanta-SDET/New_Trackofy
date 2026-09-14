@@ -29,7 +29,11 @@ def test_trk_live_012_vehicle_list_api_failure(authenticated_page):
     page.route("**/api/**", lambda route: route.fulfill(status=500, body="Internal Server Error"))
     page.route("**/trackofy_api_new/**", lambda route: route.fulfill(status=500, body="Internal Server Error"))
     tracking_page = TrackingPage(page)
-    tracking_page.page.goto("/tracking")
+    # A raw page.goto("/tracking") does not work on this app (NEW-1, see
+    # retest_bug_report.md) -- use the nav-link-based open_tracking_page()
+    # instead; the API-failure routes above still apply to whatever calls
+    # the resulting page makes, regardless of how navigation happened.
+    tracking_page.open_tracking_page()
     page.wait_for_timeout(2500)
     # With the vehicle-data API down, Start Tracking must not be falsely usable.
     expect(tracking_page.start_tracking_btn).to_be_disabled()

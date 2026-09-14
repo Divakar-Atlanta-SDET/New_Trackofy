@@ -7,7 +7,11 @@ confirmation via a PrimeNG p-confirmpopup ("Do you want to delete this tax
 
 Every tax profile this suite creates uses the "AutoTax" name prefix and is
 deleted by this suite itself before the test ends -- never touches the
-pre-existing real tax records (tax/Tax/Tax12/taxfree)."""
+pre-existing real tax records. (Note: the specific real row names present
+drift over time -- confirmed 2026-09-14 the set is no longer tax/Tax/
+Tax12/taxfree as originally documented here; tests that need to assert
+"real data survived unharmed" use `total_count()` rather than specific
+names for this reason.)"""
 import time
 
 import pytest
@@ -134,7 +138,17 @@ def test_admin_tax_007_xss_payload_in_tax_name_not_executed(admin_tax_page):
 def test_admin_tax_008_sql_injection_payload_in_tax_name_handled_safely(admin_tax_page):
     """Injecting a classic SQLi payload as the tax name must not corrupt
     the tax list or produce a raw DB error -- either rejected client-side,
-    or stored/rendered as an inert literal string."""
+    or stored/rendered as an inert literal string.
+
+    Reverified 2026-09-14: the original assertion here checked for
+    specific pre-existing row names ("tax"/"taxfree") the module docstring
+    claimed were permanent fixtures of the real data -- live-confirmed
+    those no longer exist in the current tax list (real rows today are
+    GST/1/!@!#@!/12/12/12), a stale test-data assumption, not a sign of
+    real corruption. Replaced with a robust invariant: the total row
+    count before injection must never DECREASE afterward (only an
+    increase, from the payload's own new row if accepted, is expected)."""
+    count_before = admin_tax_page.total_count()
     payload = "AutoTaxSQLi' OR '1'='1"
     try:
         admin_tax_page.tax_name_input.fill(payload)
@@ -147,10 +161,9 @@ def test_admin_tax_008_sql_injection_payload_in_tax_name_handled_safely(admin_ta
         assert not any(marker in body_text for marker in ("SQLSTATE", "SqlException", "syntax error", "ORA-")), (
             "Raw database error leaked into the page after an SQLi-style tax name"
         )
-        # The pre-existing real tax records must still be intact -- a
-        # successful injection could have altered/dropped unrelated rows.
-        assert admin_tax_page.row_by_name("tax").count() >= 1
-        assert admin_tax_page.row_by_name("taxfree").count() >= 1
+        # A successful injection could have altered/dropped unrelated rows
+        # -- the total count must never fall below its pre-injection value.
+        assert admin_tax_page.total_count() >= count_before
     finally:
         _delete_all_autotax_rows(admin_tax_page)
 
@@ -164,7 +177,12 @@ def test_admin_tax_008_sql_injection_payload_in_tax_name_handled_safely(admin_ta
 )
 def test_admin_tax_009_search_box_xss_sqli_payloads_handled_safely(admin_tax_page, payload):
     """The Tax List search box must not execute injected script or leak a
-    raw DB error, and must not corrupt the underlying data either way."""
+    raw DB error, and must not corrupt the underlying data either way.
+
+    Reverified 2026-09-14: same stale-row-name issue as test_admin_tax_008,
+    fixed the same way -- a total-count invariant instead of checking for
+    specific named rows that no longer exist in the real data."""
+    count_before = admin_tax_page.total_count()
     admin_tax_page.search_input.fill(payload)
     admin_tax_page.search_input.press("Enter")
     admin_tax_page.wait_for_loading_to_finish()
@@ -182,7 +200,6 @@ def test_admin_tax_009_search_box_xss_sqli_payloads_handled_safely(admin_tax_pag
     admin_tax_page.search_input.press("Enter")
     admin_tax_page.wait_for_loading_to_finish()
     admin_tax_page.page.wait_for_timeout(1000)
-    # The pre-existing real tax records must survive an injection attempt
-    # in search unharmed.
-    assert admin_tax_page.row_by_name("tax").count() >= 1
-    assert admin_tax_page.row_by_name("taxfree").count() >= 1
+    # The real tax records must survive an injection attempt in search
+    # unharmed -- total count must never fall below its pre-search value.
+    assert admin_tax_page.total_count() >= count_before

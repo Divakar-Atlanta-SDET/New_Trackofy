@@ -27,7 +27,7 @@ def test_create_valid_alert_configuration(alert_page, alert_type):
     expect(page.submit_btn).to_be_enabled()
     page.submit()
     page.page.wait_for_timeout(2000)
-    page.page.reload()
+    page.page.reload(); page.reopen()
     page.wait_for_loading_to_finish()
     page.page.wait_for_timeout(1500)
 

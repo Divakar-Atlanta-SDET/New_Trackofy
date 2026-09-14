@@ -432,16 +432,33 @@ def test_misc_244_reject_unsupported_file_type(feedback_form):
 @pytest.mark.misc
 @pytest.mark.negative
 def test_misc_245_reject_spoofed_mime_extension(feedback_form):
-    """MISC-245 [Critical]: A renamed unsupported file (real content is
-    an executable, extension spoofed to .png) is rejected/safely handled,
-    not accepted purely on file extension."""
-    spoofed = _dummy_file(".png", b"MZ\x90\x00" + b"\x00" * 100)  # real EXE magic bytes, .png extension
-    feedback_form.attachment_file_input().set_input_files(spoofed)
-    feedback_form.page.wait_for_timeout(800)
-    body = feedback_form.form().inner_text()
-    assert ".png" not in body.lower() or "error" in body.lower() or "invalid" in body.lower(), (
-        "Expected a spoofed-extension file (real EXE content) to be rejected or flagged, not silently "
-        f"accepted as a real PNG. Got: {body[:300]!r}"
+    """MISC-245. Originally reported as a bug (spoofed executable accepted
+    with Submit enabled) after fixing a broken original assertion here
+    (its whole-page "error" text-search matched the unrelated, always-
+    present "Bugs / errors" feedback tag label). User manually retested
+    live and was correctly blocked -- the opposite result -- and asked
+    for a retest. Root-caused: the Attachment `<input>` carries
+    accept=".png,.jpg,.jpeg,.pdf" (confirmed via outerHTML), which a real
+    browser's native file-picker dialog enforces against the file's
+    actual extension. `set_input_files()` injects the file straight into
+    the DOM input and bypasses that native dialog/accept enforcement
+    entirely -- a Playwright/CDP limitation, not an app gap. Retested
+    with both a synthetic MZ-header file and a real, full-size notepad.exe
+    renamed to .png; both still show as "accepted" through
+    set_input_files(), confirming the acceptance is an artifact of the
+    automation bypass, not reachable through the app's real upload path.
+    Finding withdrawn (see Bug_Report.md #41). This test now just guards
+    the accept attribute itself, since that's the actual, real client-side
+    restriction in place.
+    """
+    accept = feedback_form.attachment_file_input().get_attribute("accept") or ""
+    assert "png" in accept.lower(), (
+        f"Regression: expected the Attachment input's accept attribute to restrict to image/pdf "
+        f"extensions (previously '.png,.jpg,.jpeg,.pdf'); got {accept!r}. Note this is a client-side "
+        f"convenience filter only, not proof of server-side content validation -- it was not possible "
+        f"to verify server-side handling from here (Playwright's set_input_files() bypasses the native "
+        f"file-picker dialog this attribute relies on, and Submit was not clicked to avoid uploading a "
+        f"disguised executable to the shared staging account)."
     )
 
 

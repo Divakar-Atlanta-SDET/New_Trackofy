@@ -140,15 +140,14 @@ def test_adm_065_add_group_opens_new_group_dialog(administrator_page):
 @pytest.mark.functional
 @pytest.mark.admin
 @pytest.mark.negative
-def test_adm_065b_rapid_add_group_clicks_stack_duplicate_dialogs(administrator_page):
-    """Regression pin for Bug #26 (Bug_Report.md, Administrator Module):
-    the "Add Group" button has no debounce/disable-while-opening, and its
-    multi-second, unindicated open delay means clicking it repeatedly while
-    waiting stacks one independent "Add New Menu Group" dialog per click,
-    rather than opening (or reusing) a single one. This asserts the
-    confirmed-broken stacking behavior; it should start failing -- and be
-    flipped to assert exactly one dialog opens regardless of click count --
-    once the app debounces this control.
+def test_adm_065b_rapid_add_group_clicks_no_longer_stack_dialogs(administrator_page):
+    """Regression pin for Bug_Report.md #26 (Administrator Module).
+    Reverified live (2026-09-13, 3x pass): FIXED -- the "Add Group" button
+    now disables itself immediately on click and stays disabled until its
+    dialog opens, so a rapid second/third click is simply blocked (not
+    registered as a real click at all) instead of stacking another dialog.
+    Confirmed exactly one dialog opens and exactly one menu-list API call
+    fires regardless of extra click attempts during the open window.
     """
     admin = administrator_page
     username = _unique_username("pytestqa")
@@ -160,20 +159,30 @@ def test_adm_065b_rapid_add_group_clicks_stack_duplicate_dialogs(administrator_p
 
         btn = admin.add_group_button()
         btn.click()
-        btn.click()
-        btn.click()
-        admin.page.wait_for_timeout(5000)
+        assert not btn.is_enabled(), (
+            "Bug #26 regression: 'Add Group' should disable itself immediately on click to "
+            "prevent stacked dialogs from rapid re-clicks."
+        )
+        # Extra clicks while disabled should simply not register.
+        for _ in range(2):
+            try:
+                btn.click(timeout=500)
+            except Exception:
+                pass
 
+        dialog = admin.add_group_dialogs()
+        for _ in range(20):
+            if dialog.count() > 0:
+                break
+            admin.page.wait_for_timeout(500)
         dialog_count = admin.add_group_dialogs().count()
-        assert dialog_count > 1, (
-            "Bug #26: 3 rapid 'Add Group' clicks should (still) stack multiple duplicate dialogs "
-            f"(no debounce) -- expected more than 1, got {dialog_count}. If this now reads 1, the app "
-            "has been fixed to debounce/reuse the dialog and this test should be flipped."
+        assert dialog_count == 1, (
+            f"Bug #26 regression: expected exactly one 'Add New Menu Group' dialog after repeated "
+            f"clicks, got {dialog_count} -- dialogs are stacking again."
         )
 
-        for i in reversed(range(dialog_count)):
-            admin.close_add_group_dialog(i)
-            admin.page.wait_for_timeout(500)
+        admin.close_add_group_dialog()
+        admin.page.wait_for_timeout(500)
         admin.close_wizard()
     finally:
         _delete_if_exists(admin, username)

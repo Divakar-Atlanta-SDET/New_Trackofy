@@ -33,7 +33,12 @@ class VideoTelematicsAlertPage(VideoTelematicsBasePage):
         self.table = page.get_by_role("table")
 
     def open(self, base_url: str):
-        self.page.goto(f"{base_url}/video_telematics/alert")
+        # NEW-1: a raw page.goto() to any /video_telematics/* route
+        # silently bounces to /home -- route through the nav bar (lands
+        # on Dashboard) then the module's own internal sub-nav click.
+        from components.navbar import Navbar
+        Navbar(self.page).go_to("Video Telematics")
+        self.nav_alert.click()
         self.expect_path("/video_telematics/alert")
         self.wait_for_visible(self.heading)
 

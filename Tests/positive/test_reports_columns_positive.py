@@ -68,7 +68,16 @@ def test_rep_col_005_keep_only_one_optional_column(page, config, credentials):
 @pytest.mark.positive
 @pytest.mark.reports
 def test_rep_col_006_uncheck_and_recheck_column(page, config, credentials):
-    """REP-COL-006: Positive - Uncheck and re-check a column, verify it appears in generated table."""
+    """REP-COL-006: Positive - Uncheck and re-check a column, verify it appears in generated table.
+
+    Note: Fleet Summary keeps a second, unrelated <table> permanently on the
+    page (a live "Operational Exceptions" fleet-health widget, always showing
+    its own fixed 6 columns regardless of any report's filters) alongside the
+    real generated-report table. Pages.reports_page.ReportsPage.result_table
+    is scoped to table.mat-mdc-table specifically to avoid reading that
+    widget instead of the real result -- confirmed live via a CSV export
+    comparison that column selection does correctly control the real
+    report's columns."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
     reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)

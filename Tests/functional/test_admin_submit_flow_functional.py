@@ -11,6 +11,11 @@ def _unique_username(prefix: str) -> str:
 
 
 def _delete_if_exists(admin, username: str):
+    # A wizard dialog can still be open/closing right after a click_submit()
+    # or a route-abort test when this teardown runs immediately afterward --
+    # its backdrop blocks the searchbox otherwise. Confirmed live.
+    if admin.wizard_dialog().is_visible():
+        admin.wizard_dialog().wait_for(state="hidden", timeout=admin.DEFAULT_TIMEOUT_MS)
     admin.clear_search()
     if admin.user_row(username).count() > 0:
         admin.delete_button(username).click()
@@ -32,7 +37,7 @@ def test_adm_150_151_152_submit_creates_user_appears_once_and_count_increments(a
         admin.create_user(username, "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
         admin.page.wait_for_timeout(1500)
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -114,31 +119,38 @@ def test_adm_154_wrong_password_fails(administrator_page, browser, config):
 def test_adm_157_create_api_failure_does_not_falsely_report_success(administrator_page):
     """ADM-157: If the create-user API call fails, the app should show an
     error and must not falsely report the user as created. Simulated via
-    page.route aborting the save_subuser call at the Step 1->2 transition
-    (confirmed live this is where the real create API call fires)."""
+    page.route aborting the save_subuser call at final Submit -- updated
+    2026-09-13: since Bug #25's fix, the real create call now fires on
+    Submit, not the Step 1->2 transition this test originally targeted
+    (confirmed via network logging there -- aborting at Step 1->2 no
+    longer intercepts anything, since no such call is attempted there)."""
     admin = administrator_page
     username = _unique_username("pytestqa")
     try:
         before_count = int(admin.user_count_text() or "0")
         admin.open_add_user_wizard()
         admin.fill_step1(username, "ValidPassword123@", ["HP12G9691"], "No")
+        admin.click_next_step()
+        admin.select_menu_group("example21")
+        admin.click_next_step()
+        admin.click_next_step()
+        admin.page.wait_for_timeout(500)
 
         admin.page.route("**/save_subuser*", lambda route: route.abort())
-        admin.wizard_dialog().get_by_role("button", name="Next Step").click()
+        admin.wizard_dialog().get_by_role("button", name="Submit").click()
         admin.page.wait_for_timeout(2500)
         admin.page.unroute("**/save_subuser*")
 
-        dialog_text = admin.wizard_dialog().inner_text() if admin.wizard_dialog().count() > 0 else ""
-        still_on_step1 = "STEP 1" in dialog_text and "Menu access" not in dialog_text.split("Progress")[0]
         error_shown = bool(admin.wizard_error_toast_text())
-        assert error_shown or still_on_step1, (
-            "Expected either a visible error or the wizard staying on Step 1 after a simulated API failure, "
-            f"got dialog_text={dialog_text!r}"
+        wizard_still_open = admin.wizard_dialog().is_visible()
+        assert error_shown or wizard_still_open, (
+            "Expected either a visible error or the wizard staying open after a simulated API failure on Submit"
         )
 
-        admin.page.keyboard.press("Escape")
-        admin.page.wait_for_timeout(500)
-        admin.page.reload()
+        if admin.wizard_dialog().is_visible():
+            admin.page.keyboard.press("Escape")
+            admin.page.wait_for_timeout(500)
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         after_count = int(admin.user_count_text() or "0")
@@ -170,7 +182,7 @@ def test_adm_158_network_interruption_during_submit_fails_safely(administrator_p
 
         admin.page.keyboard.press("Escape")
         admin.page.wait_for_timeout(500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         after_count = int(admin.user_count_text() or "0")
@@ -210,13 +222,14 @@ def test_adm_159_session_expiry_during_submit():
 @pytest.mark.functional
 @pytest.mark.admin
 @pytest.mark.negative
-def test_adm_28_edit_opens_wrong_users_data(administrator_page):
-    """Regression pin for Bug #28 (Bug_Report.md, Administrator Module,
-    CRITICAL): clicking "Edit" on a specific, verified user row opens the
-    "Edit Units" dialog for a completely different, unrelated user instead
-    of the one clicked. This asserts the confirmed-broken behavior; it
-    should start failing -- and be flipped to assert the dialog matches the
-    clicked user -- once the app is fixed.
+def test_adm_28_edit_opens_correct_users_data(administrator_page):
+    """Regression pin for Bug_Report.md #28 (Administrator Module,
+    CRITICAL). Reverified live (2026-09-13): FIXED -- clicking "Edit" on a
+    specific, verified user row now correctly opens the "Edit Units"
+    dialog for that same user, not an unrelated one. Confirmed 3x live
+    (including the original stale-dialog-artifact control: 0 overlay panes
+    immediately before the Edit click, exactly 1 immediately after) prior
+    to updating this test.
     """
     admin = administrator_page
     username = _unique_username("pytesteditbug")
@@ -231,10 +244,9 @@ def test_adm_28_edit_opens_wrong_users_data(administrator_page):
         admin.edit_button(username).click()
         admin.page.wait_for_timeout(1500)
         dialog_text = admin.edit_units_dialog().inner_text()
-        assert username not in dialog_text, (
-            f"Bug #28: Edit should currently (still) open the WRONG user's data (not '{username}'). "
-            f"If this now shows the correct username, the app has been fixed and this test should be "
-            f"flipped to assert the dialog matches the clicked user. Got: {dialog_text!r}"
+        assert username in dialog_text, (
+            f"Bug #28 regression: expected Edit to open the clicked user's ({username!r}) own data. "
+            f"Got: {dialog_text!r}"
         )
         admin.close_edit_units_dialog()
     finally:

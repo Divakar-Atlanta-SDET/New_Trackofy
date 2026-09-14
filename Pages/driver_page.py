@@ -29,7 +29,13 @@ class DriverPage(SettingsListPage):
         self.upload_licence_btn = page.get_by_role("button", name="Upload Driving Licence")
         self.remove_licence_file_btn = page.get_by_role("button", name=re.compile("Remove.*licence file|Remove selected file"))
 
-        self.address_input = page.get_by_role("textbox", name="Address", exact=True)
+        # Confirmed live (2026-09-13): the "Address" label text next to this
+        # field (now shown with a required "*", matching Bug_Report.md #14
+        # being fixed) isn't programmatically associated with the input via
+        # <label for>/aria-labelledby, so its accessible name falls back to
+        # its placeholder instead of "Address" -- get_by_role(name="Address")
+        # matches nothing. Matching on the placeholder instead.
+        self.address_input = page.get_by_placeholder("Enter complete address")
 
         self.cancel_btn = self.driver_dialog.get_by_role("button", name="Cancel")
         self.create_driver_btn = self.driver_dialog.get_by_role("button", name="Create Driver")
@@ -120,20 +126,43 @@ class DriverPage(SettingsListPage):
         self.assignment_dialog.wait_for(state="hidden", timeout=self.DEFAULT_TIMEOUT_MS)
 
     def assign_vehicle(self, driver_name: str, vehicle_name: str):
-        """Assign a vehicle to a driver (first-time or reassignment)."""
+        """Assign a vehicle to a driver for the FIRST time only. Confirmed
+        live: a driver who already has a vehicle assigned cannot be swapped
+        directly to a different one this way -- picking a new vehicle and
+        submitting is rejected ("This driver is already assigned to
+        <current vehicle>"). To change an existing assignment, call
+        unassign_vehicle() first, then this method again -- confirmed live
+        that full cycle works correctly end-to-end."""
         self.assign_unit_button(driver_name).click()
         self.wait_for_visible(self.assignment_vehicle_select)
         self.assignment_vehicle_select.click()
         self.page.get_by_role("option", name=vehicle_name, exact=True).click()
         self._submit_assignment_if_needed()
 
-    change_assigned_vehicle = assign_vehicle
-
     def unassign_vehicle(self, driver_name: str):
+        """Confirmed live: the "Unassign current vehicle" icon itself
+        immediately commits the unassignment (a real, independent
+        `POST /api/unassign-driver` call) -- no further confirm click is
+        needed or correct. The dialog's Select Vehicle control still shows
+        the just-cleared vehicle as a stale, not-yet-re-rendered UI
+        artifact right after; clicking "Update Assignment" against that
+        stale value silently re-submits and re-assigns the same vehicle,
+        undoing the unassignment that already succeeded. Close via Cancel
+        instead."""
         self.assign_unit_button(driver_name).click()
         self.wait_for_visible(self.unassign_vehicle_btn)
         self.unassign_vehicle_btn.click()
-        self.update_assignment_btn.click()
+        # The dialog's content re-renders in place (assigned -> unassigned
+        # view, e.g. its Cancel button detaches and is replaced) right
+        # after the unassign call resolves -- give that a moment to settle
+        # before touching anything in the dialog again.
+        self.page.wait_for_timeout(2000)
+        if self.assignment_dialog.is_visible():
+            cancel_btn = self.assignment_dialog.get_by_role("button", name="Cancel")
+            if cancel_btn.count():
+                cancel_btn.click(timeout=10000)
+            else:
+                self.page.keyboard.press("Escape")
         self.assignment_dialog.wait_for(state="hidden", timeout=self.DEFAULT_TIMEOUT_MS)
 
     def delete_driver(self, driver_name: str):

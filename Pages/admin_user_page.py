@@ -261,18 +261,29 @@ class AdminUserPage(BasePage):
         # response. A numeric-only string is safe for both PIN-code-shaped
         # fields (their real use) and free-text ones (Address/City/GST/
         # PAN accept digits fine).
+        # Confirmed live (2026-09-14, root-caused after a false "Submit
+        # never enables at all" report was corrected): Sales Person
+        # Contact requires a real phone-number-shaped value -- it has NO
+        # asterisk and no visible validation message when invalid, but a
+        # short value like "100001" (6 digits) silently keeps Create
+        # Dealer disabled with zero indication why. Both Sales Person
+        # fields are also unreachable via get_by_label (no `for`
+        # association, same gap as Company Name/GST/PAN/Address/City/
+        # PIN Code above) -- reached by their real placeholder text
+        # instead, and filled BEFORE the generic bulk-fill loop below so
+        # that loop's blunt "100001" never overwrites them.
+        saler_person = dialog.get_by_placeholder("Saler Person")
+        if saler_person.count() > 0:
+            saler_person.fill("AutoQA Sales Contact")
+        sales_contact = dialog.get_by_placeholder("Sales Person Contact")
+        if sales_contact.count() > 0:
+            sales_contact.fill("9876543210")
+
         all_textboxes = dialog.get_by_role("textbox")
         for i in range(all_textboxes.count()):
             box = all_textboxes.nth(i)
             if not box.get_attribute("id") and not box.input_value():
                 box.fill("100001")
-
-        sales_name = dialog.get_by_label("Sales Person Name", exact=False)
-        if sales_name.count() > 0:
-            sales_name.fill("AutoQA Sales Contact")
-        sales_contact = dialog.get_by_label("Sales Person Contact", exact=False)
-        if sales_contact.count() > 0:
-            sales_contact.fill("9876543211")
 
     def fill_service_info_minimal(self, arm_disarm: str = "No"):
         """Confirmed live: Step 3 ("Service") requires Plan*, Payment

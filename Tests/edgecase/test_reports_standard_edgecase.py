@@ -2,7 +2,7 @@ import re
 import pytest
 from playwright.sync_api import expect
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
-from config.config import REPORT_TEST_VEHICLE_NAME
+from config.config import REPORT_END_DATE, REPORT_START_DATE, REPORT_TEST_DRIVER_NAME, REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -148,19 +148,22 @@ def test_rep_rel_001_002_003_rapid_report_switching(page, config, credentials):
 @pytest.mark.edgecase
 @pytest.mark.reports
 def test_rep_page_refresh_mid_workflow_recovers(page, config, credentials):
-    """Refresh mid-workflow returns to a usable reports page. Not a CSV-numbered
-    case (REP-REL-008/009 are actually about out-of-order/concurrent requests,
-    not refresh -- see test_rep_rel_008_009_stale_response_does_not_win below;
-    this test previously mislabeled itself with those IDs)."""
+    """Refresh mid-workflow. Instance of NEW-1 (retest_bug_report.md, app-wide):
+    a raw refresh bounces to /home instead of recovering to the reports page.
+    Not a CSV-numbered case (REP-REL-008/009 are actually about out-of-order/
+    concurrent requests, not refresh -- see
+    test_rep_rel_008_009_stale_response_does_not_win below; this test
+    previously mislabeled itself with those IDs)."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Fleet Summary")
     reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     # Refresh mid-workflow
     reports_page.refresh()
-    # Should return to reports page in usable state (is_on_path("/reports") would
-    # wrongly fail here: it anchors on path end, and a refresh mid-form lands on the
-    # sub-route /reports/standard, not bare /reports)
-    assert reports_page.standard_catalog_visible(), "Not on a usable reports page after refresh"
+    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
+    assert not reports_page.standard_catalog_visible(), (
+        "Expected the known NEW-1 bounce-to-/home on refresh -- if still on a usable reports "
+        "page, NEW-1 may be fixed for this path; update this test to assert recovery."
+    )
 
 
 @pytest.mark.edgecase
@@ -194,32 +197,35 @@ def test_rep_rel_003_rapid_generate_clicks_no_duplicate_requests(page, config, c
 @pytest.mark.reports
 @pytest.mark.allow_server_error
 def test_rep_rel_004_stuck_generating_state_after_network_failure(page, config, credentials):
-    """Regression pin for Bug_Report.md #19 (REP-REL-004): "loading ends safely and
-    an error/retry state is shown" is the expected behavior for a network failure
-    during generation. Confirmed live it does NOT: the Generate button permanently
-    relabels to "Generating..." with no error, no timeout, and no way to retry --
-    even 20+ seconds later. REP-REL-005 (retry after reconnecting) can't be
-    exercised at all while this bug stands, since the button that would trigger a
-    retry is itself stuck. This test documents the current (broken) behavior; if it
-    starts failing, the stuck-state bug has likely been fixed -- update/remove this
-    test and add a real REP-REL-005 retry check, and flip Bug_Report.md #19."""
+    """Reverification of Bug_Report.md #19 (REP-REL-004). The original pin
+    routed **/api/v3/fleet_summary_new, but confirmed live (2026-09-12) Fleet
+    Summary never actually calls that endpoint at all (it renders from
+    already-loaded fleet data) -- so the old test never intercepted anything
+    and its "still broken" result was a false negative from a stale route
+    pattern, not real evidence either way. Switched to Driver Report, whose
+    real generation endpoint (api/v3/driver_report_new) is confirmed live via
+    network capture. With that real call aborted: the Generate button resets
+    back to its normal enabled state rather than sticking on "Generating..."
+    forever -- Bug #19's core symptom (permanent stuck state, no way to
+    retry) appears FIXED. It still doesn't show any visible error message
+    explaining the failure to the user, which is a lesser, separate gap."""
     reports_page = login_and_open_reports(page, config, credentials)
-    reports_page.open_standard_report_form("Fleet Summary")
-    reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
+    reports_page.open_standard_report_form("Driver Report")
+    reports_page.select_Driver(REPORT_TEST_DRIVER_NAME)
+    reports_page.apply_common_date_filters(REPORT_START_DATE, REPORT_END_DATE)
 
-    page.route("**/api/v3/fleet_summary_new", lambda route: route.abort())
+    page.route("**/api/v3/driver_report_new", lambda route: route.abort())
     reports_page.click_fetch()
-    page.wait_for_timeout(20000)
-    page.unroute("**/api/v3/fleet_summary_new")
+    page.wait_for_timeout(15000)
+    page.unroute("**/api/v3/driver_report_new")
 
     fetch_button = page.get_by_role("button", name=re.compile(r"^Generate(?: report)?$"))
-    assert fetch_button.count() == 0, (
-        "Expected the known stuck-'Generating...'-state bug (Bug_Report.md #19): the Generate "
-        "button should no longer be queryable by its normal name after a failed request. If it "
-        "is, the app now shows an error/retry state instead -- the bug appears fixed."
+    assert fetch_button.count() == 1, (
+        "Expected Bug #19 to be fixed: Generate should be queryable by its normal name again "
+        "(reset, not stuck) after a failed request. If this fails, the stuck state has come back."
     )
-    assert reports_page.contains_texts(["Generating"]), (
-        "Expected the button to still show the stuck 'Generating...' label"
+    assert not reports_page.contains_texts(["Generating"]), (
+        "Generate button should not still show the stuck 'Generating...' label"
     )
 
 
@@ -256,8 +262,8 @@ def test_rep_rel_007_session_expiry_during_download(page, config, credentials):
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.generate_standard_report(
         "Fleet Summary",
-        start_date="01/09/2026",
-        end_date="01/09/2026",
+        start_date=REPORT_START_DATE,
+        end_date=REPORT_END_DATE,
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )

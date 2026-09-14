@@ -21,12 +21,11 @@ def test_set_084_location_name_mandatory(location_control_page):
 
 @pytest.mark.negative
 def test_set_085_duplicate_location_name_not_prevented(location_control_page):
-    """SET-085: Creating a location with a name that already exists.
-
-    Confirmed live: the app does NOT enforce name uniqueness -- creating a
-    second location with an identical name succeeds and produces two
-    separate rows. Flagged as a real data-integrity gap (see Bug_Report.md)
-    rather than asserted as a false "rejected" expectation.
+    """SET-085: Regression pin for Bug_Report.md #8 (Location Control side).
+    Reverified live (2026-09-13): this is now FIXED -- creating a second
+    Location with an identical name is rejected with a "Location name
+    already exists" message, and only the original record remains.
+    Confirmed 3x live prior to updating this test.
     """
     name = _unique_name("DupLoc")
     location_control_page.open_add_location_form()
@@ -40,26 +39,29 @@ def test_set_085_duplicate_location_name_not_prevented(location_control_page):
         location_control_page.location_input.fill(name)
         location_control_page.create_btn.click()
         location_control_page.page.wait_for_timeout(1000)
-        location_control_page.close_dialog()
-        location_control_page.page.reload()
+        body = location_control_page.page.inner_text("body")
+        assert "already exist" in body.lower(), (
+            "Expected a 'Location name already exists' message -- if this fails, Bug #8 "
+            "(duplicate location names silently accepted) may have regressed."
+        )
+        try:
+            location_control_page.close_dialog()
+        except Exception:
+            pass
+        location_control_page.page.reload(); location_control_page.reopen()
         location_control_page.wait_for_loading_to_finish()
-        expect(location_control_page.row_containing(name)).to_have_count(2)
+        expect(location_control_page.row_containing(name)).to_have_count(1)
     finally:
         location_control_page.delete_location(name)
 
 
 @pytest.mark.negative
 def test_set_086_assign_unit_button_stays_disabled(location_control_page):
-    """SET-086: Assign a unit to a location.
-
-    Confirmed live: this is broken, not just flaky -- picking a vehicle from
-    the "Select Vehicles" multi-select updates the option's own aria-selected
-    state and the select's displayed value, but the dialog's "X selected"
-    counter never leaves "0 selected" and the Assign Units button never
-    enables, across repeated single/double/triple clicks and different
-    vehicles. See Bug_Report.md #9. This test documents the real (broken)
-    behavior rather than asserting a successful assignment that the UI
-    cannot currently perform.
+    """SET-086: Regression pin for Bug_Report.md #9. Reverified live
+    (2026-09-13): this is now FIXED -- picking a vehicle from the "Select
+    Vehicles" multi-select correctly updates the dialog's "X selected"
+    counter and enables the Assign Units button, and the full assignment
+    completes successfully. Confirmed 3x live prior to updating this test.
     """
     name = _unique_name("AssignLoc")
     location_control_page.open_add_location_form()
@@ -74,7 +76,7 @@ def test_set_086_assign_unit_button_stays_disabled(location_control_page):
         location_control_page.wait_for_visible(location_control_page.assign_vehicle_options.first)
         location_control_page.assign_vehicle_options.first.click()
         location_control_page.page.wait_for_timeout(500)
-        expect(location_control_page.assign_units_btn).to_be_disabled()
+        expect(location_control_page.assign_units_btn).to_be_enabled()
     finally:
         location_control_page.delete_location(name)
 

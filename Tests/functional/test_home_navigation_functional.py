@@ -1,4 +1,5 @@
 import pytest
+from playwright.sync_api import expect
 
 
 @pytest.mark.functional
@@ -123,3 +124,84 @@ def test_home_0020_browser_back_forward(home_page, config):
     assert home_page.vehicle_cards().count() > 0, (
         "Fleet data not in a valid state after browser Back to Home"
     )
+
+
+@pytest.mark.functional
+@pytest.mark.home
+def test_home_0297_rapid_tab_switching(home_page):
+    """The final tab must own the rendered cards after rapid tab changes."""
+    for tab in (home_page.groups_tab, home_page.drivers_tab, home_page.fleet_tab) * 3:
+        tab.click()
+    expect(home_page.vehicle_cards().first).to_be_visible()
+    expect(home_page.driver_cards()).to_have_count(0)
+    expect(home_page.group_cards()).to_have_count(0)
+
+
+@pytest.mark.functional
+@pytest.mark.home
+@pytest.mark.parametrize("entity", ["Groups", "Drivers"])
+def test_home_0312_0313_no_duplicate_entities(home_page, entity):
+    """Rendered group/driver identities must not duplicate after refresh."""
+    getattr(home_page, f"open_{entity.lower()}_tab")()
+    names = home_page.rendered_entity_names(entity)
+    assert names and len(names) == len(set(names))
+    home_page.page.reload()
+    home_page.wait_for_visible(home_page.fleet_tab)
+    getattr(home_page, f"open_{entity.lower()}_tab")()
+    names = home_page.rendered_entity_names(entity)
+    assert names and len(names) == len(set(names))
+
+
+@pytest.mark.functional
+@pytest.mark.home
+def test_home_0013_side_panel_collapse_expand(home_page):
+    """The left panel can be collapsed and restored with the map still usable."""
+    home_page.collapse_left_panel()
+    expect(home_page.search_input).not_to_be_visible()
+    home_page.switch_to_hybrid_mode()
+    assert home_page.map_mode_is_selected("Hybrid")
+    home_page.expand_left_panel()
+    expect(home_page.search_input).to_be_visible()
+    expect(home_page.vehicle_cards().first).to_be_visible()
+
+
+@pytest.mark.functional
+@pytest.mark.home
+def test_home_settings_controls_and_cancel(home_page):
+    """Home Settings exposes the current List/Group and marker configuration."""
+    home_page.open_home_settings()
+    text = home_page.home_settings_dialog().inner_text()
+    for label in ("Default view", "List", "Group", "Map Marker", "Label", "Status", "Glow", "More Options"):
+        assert label in text
+    home_page.home_settings_cancel()
+    expect(home_page.home_settings_dialog()).not_to_be_visible()
+    expect(home_page.vehicle_cards().first).to_be_visible()
+
+
+@pytest.mark.functional
+@pytest.mark.home
+def test_home_0303_kpi_dialog_keyboard_focus(home_page):
+    """KPI dialog receives focus, contains Tab navigation and closes with Escape."""
+    home_page.kpi_settings_button.focus()
+    home_page.page.keyboard.press("Enter")
+    expect(home_page.kpi_settings_dialog()).to_be_visible()
+    expect(home_page.kpi_settings_checkbox("Running")).to_be_visible()
+    home_page.page.keyboard.press("Tab")
+    assert home_page.focus_is_inside(home_page.kpi_settings_dialog()), "Tab escaped the active KPI dialog"
+    home_page.page.keyboard.press("Escape")
+    expect(home_page.kpi_settings_dialog()).not_to_be_visible()
+
+
+@pytest.mark.functional
+@pytest.mark.home
+def test_home_0326_refresh_unsaved_geolink(home_page):
+    """Refresh discards an unsaved GeoLink and returns to usable Home."""
+    home_page.open_geolinks()
+    count = home_page.geolinks_count()
+    home_page.click_create_geolink()
+    home_page.fill_geolink_share_name("pytest-unsaved-refresh")
+    home_page.page.reload()
+    home_page.wait_for_fleet_loaded()
+    home_page.open_geolinks()
+    assert home_page.geolinks_count() == count
+    assert home_page.geolink_row("pytest-unsaved-refresh").count() == 0

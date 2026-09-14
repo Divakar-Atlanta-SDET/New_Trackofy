@@ -1,4 +1,6 @@
 import pytest
+import re
+from playwright.sync_api import expect
 
 
 @pytest.mark.functional
@@ -52,13 +54,8 @@ def test_home_0109_0117_group_status_filters_reconcile_with_fleet(home_page, gro
 @pytest.mark.functional
 @pytest.mark.home
 @pytest.mark.negative
-def test_home_0109b_active_group_filter_yields_zero_bug(home_page):
-    """Regression pin for Bug #22 (Bug_Report.md, Home Module): clicking a
-    group's 'Active (N)' status chip always filters Fleet to zero vehicles,
-    regardless of N or which group. Uses 'Default', which has the largest
-    Active count (confirmed 30 live) and so is least likely to coincidentally
-    read 0 for an unrelated reason (e.g. a temporarily-empty group).
-    """
+def test_home_0112_active_group_filter_reconciles(home_page):
+    """HOME-0112: Default Active filtering must reconcile with its chip."""
     home_page.open_groups_tab()
     chip = home_page.group_status_filter("Default", "Active")
     import re
@@ -70,22 +67,16 @@ def test_home_0109b_active_group_filter_yields_zero_bug(home_page):
     home_page.apply_group_status_filter("Default", "Active")
     home_page.page.wait_for_timeout(500)
     fleet_count = home_page.fleet_result_count()
-    assert fleet_count == 0, (
-        "Bug #22: the 'Active' group filter should currently be broken and always show 0 -- "
-        f"chip claimed {chip_count} but Fleet showed {fleet_count}. If this is no longer 0, "
-        "the bug is fixed and this test should be flipped to assert reconciliation instead."
+    assert fleet_count == chip_count, (
+        f"Default Active chip shows {chip_count}, but its filtered Fleet shows {fleet_count}"
     )
 
 
 @pytest.mark.functional
 @pytest.mark.home
 @pytest.mark.negative
-def test_home_0109c_no_data_group_filter_yields_zero_bug(home_page):
-    """Regression pin for Bug #22 (Bug_Report.md, Home Module): clicking a
-    group's 'No Data (N)' status chip always filters Fleet to zero vehicles,
-    regardless of N or which group. Uses 'Default' (confirmed 11 live), a
-    large enough sample to rule out a single-vehicle edge case.
-    """
+def test_home_0116_no_data_group_filter_reconciles(home_page):
+    """HOME-0116: Default No Data filtering must reconcile with its chip."""
     home_page.open_groups_tab()
     chip = home_page.group_status_filter("Default", "No Data")
     import re
@@ -97,10 +88,8 @@ def test_home_0109c_no_data_group_filter_yields_zero_bug(home_page):
     home_page.apply_group_status_filter("Default", "No Data")
     home_page.page.wait_for_timeout(500)
     fleet_count = home_page.fleet_result_count()
-    assert fleet_count == 0, (
-        "Bug #22: the 'No Data' group filter should currently be broken and always show 0 -- "
-        f"chip claimed {chip_count} but Fleet showed {fleet_count}. If this is no longer 0, "
-        "the bug is fixed and this test should be flipped to assert reconciliation instead."
+    assert fleet_count == chip_count, (
+        f"Default No Data chip shows {chip_count}, but its filtered Fleet shows {fleet_count}"
     )
 
 
@@ -330,3 +319,35 @@ def test_home_0171_change_assignment_persists_new_vehicle(home_page):
     assert target_vehicle in updated_text, (
         f"Expected 'Test Driver Alpha' to now be assigned to '{target_vehicle}': {updated_text!r}"
     )
+
+
+@pytest.mark.functional
+@pytest.mark.home
+@pytest.mark.parametrize("group_name", ["Default", "Delhi", "Bhopal", "Dwarka"])
+@pytest.mark.parametrize("status", ["Active", "Running", "Idle", "Stopped", "No Data"])
+def test_home_0112_0131_every_group_status_count(home_page, group_name, status):
+    """Exercise all 20 group/status pairs, including zero-result categories."""
+    home_page.open_groups_tab()
+    text = home_page.group_status_filter(group_name, status).inner_text()
+    match = re.search(r"\((\d+)\)", text)
+    assert match, f"Missing count on {group_name}/{status} chip"
+    expected = int(match.group(1))
+    home_page.apply_group_status_filter(group_name, status)
+    home_page.page.wait_for_timeout(700)
+    assert home_page.fleet_result_count() == expected, f"{group_name}/{status}: expected {expected}, got {home_page.fleet_result_count()}"
+
+
+@pytest.mark.functional
+@pytest.mark.home
+def test_home_0173_0174_driver_context_and_close(home_page):
+    """Opening two drivers in sequence must not reuse the first driver's details."""
+    home_page.open_drivers_tab()
+    names = home_page.rendered_entity_names("Drivers")[:2]
+    if len(names) < 2:
+        pytest.skip("Two driver records are required for context switching")
+    for name in names:
+        home_page.open_driver_details(name)
+        assert name in home_page.driver_details_dialog().inner_text(), "Driver detail context does not match selected card"
+        home_page.close_driver_details()
+        expect(home_page.driver_details_dialog()).not_to_be_visible()
+        expect(home_page.driver_card(name)).to_be_visible()

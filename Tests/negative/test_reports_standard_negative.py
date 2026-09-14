@@ -1,7 +1,7 @@
 import re
 import pytest
 from playwright.sync_api import expect
-from config.config import REPORT_TEST_VEHICLE_NAME
+from config.config import REPORT_END_DATE, REPORT_START_DATE, REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -72,8 +72,8 @@ def test_rep_com_020_export_failure_handling(page, config, credentials):
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.generate_standard_report(
         "Fleet Summary",
-        start_date="01/09/2026",
-        end_date="01/09/2026",
+        start_date=REPORT_START_DATE,
+        end_date=REPORT_END_DATE,
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )
@@ -166,15 +166,20 @@ def test_rep_std_negative_invalid_date_range(page, config, credentials, report_d
 @pytest.mark.allow_server_error
 @pytest.mark.parametrize("report_name", ["Trip Report", "Cumulative Distance"])
 def test_rep_missing_telemetry_partition_table(page, config, credentials, report_name):
-    """Regression pin for Bug_Report.md #17: Trip Report and Cumulative Distance return a raw
-    SQL 500 ("Invalid object name 'tbl_telemetry_mar26'") for this date range -- confirmed a
-    real backend/data-provisioning gap (a missing March-2026 telemetry partition table), not a
-    UI bug. Dates are entered as "03/01/2026"/"03/10/2026" deliberately: this app's date inputs
-    are known to parse entered values as MM/DD regardless of the DD/MM they display (a separate,
-    already-documented bug -- see Bug_Report.md #6), so these values resolve to March 1-10, 2026,
-    which is exactly the range that hits the missing tbl_telemetry_mar26 table. This test
-    documents the current (broken) behavior so a future backend fix is caught by this test
-    flipping to a real result surface instead of an error."""
+    """Regression pin for Bug_Report.md #17 (missing March-2026 telemetry partition
+    table). Symptom changed since the last pass -- confirmed live (2026-09-12):
+    Generate used to fire and come back with a raw SQL 500
+    ("Invalid object name 'tbl_telemetry_mar26'"); now the request never fires at
+    all -- Generate silently stays disabled for this date range with the rest of
+    the form otherwise fully valid (same vehicle/trip-type filled in, only the date
+    range changes). See NEW-5 in retest_bug_report.md: the client-side handling is
+    now inconsistent across report types -- confirmed live, Cumulative Distance
+    shows a clear "Date cannot be earlier than the allowed 3-month history range."
+    message, but Trip Report shows nothing at all for the identical date range,
+    leaving the user with no explanation there. Dates are entered as
+    "03/01/2026"/"03/10/2026" deliberately (Bug_Report.md #6: this app's date
+    inputs parse entered values as MM/DD regardless of the DD/MM they display),
+    resolving to March 1-10, 2026, the exact missing-partition range."""
     reports_page = login_and_open_reports(page, config, credentials)
     errors = []
     page.on(
@@ -183,8 +188,6 @@ def test_rep_missing_telemetry_partition_table(page, config, credentials, report
         if response.status == 500 and response.request.resource_type in ("xhr", "fetch")
         else None,
     )
-    # Configure and fetch directly rather than generate_standard_report(), which chains a
-    # blocking wait_for_table() that would itself time out (45s) on the known broken result.
     reports_page.configure_standard_report(
         report_name,
         start_date="03/01/2026",
@@ -192,9 +195,14 @@ def test_rep_missing_telemetry_partition_table(page, config, credentials, report
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )
-    reports_page.click_fetch()
-    page.wait_for_timeout(5000)
-    assert errors, (
-        f"Expected the known tbl_telemetry_mar26 500 for {report_name} -- if this now passes "
-        "without a 500, the backend bug in Bug_Report.md #17 may be fixed; update/remove this test."
+    assert not reports_page.is_submit_enabled(), (
+        f"Expected Generate to stay disabled for {report_name} on the known missing-partition "
+        "range (NEW-5) -- if this is now enabled, re-check whether Bug_Report.md #17 was fixed "
+        "outright (a real result surface) or the silent-disable regression was fixed (a visible "
+        "validation message); update this test accordingly either way."
     )
+    # NEW-5's inconsistency: Trip Report shows no message at all; Cumulative Distance
+    # shows a clear one. Just confirm Generate stays disabled either way -- the
+    # per-report-type message inconsistency itself is documented in NEW-5, not
+    # re-asserted here per report type (which would make this test brittle to the
+    # exact wording of a message that may still change independently on each type).

@@ -60,25 +60,39 @@ def test_adm_responsive_mobile_viewport_still_usable(administrator_page):
 
 @pytest.mark.functional
 @pytest.mark.admin
-def test_adm_long_username_display_does_not_break_layout(administrator_page):
-    """A very long username doesn't visually break the table (confirmed:
-    the app truncates long display text rather than overflowing/crashing
-    -- this just confirms that holds for an extreme length)."""
+def test_adm_long_username_rejected_gracefully(administrator_page):
+    """A very long (165-char) username is NOT accepted -- confirmed live
+    2026-09-13: no client-side maxlength exists on the field (a 165-char
+    value fills in fine), but Submit fails server-side with a generic
+    'fail' toast and the wizard stays open; no user is created. This is a
+    minor, low-priority finding worth noting (the error message is
+    unhelpfully generic, not a proper validation message) but not a
+    display/layout bug -- rewritten from the original premise (that an
+    extreme-length username would be accepted and just truncated for
+    display), which doesn't match the real behavior."""
     admin = administrator_page
     long_suffix = _unique_username("pytestlong")
     long_username = f"{long_suffix}{'x' * 150}"
+    before_count = int(admin.user_count_text() or "0")
     try:
         admin.create_user(long_username, "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        assert admin.wizard_dialog().is_visible(), (
+            "Expected the wizard to stay open after Submit is rejected for an unreasonably long username"
+        )
+        assert admin.wizard_error_toast_text(), "Expected an error toast explaining the rejection"
+        admin.page.keyboard.press("Escape")
+        admin.page.wait_for_timeout(500)
+
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
-        admin.search(long_suffix)
-        rows = admin.user_rows().filter(has_text=long_suffix)
-        assert rows.count() == 1, f"Expected the long-username row to exist, got {rows.count()}"
-        # a real layout break would typically also break other rows'/controls'
-        # visibility -- confirm the table and its controls are still usable
-        assert admin.add_user_button.is_visible(), "Expected the page to remain usable after a long username row"
+        after_count = int(admin.user_count_text() or "0")
+        assert after_count == before_count, (
+            f"Expected no user created for the rejected long username -- count was {before_count}, "
+            f"got {after_count}"
+        )
+        assert admin.add_user_button.is_visible(), "Expected the page to remain usable afterward"
     finally:
         _delete_if_exists(admin, long_suffix)
 
@@ -97,7 +111,7 @@ def test_adm_slow_api_shows_loading_state_not_broken_page(administrator_page):
         route.continue_()
 
     admin.page.route("**/*subuser*", _delay)
-    admin.page.reload()
+    admin.page.reload(); admin.reopen()
     admin.page.wait_for_timeout(1000)
     body_during = admin.page.locator("body").inner_text()
     assert "User Management" in body_during, "Expected the page shell to render even while data is loading"

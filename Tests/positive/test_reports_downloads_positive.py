@@ -1,6 +1,6 @@
 import re
 import pytest
-from config.config import REPORT_TEST_VEHICLE_NAME
+from config.config import REPORT_END_DATE, REPORT_START_DATE, REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -60,8 +60,8 @@ def test_rep_dl_122_export_report_to_excel(page, config, credentials):
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.generate_standard_report(
         "Fleet Summary",
-        start_date="01/09/2026",
-        end_date="01/09/2026",
+        start_date=REPORT_START_DATE,
+        end_date=REPORT_END_DATE,
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )
@@ -83,8 +83,8 @@ def test_rep_dl_123_export_report_to_csv(page, config, credentials):
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.generate_standard_report(
         "Fleet Summary",
-        start_date="01/09/2026",
-        end_date="01/09/2026",
+        start_date=REPORT_START_DATE,
+        end_date=REPORT_END_DATE,
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )
@@ -114,10 +114,12 @@ def test_rep_dl_113_work_hour_download_matches_filters(page, config, credentials
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_standard_report_form("Work Hour")
     reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
-    # Entered as MM/DD (Bug_Report.md #6): resolves to Mar 1-10, 2026 -- confirmed
-    # live this range's Work Hour jobs complete quickly, unlike some other ranges
-    # that stay "Pending" indefinitely.
-    reports_page.apply_common_date_filters("03/01/2026", "03/10/2026")
+    # Confirmed live (2026-09-12): the old Mar 2026 range this test used to rely
+    # on now leaves Generate silently disabled with no error shown (see NEW-5 in
+    # retest_bug_report.md) -- the same backend telemetry-partition gap as
+    # Bug_Report.md #17, now masked client-side instead of surfacing a 500.
+    # REPORT_START_DATE/END_DATE (Aug 2026) has real data and a submittable form.
+    reports_page.apply_common_date_filters(REPORT_START_DATE, REPORT_END_DATE)
     reports_page.click_fetch()
     page.wait_for_timeout(2000)
 
@@ -129,8 +131,9 @@ def test_rep_dl_113_work_hour_download_matches_filters(page, config, credentials
             entry = entries[0]
             break
         page.wait_for_timeout(8000)
-        page.reload()
-        reports_page.wait_for_loading_to_finish()
+        # A plain reload() hits NEW-1 (bounces to /home) -- re-navigate via the
+        # account menu instead, same workaround as everywhere else this bug applies.
+        reports_page.open_downloads_page()
     if entry is None:
         pytest.skip("Work Hour download job did not reach 'Done' status in time to verify its content")
 

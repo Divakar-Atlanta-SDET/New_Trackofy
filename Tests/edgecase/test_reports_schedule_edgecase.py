@@ -1,4 +1,6 @@
 import re
+from datetime import datetime, timedelta
+
 import pytest
 
 from Pages.login_page import LoginPage
@@ -44,7 +46,18 @@ def test_rep_sch_boundary_schedule_times_accepted(page, config, credentials, tim
 @pytest.mark.reports
 def test_rep_sch_014_same_start_end_custom_date(page, config, credentials):
     """REP-SCH-014: A same-day Custom schedule range follows defined behavior --
-    confirmed live this account accepts it (a single-day custom range is valid)."""
+    confirmed live this account accepts it (a single-day custom range is
+    valid), as long as the date itself falls within the app's allowed ~3-month
+    history window (the same restriction documented on Cumulative Distance's
+    Standard Report form, which shows a clear "Date cannot be earlier than the
+    allowed 3-month history range" message there). A same-day range using a
+    too-old date (e.g. literal "01/09/2026", ~8 months before this test was
+    written) was previously misread as a same-day-specific rejection -- it was
+    actually just an out-of-window date, confirmed by an otherwise-identical
+    multi-day out-of-window range also being rejected. Using yesterday's date
+    (always in-window, never in the future) isolates the same-day case
+    correctly."""
+    yesterday = (datetime.now() - timedelta(days=1)).strftime("%m/%d/%Y")
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_new_schedule_report_modal()
     reports_page.fill_schedule_report_form(
@@ -53,11 +66,11 @@ def test_rep_sch_014_same_start_end_custom_date(page, config, credentials):
         frequency="Custom",
         schedule_time="08:00",
         email_1="test@example.com",
-        from_date="01/09/2026",
-        to_date="01/09/2026",
+        from_date=yesterday,
+        to_date=yesterday,
     )
     assert reports_page.schedule_submit_enabled(), (
-        "A same-day custom schedule range should be accepted (Submit enabled)"
+        "A same-day custom schedule range within the allowed history window should be accepted (Submit enabled)"
     )
     reports_page.close_dialog()
 

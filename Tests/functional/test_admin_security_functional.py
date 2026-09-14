@@ -50,7 +50,7 @@ def test_adm_xss_payload_in_username_is_escaped(administrator_page):
         fired = admin.page.evaluate("() => window.__xss_fired === true")
         assert not fired, "XSS payload in the username should not execute as script"
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.search(search_key)
@@ -84,7 +84,7 @@ def test_adm_sql_injection_shaped_username_handled_safely(administrator_page):
         admin.create_user(payload, "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
         admin.page.wait_for_timeout(1500)
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.search(search_key)
@@ -178,7 +178,7 @@ def test_adm_tampered_vehicle_id_in_create_request_is_rejected_or_ignored(admini
         admin.page.keyboard.press("Escape")
         admin.page.wait_for_timeout(500)
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.search(username)

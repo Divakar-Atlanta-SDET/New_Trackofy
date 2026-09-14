@@ -95,6 +95,18 @@ class RouteManagementPage(SettingsListPage):
         self.wait_for_visible(waypoint_input)
         return self.pick_location(waypoint_input, query)
 
+    def _recover_to_route_list(self):
+        """A raw goto() back would hit NEW-1 (retest_bug_report.md) and
+        bounce to /home again -- recover via the settings nav instead."""
+        reopen = getattr(self, "reopen", None)
+        if reopen is not None:
+            reopen()
+        else:
+            from components.navbar import Navbar
+            Navbar(self.page).go_to("Settings")
+            self.page.get_by_role("button", name="Route Management", exact=True).click()
+            self.expect_path("/settings/route")
+
     def create_route(self, name: str, origin_query: str, destination_query: str):
         self.open_create_route()
         self.name_input.fill(name)
@@ -106,8 +118,7 @@ class RouteManagementPage(SettingsListPage):
         # /settings/route like every other Settings entity (see
         # Bug_Report.md #12) -- navigate back explicitly rather than assume.
         self.expect_path("/home")
-        self.page.goto("/settings/route")
-        self.expect_path("/settings/route")
+        self._recover_to_route_list()
         self.wait_for_loading_to_finish()
         self.page.wait_for_timeout(1000)
 
@@ -117,8 +128,7 @@ class RouteManagementPage(SettingsListPage):
         if not self.is_on_path("/settings/route"):
             # Same redirect-to-/home quirk seen on save (Bug_Report.md #12)
             # -- confirmed live it can also happen on Cancel.
-            self.page.goto("/settings/route")
-            self.expect_path("/settings/route")
+            self._recover_to_route_list()
         self.wait_for_loading_to_finish()
 
     # Row action buttons carry no accessible name (confirmed live, icon-only)

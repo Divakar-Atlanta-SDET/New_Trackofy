@@ -61,6 +61,7 @@ def test_vt_017_kpi_refresh(vt_dashboard_page):
     refresh."""
     before = vt_dashboard_page.kpi_value("Total Vehicles")
     vt_dashboard_page.page.reload()
+    vt_dashboard_page.reopen()
     vt_dashboard_page.wait_for_visible(vt_dashboard_page.heading)
     vt_dashboard_page.page.wait_for_timeout(1500)
     after = vt_dashboard_page.kpi_value("Total Vehicles")

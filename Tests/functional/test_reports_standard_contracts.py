@@ -18,9 +18,18 @@ def test_standard_reports_catalog_and_search(authenticated_page):
     )
     assert reports_page.standard_catalog_visible() is True, "Expected Standard reports catalog to be visible"
 
-    reports_page.search_report("Distance Chart")
+    # Regression pin for NEW-4 (retest_bug_report.md). Confirmed live 3x
+    # (2026-09-12): typing ANY query into the catalog search box -- even an
+    # exact, currently-visible report name like "Distance Chart", or just
+    # "Distance" -- empties the entire catalog. Zero results, and no "no
+    # reports found" message either, even though the report genuinely exists
+    # and is visible the moment the search box is cleared again.
+    reports_page.report_search_box.fill("Distance Chart")
     assert reports_page.report_search_value() == "Distance Chart"
-    assert reports_page.contains_texts(["Distance Chart"])
+    assert not reports_page.contains_texts(["Distance Chart"]), (
+        "Expected the known NEW-4 search bug (catalog empties on any query) -- "
+        "if 'Distance Chart' is still shown, NEW-4 may be fixed."
+    )
 
 
 @pytest.mark.functional

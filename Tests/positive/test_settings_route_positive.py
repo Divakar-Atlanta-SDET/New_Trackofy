@@ -23,7 +23,7 @@ def test_set_156_create_valid_route(route_page):
         assert distance and distance != "0", f"expected a real distance, got {distance!r}"
         assert duration and duration != "0", f"expected a real duration, got {duration!r}"
 
-        route_page.page.reload()
+        route_page.page.reload(); route_page.reopen()
         route_page.wait_for_loading_to_finish()
         route_page.page.wait_for_timeout(1000)
         expect(route_page.row_containing(name)).to_be_visible()
@@ -43,10 +43,10 @@ def test_set_160_add_waypoint_to_route(route_page):
     route_page.page.wait_for_timeout(500)
     route_page.save_btn.click()
     # Confirmed live: saving redirects to /home, not back to the route list
-    # (see Bug_Report.md #12) -- navigate back explicitly.
+    # (see Bug_Report.md #12) -- navigate back explicitly via the settings
+    # nav (a raw goto() would hit NEW-1 and bounce to /home again).
     route_page.expect_path("/home")
-    route_page.page.goto("/settings/route")
-    route_page.expect_path("/settings/route")
+    route_page.reopen()
     route_page.wait_for_loading_to_finish()
     route_page.page.wait_for_timeout(1000)
 
@@ -78,8 +78,8 @@ def test_set_169_edit_route(route_page):
         route_page.page.wait_for_timeout(2000)
         if not route_page.is_on_path("/settings/route"):
             # Same redirect-to-/home quirk as route creation (Bug_Report.md #12).
-            route_page.page.goto("/settings/route")
-            route_page.expect_path("/settings/route")
+            # A raw goto() back would hit NEW-1 and bounce to /home again.
+            route_page.reopen()
         route_page.wait_for_loading_to_finish()
         route_page.page.wait_for_timeout(1000)
         expect(route_page.row_containing(new_name)).to_be_visible()

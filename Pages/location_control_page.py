@@ -67,8 +67,14 @@ class LocationControlPage(SettingsListPage):
             # Escape alone doesn't reliably dismiss every overlay this app
             # can leave open (confirmed live) -- a reload is the reliable
             # way back to a clean state, same fallback used elsewhere in
-            # this page's search-clearing method.
+            # this page's search-clearing method. A raw reload() bounces to
+            # /home per NEW-1, so recover via reopen() (attached by the
+            # location_control_page fixture) rather than waiting on this
+            # page's own heading, which won't exist on /home.
             self.page.reload()
+            reopen = getattr(self, "reopen", None)
+            if reopen is not None:
+                reopen()
             self.wait_for_loading_to_finish()
             self.wait_for_visible(self.heading)
         while self.row_containing(location_name).count() > 0:

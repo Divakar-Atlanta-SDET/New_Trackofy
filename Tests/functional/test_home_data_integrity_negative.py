@@ -4,8 +4,8 @@ import pytest
 @pytest.mark.functional
 @pytest.mark.home
 @pytest.mark.negative
-def test_home_0311_xss_payload_in_search_is_not_executed(home_page):
-    """HOME-0311 (data quality/security): An XSS payload typed into the
+def test_home_0294_xss_payload_in_search_is_not_executed(home_page):
+    """HOME-0294 (data quality/security): An XSS payload typed into the
     Fleet search box is neither executed nor breaks the page -- it's just
     treated as a (non-matching) search string."""
     home_page.open_fleet_tab()
@@ -21,8 +21,8 @@ def test_home_0311_xss_payload_in_search_is_not_executed(home_page):
 @pytest.mark.functional
 @pytest.mark.home
 @pytest.mark.negative
-def test_home_0312_xss_payload_in_geolink_name_is_escaped(home_page):
-    """HOME-0312 (data quality/security): An XSS payload used as a GeoLink
+def test_home_0295_xss_payload_in_geolink_name_is_escaped(home_page):
+    """HOME-0295 (data quality/security): An XSS payload used as a GeoLink
     share name is not executed and is rendered as literal escaped text in
     the list, not live markup."""
     home_page.open_geolinks()
@@ -45,10 +45,5 @@ def test_home_0312_xss_payload_in_geolink_name_is_escaped(home_page):
             "The payload should appear as literal escaped text in the GeoLinks list"
         )
     finally:
-        row = home_page.geolinks_dialog().locator("tr, [role='row']").filter(has_text="img")
-        if row.count() > 0:
-            row.first.locator("mat-icon", has_text="delete_outline").click()
-            home_page.wait_for_loading_to_finish()
-            confirm_dialog = home_page.page.locator(".cdk-overlay-container").last
-            confirm_dialog.get_by_role("button", name="Delete", exact=True).click()
-            home_page.wait_for_loading_to_finish()
+        if home_page.geolink_row(payload).count() > 0:
+            home_page.delete_geolink(payload)

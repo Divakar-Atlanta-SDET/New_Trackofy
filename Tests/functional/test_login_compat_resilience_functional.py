@@ -101,6 +101,6 @@ def test_login_090_open_login_in_new_tab(browser, config):
     try:
         page.goto(config["base_url"])
         page.wait_for_timeout(2000)
-        assert page.get_by_role("heading", name="Sign in to you account").is_visible()
+        assert page.get_by_role("heading", name="Sign in to y", exact=False).is_visible()
     finally:
         ctx.close()

@@ -65,7 +65,7 @@ def test_set_176_failed_save_not_shown_as_success(driver_page):
         assert "success" not in toast.inner_text().lower()
 
     driver_page.page.unroute("**/api/**")
-    driver_page.page.reload()
+    driver_page.page.reload(); driver_page.reopen()
     driver_page.wait_for_loading_to_finish()
     driver_page.search_and_wait(name)
     expect(driver_page.row_containing(name)).to_have_count(0)
@@ -85,7 +85,7 @@ def test_set_177_network_failure_during_save(driver_page):
     driver_page.page.wait_for_timeout(2000)
 
     driver_page.page.unroute("**/api/**")
-    driver_page.page.reload()
+    driver_page.page.reload(); driver_page.reopen()
     driver_page.wait_for_loading_to_finish()
     driver_page.search_and_wait(name)
     expect(driver_page.row_containing(name)).to_have_count(0)
@@ -127,7 +127,7 @@ def test_set_195_deleting_group_with_assigned_units(vehicle_group_page):
     vehicle_group_page.wait_for_visible(vehicle_group_page.row_containing(name))
 
     vehicle_group_page.delete_group(name)
-    vehicle_group_page.page.reload()
+    vehicle_group_page.page.reload(); vehicle_group_page.reopen()
     vehicle_group_page.wait_for_loading_to_finish()
     vehicle_group_page.page.wait_for_timeout(1000)
     expect(vehicle_group_page.row_containing(name)).to_have_count(0)
@@ -135,27 +135,46 @@ def test_set_195_deleting_group_with_assigned_units(vehicle_group_page):
 
 @pytest.mark.negative
 def test_set_196_duplicate_vehicle_group_name_not_prevented(vehicle_group_page):
-    """SET-196: creating a second Vehicle Group with an identical name
-    succeeds with no validation error -- confirmed live, same product-wide
-    gap as Location Control (Bug_Report.md #8). Documents the real
-    behavior rather than asserting a rejection the app doesn't perform.
+    """SET-196: Regression pin for Bug_Report.md #8 (Vehicle Group side).
+    Reverified live (2026-09-13): this is now FIXED -- creating a second
+    Vehicle Group with an identical name is rejected with a "Group name
+    already exists" toast/dialog, and only the original record remains.
+    Confirmed 3x live prior to updating this test. Kept under its original
+    ID since it's the dedicated regression pin for this exact scenario.
     """
     name = _unique_name("DupGrp")
-    for _ in range(2):
-        vehicle_group_page.open_add_group_form()
-        vehicle_group_page.group_name_input.fill(name)
-        vehicle_group_page.select_units(1)
-        if vehicle_group_page.units_listbox.is_visible():
-            vehicle_group_page.page.keyboard.press("Escape")
-        vehicle_group_page.page.wait_for_timeout(500)
-        vehicle_group_page.create_group_btn.click()
-        vehicle_group_page.wait_for_dialog_closed()
-        vehicle_group_page.page.wait_for_timeout(500)
+    vehicle_group_page.open_add_group_form()
+    vehicle_group_page.group_name_input.fill(name)
+    vehicle_group_page.select_units(1)
+    if vehicle_group_page.units_listbox.is_visible():
+        vehicle_group_page.page.keyboard.press("Escape")
+    vehicle_group_page.page.wait_for_timeout(500)
+    vehicle_group_page.create_group_btn.click()
+    vehicle_group_page.wait_for_dialog_closed()
+    vehicle_group_page.page.wait_for_timeout(500)
 
-    vehicle_group_page.page.reload()
+    vehicle_group_page.open_add_group_form()
+    vehicle_group_page.group_name_input.fill(name)
+    vehicle_group_page.select_units(1)
+    if vehicle_group_page.units_listbox.is_visible():
+        vehicle_group_page.page.keyboard.press("Escape")
+    vehicle_group_page.page.wait_for_timeout(500)
+    vehicle_group_page.create_group_btn.click()
+    vehicle_group_page.page.wait_for_timeout(1500)
+    body = vehicle_group_page.page.inner_text("body")
+    assert "already exist" in body.lower(), (
+        "Expected a 'Group name already exists' message -- if this fails, Bug #8 "
+        "(duplicate group names silently accepted) may have regressed."
+    )
+    try:
+        vehicle_group_page.close_dialog()
+    except Exception:
+        pass
+
+    vehicle_group_page.page.reload(); vehicle_group_page.reopen()
     vehicle_group_page.wait_for_loading_to_finish()
     vehicle_group_page.page.wait_for_timeout(1000)
-    expect(vehicle_group_page.row_containing(name)).to_have_count(2)
+    expect(vehicle_group_page.row_containing(name)).to_have_count(1)
 
     while vehicle_group_page.row_containing(name).count() > 0:
         vehicle_group_page.delete_button(name).first.click()

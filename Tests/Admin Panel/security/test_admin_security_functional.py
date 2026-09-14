@@ -81,15 +81,27 @@ def test_admin_security_005_admin_session_cookie_not_usable_after_logout(admin_d
     """Reuses the proven pattern from the main app's Sign Out testing
     (replay a pre-logout storage_state against a fresh context) --
     confirms the admin panel's own session is server-side invalidated on
-    logout, not just cleared client-side."""
+    logout, not just cleared client-side.
+
+    Reverified 2026-09-14: there are two independent, redundant sign-out
+    controls with inconsistent labels (see the new bug filed for this) --
+    the desktop-visible one is the profile icon (`.pi.pi-user`) in the
+    top-right, which opens a dropdown with a "Sign Out" option; a second,
+    separate nav item literally labeled "Logout" also exists but is
+    CSS-gated `mobile-only` and invisible at any standard desktop width.
+    Using the desktop-visible profile-icon path here, since that's the
+    one actually reachable in this test's default (desktop) viewport."""
     page = admin_dashboard_page.page
     storage_state = page.context.storage_state()
 
-    logout_link = page.get_by_role("link", name="Logout")
+    profile_icon = page.locator(".pi.pi-user.cursor-pointer")
+    if profile_icon.count() == 0:
+        pytest.skip("No discoverable Sign Out control in the admin panel UI to exercise real sign-out")
+    profile_icon.first.click()
+    page.wait_for_timeout(500)
+    logout_link = page.get_by_text("Sign Out", exact=False)
     if logout_link.count() == 0:
-        logout_link = page.get_by_text("Logout", exact=False)
-    if logout_link.count() == 0:
-        pytest.skip("No discoverable Logout control in the admin panel UI to exercise real sign-out")
+        pytest.skip("No discoverable Sign Out control in the admin panel UI to exercise real sign-out")
     logout_link.first.click()
     page.wait_for_timeout(2000)
 

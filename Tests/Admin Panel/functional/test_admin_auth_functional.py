@@ -37,7 +37,7 @@ def test_admin_002_unauthenticated_direct_url_access_denied(browser, config, pat
     try:
         page.goto(f"{config['base_url']}{path}")
         page.wait_for_timeout(2000)
-        assert page.get_by_role("heading", name="Sign in to you account").count() > 0 or "/admin" not in page.url, (
+        assert page.get_by_role("heading", name="Sign in to y", exact=False).count() > 0 or "/admin" not in page.url, (
             f"Expected unauthenticated access to {path!r} to redirect to login, url={page.url!r}"
         )
     finally:

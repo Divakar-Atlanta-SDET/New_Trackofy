@@ -1,6 +1,7 @@
 import re
 from playwright.sync_api import Locator, Page
 from Pages.base_page import BasePage
+from components.navbar import Navbar
 
 
 class UnitPage(BasePage):
@@ -26,8 +27,18 @@ class UnitPage(BasePage):
         self.table_rows = page.locator("tbody tr")
 
     def open_unit_list(self):
-        """Navigate to the Unit list page."""
-        self.page.goto("/unit")
+        """Navigate to the Unit list page via the header nav link.
+
+        A direct page.goto("/unit") does not work on this app -- confirmed
+        live 2026-09-11 it silently bounces back to /home (see
+        components/navbar.py's Navbar.go_to() docstring and
+        retest_bug_report.md, NEW-1) -- so this uses a real in-app click
+        instead, matching how a user actually navigates.
+        """
+        if "/unit" in self.page.url:
+            self.wait_for_unit_page_ready()
+            return
+        Navbar(self.page).go_to("Unit")
         self.wait_for_unit_page_ready()
 
     def wait_for_unit_page_ready(self):

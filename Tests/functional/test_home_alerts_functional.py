@@ -6,13 +6,14 @@ import pytest
 @pytest.mark.functional
 @pytest.mark.home
 def test_home_0175_alerts_panel_opens_with_tabs_and_counts(home_page):
-    """HOME-0175: The Alerts & Notifications panel opens showing Alerts and
-    Acknowledged tabs, each with a numeric count."""
+    """HOME-0175: Alerts and Acknowledged tabs are available.
+    Current staging shows the latest feed rather than tab total counters."""
     home_page.open_alerts_tab()
     assert home_page.alerts_tab_link.is_visible(), "Alerts tab not visible after opening the panel"
     assert home_page.acknowledged_tab_link.is_visible(), "Acknowledged tab not visible after opening the panel"
     assert home_page.alerts_count() >= 0, "Alerts count did not parse as a number"
-    assert home_page.acknowledged_count() >= 0, "Acknowledged count did not parse as a number"
+    home_page.open_acknowledged_tab()
+    assert home_page.acknowledged_count() >= 0
 
 
 @pytest.mark.functional
@@ -92,3 +93,12 @@ def test_home_0180_view_alert_shows_more_detail(home_page):
     assert "/notification-map" in home_page.page.url, (
         f"Expected viewing an alert to navigate to /notification-map, got {home_page.page.url}"
     )
+
+
+@pytest.mark.functional
+@pytest.mark.home
+def test_home_0191_view_all_alerts(home_page):
+    """View all alerts opens broader alert history from Home."""
+    home_page.click_view_all_alerts()
+    home_page.page.wait_for_url("**/notifications", timeout=15000)
+    assert home_page.is_on_path("/notifications")

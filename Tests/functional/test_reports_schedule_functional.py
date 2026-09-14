@@ -1,9 +1,48 @@
+import email
+import imaplib
 import re
+import time
+from datetime import datetime, timedelta
+
 import pytest
 from playwright.sync_api import expect
 
+from config.config import TEST_RECIPIENT_EMAIL, TEST_RECIPIENT_EMAIL_PASSWORD
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
+
+
+def _wait_for_scheduled_report_email(subject_contains: str, after: datetime, timeout_seconds: int = 420, poll_seconds: int = 20):
+    """Poll the real test inbox (IMAP) for an email whose subject contains
+    `subject_contains` and whose internal date is after `after`. Returns the
+    matching email.message.Message, or None if it never arrives within
+    timeout_seconds. Requires TEST_RECIPIENT_EMAIL/TEST_RECIPIENT_EMAIL_PASSWORD
+    (a Gmail App Password) in .env.
+    """
+    deadline = time.monotonic() + timeout_seconds
+    while time.monotonic() < deadline:
+        conn = imaplib.IMAP4_SSL("imap.gmail.com")
+        try:
+            conn.login(TEST_RECIPIENT_EMAIL, TEST_RECIPIENT_EMAIL_PASSWORD)
+            conn.select("INBOX")
+            since = after.strftime("%d-%b-%Y")
+            status, data = conn.search(None, f'(SINCE "{since}")')
+            ids = data[0].split() if data and data[0] else []
+            for msg_id in reversed(ids):
+                status, msg_data = conn.fetch(msg_id, "(RFC822)")
+                if not msg_data or not msg_data[0]:
+                    continue
+                message = email.message_from_bytes(msg_data[0][1])
+                subject = message.get("Subject", "") or ""
+                if subject_contains.lower() in subject.lower():
+                    return message
+        finally:
+            try:
+                conn.logout()
+            except Exception:
+                pass
+        time.sleep(poll_seconds)
+    return None
 
 
 def login_and_open_reports(page, config, credentials):
@@ -91,6 +130,66 @@ def test_rep_sch_029_verify_schedule_entry_details(page, config, credentials):
     assert "title" in entry and entry["title"], "Schedule entry missing title"
     assert "frequency" in entry and entry["frequency"], "Schedule entry missing frequency"
     assert "status" in entry and entry["status"], "Schedule entry missing status"
+
+
+@pytest.mark.functional
+@pytest.mark.reports
+@pytest.mark.skipif(
+    not (TEST_RECIPIENT_EMAIL and TEST_RECIPIENT_EMAIL_PASSWORD),
+    reason="TEST_RECIPIENT_EMAIL / TEST_RECIPIENT_EMAIL_PASSWORD not configured in .env",
+)
+def test_rep_sch_030b_scheduled_report_actually_delivered_to_email(page, config, credentials):
+    """Reverification of AS-219 ('Scheduled reports are not received on the
+    configured email address') with real evidence: creates a genuine
+    schedule (Daily, ~2 minutes from now, Schedule Till = today) against the
+    real inbox in TEST_RECIPIENT_EMAIL, then polls that inbox via IMAP for
+    up to 7 minutes for the resulting email -- not a placeholder
+    "test@example.com" that nobody can ever check, and not a "could not
+    verify, no inbox access" writeoff like prior passes.
+
+    Cleans up by deleting the schedule it created regardless of outcome.
+    """
+    reports_page = login_and_open_reports(page, config, credentials)
+
+    fire_at = datetime.now() + timedelta(minutes=2)
+    schedule_time = fire_at.strftime("%H:%M")
+    created_at = datetime.now()
+
+    before_count = 0
+    reports_page.open_schedule_reports()
+    before_count = reports_page.schedule_count()
+
+    reports_page.open_new_schedule_report_modal()
+    reports_page.fill_schedule_report_form(
+        report_scope="Standard Report",
+        report_name="Fleet Summary",
+        frequency="Daily",
+        schedule_time=schedule_time,
+        email_1=TEST_RECIPIENT_EMAIL,
+        schedule_till_day_name=str(datetime.now().day),
+    )
+    assert reports_page.schedule_submit_enabled(), "Schedule submit should be enabled with a fully valid form"
+    reports_page.save_schedule_report(previous_count=before_count)
+
+    try:
+        message = _wait_for_scheduled_report_email(
+            subject_contains="Fleet Summary",
+            after=created_at,
+            timeout_seconds=360,
+            poll_seconds=20,
+        )
+        assert message is not None, (
+            f"No email containing 'Fleet Summary' arrived at {TEST_RECIPIENT_EMAIL} within 6 minutes"
+            f"of the {schedule_time} scheduled delivery time -- AS-219 still reproduces."
+        )
+        assert message.is_multipart() and any(
+            part.get_filename() for part in message.walk()
+        ), "Scheduled report email arrived but has no attachment"
+    finally:
+        reports_page.open_schedule_reports()
+        entries = reports_page.schedule_entries()
+        if any(e.get("title") == "Fleet Summary" for e in entries):
+            reports_page.delete_first_schedule_entry()
 
 
 @pytest.mark.functional

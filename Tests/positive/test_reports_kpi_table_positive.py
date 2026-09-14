@@ -1,6 +1,6 @@
 import re
 import pytest
-from config.config import REPORT_TEST_VEHICLE_NAME
+from config.config import REPORT_END_DATE, REPORT_START_DATE, REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -12,10 +12,11 @@ def login_and_generate_fleet_summary(page, config, credentials):
     login_page.open()
     login_page.login(credentials["username"], credentials["password"])
     page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
+    reports_page.go_to_reports()
     reports_page.generate_standard_report(
         "Fleet Summary",
-        start_date="01/09/2026",
-        end_date="01/09/2026",
+        start_date=REPORT_START_DATE,
+        end_date=REPORT_END_DATE,
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )

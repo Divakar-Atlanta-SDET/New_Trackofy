@@ -79,15 +79,20 @@ def test_vt_217_keyboard_report_evidence(vt_report_page):
 def test_vt_218_evidence_icon_labels(vt_report_page):
     """VT-218: The eye/snapshots/play evidence icons carry real,
     descriptive tooltips (Angular Material's mattooltip, wired to
-    aria-describedby for assistive tech), not just a raw icon name."""
+    aria-describedby for assistive tech), not just a raw icon name.
+
+    Fixed 2026-09-14: needs a row with all 3 evidence buttons (View/
+    Snapshots/Play) present, not just any row with SOME evidence --
+    confirmed live not every evidence-bearing row has a Play button
+    (some events have no video, only snapshots)."""
     vt_report_page.generate()
     rows = vt_report_page.rows()
     row = None
     for i in range(rows.count()):
-        if vt_report_page.row_has_evidence(rows.nth(i)):
+        if rows.nth(i).get_by_role("button").count() >= 4:
             row = rows.nth(i)
             break
-    assert row is not None
+    assert row is not None, "Expected at least one row with all 3 evidence buttons (View/Snapshots/Play)"
     buttons = row.get_by_role("button")
     expected_tooltips = ["View all evidence", "View snapshots", "Play video"]
     for i, expected in enumerate(expected_tooltips, start=1):
@@ -162,25 +167,28 @@ def test_vt_221_playback_responsive(vt_playback_page):
 @pytest.mark.video_telematics
 @pytest.mark.responsive
 def test_vt_bug47_mobile_nav_drawer_traps_content(vt_dashboard_page):
-    """Bug #47 (Bug_Report.md, Medium): at a 390x844 mobile viewport,
+    """Bug #47 (Bug_Report.md, Medium). Reverified live 2026-09-14:
+    ⚠️ PARTIALLY FIXED. Originally: at a 390x844 mobile viewport,
     Video Telematics' left-nav renders as an open overlay drawer by
-    default, leaving the real page heading present in the DOM but with
-    a zero-width bounding box (not visible) -- and the drawer's own
-    "Close navigation menu" button renders outside the viewport,
-    un-clickable, so it can't even be dismissed. Pinned here as the
-    current real (broken) behavior."""
+    default, leaving the real page heading hidden behind it (zero-width
+    bounding box) AND its own "Close navigation menu" button rendered
+    outside the viewport, un-clickable. Now: the heading is genuinely
+    visible (content is no longer trapped), but the Close button is
+    still positioned off-screen, so the drawer still can't be dismissed
+    via its own control. Pinned to this corrected, current behavior."""
     page = vt_dashboard_page.page
     page.set_viewport_size({"width": 390, "height": 844})
     page.wait_for_timeout(800)
-    assert not vt_dashboard_page.heading.is_visible(), (
-        "Bug #47: expected the Dashboard heading hidden behind the auto-opened drawer "
-        "(if this now fails, the app has been fixed)"
+    assert vt_dashboard_page.heading.is_visible(), (
+        "Bug #47 regression: expected the Dashboard heading to (still) be visible, not hidden behind the "
+        "drawer -- if this now fails, the content-hiding half of the bug may have regressed"
     )
     close_button = page.get_by_role("button", name="Close navigation menu")
     assert close_button.count() > 0
     box = close_button.bounding_box()
     assert box is None or box["x"] < 0 or box["x"] + box["width"] > 390, (
-        "Bug #47: expected the drawer's own Close button positioned outside the viewport"
+        "Bug #47: expected the drawer's own Close button to (still) be positioned outside the viewport -- "
+        "if this now fails, the Close-button half of the bug may be fixed too"
     )
 
 

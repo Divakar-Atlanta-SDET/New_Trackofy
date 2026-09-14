@@ -71,9 +71,15 @@ class VehicleGroupPage(SettingsListPage):
             self.wait_for_dialog_closed()
 
     def delete_group(self, group_name: str):
-        self.delete_button(group_name).click()
-        self.wait_for_visible(self.confirm_delete_btn)
-        self.page.wait_for_timeout(400)  # let the confirm dialog's open animation settle
-        self.confirm_delete_btn.click()
-        self.wait_for_dialog_closed()
-        self.row_containing(group_name).wait_for(state="hidden", timeout=self.DEFAULT_TIMEOUT_MS)
+        """Deletes rows matching `group_name` one at a time -- pre-fix
+        duplicate group names (Bug_Report.md #8, confirmed FIXED going
+        forward but pre-existing duplicates can still exist) mean more than
+        one row can match; loop rather than assume a single match, same
+        pattern as location_control_page.py's delete_location()."""
+        while self.row_containing(group_name).count() > 0:
+            self.delete_button(group_name).first.click()
+            self.wait_for_visible(self.confirm_delete_btn)
+            self.page.wait_for_timeout(400)  # let the confirm dialog's open animation settle
+            self.confirm_delete_btn.click()
+            self.wait_for_dialog_closed()
+            self.page.wait_for_timeout(300)

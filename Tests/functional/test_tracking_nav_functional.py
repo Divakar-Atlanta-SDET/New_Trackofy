@@ -1,5 +1,8 @@
+import re
 import pytest
 from playwright.sync_api import expect
+
+from Pages.tracking_page import TrackingPage
 
 
 @pytest.mark.functional
@@ -70,6 +73,29 @@ def test_trk_nav_007_switch_live_to_playback_clears_live_form(tracking):
     tracking.switch_to_playback_tracking()
     expect(tracking.load_playback_btn).to_be_visible()
     expect(tracking.start_tracking_btn).to_be_hidden()
+
+
+@pytest.mark.functional
+def test_tracking_accessible_via_direct_url(authenticated_page, config):
+    """Regression test for retest_bug_report.md NEW-1 (app-wide SPA routing
+    defect, confirmed on Dashboard and Unit as of 2026-09-11): a module
+    must be reachable by navigating straight to its URL, not only via an
+    in-app nav-link click. Deliberately uses page.goto() directly (not
+    TrackingPage.open_tracking_page(), which works around this exact bug
+    by clicking the nav link instead) -- this test exists specifically to
+    catch a regression on direct URL access itself.
+
+    Expected to FAIL until the underlying app bug is fixed: as of this
+    writing, a direct goto("/tracking") silently redirects to /home
+    instead of loading Tracking. Once the app fix lands, this test turns
+    green automatically -- no code change needed here to detect the fix.
+    """
+    page = authenticated_page
+    page.goto(f"{config['base_url']}/tracking")
+    page.wait_for_timeout(3000)
+
+    expect(page).to_have_url(re.compile(rf"{re.escape(config['base_url'])}/tracking/?$"))
+    expect(TrackingPage(page).live_tracking_tab).to_be_visible()
 
 
 @pytest.mark.functional

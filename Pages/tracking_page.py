@@ -1,6 +1,7 @@
 import re
 from playwright.sync_api import Page
 from Pages.base_page import BasePage
+from components.navbar import Navbar
 from components.toast_notifcations import ToastNotifications
 
 
@@ -59,8 +60,14 @@ class TrackingPage(BasePage):
         # Playback-only controls
         self.from_date_input = page.get_by_role("textbox", name="From Date")
         self.to_date_input = page.get_by_role("textbox", name="To Date")
-        self.from_time_input = page.get_by_role("textbox", name="From Time")
-        self.to_time_input = page.get_by_role("textbox", name="To Time")
+        # Confirmed live 2026-09-12: these are real <input> elements
+        # (fillable, formcontrolname fromTime/toTime) but the app's
+        # Material timepicker now exposes them with role="combobox"
+        # (aria-haspopup="listbox"), not role="textbox" as before -- this
+        # was silently matching zero elements and timing out 5 existing
+        # tests (see retest_bug_report.md).
+        self.from_time_input = page.get_by_role("combobox", name="From Time")
+        self.to_time_input = page.get_by_role("combobox", name="To Time")
         self.open_calendar_btns = page.get_by_role("button", name="Open calendar")
         self.more_filters_btn = page.get_by_role("button", name="More Filters")
         self.hold_time_select = page.get_by_role("combobox", name="Hold Time")
@@ -76,7 +83,19 @@ class TrackingPage(BasePage):
     # ---------------------------------------------------------------- nav
 
     def open_tracking_page(self):
-        self.page.goto("/tracking")
+        """Navigate to the Tracking module via the header nav link.
+
+        A direct page.goto("/tracking") does not work on this app --
+        confirmed as an app-wide SPA routing defect on Dashboard and Unit
+        (retest_bug_report.md, NEW-1): it silently bounces back to /home.
+        Same for a plain browser refresh while already on a module page.
+        Route through the shared Navbar.go_to() workaround instead of
+        goto(), matching how a user actually navigates.
+        """
+        if "/tracking" in self.page.url:
+            self.wait_for_tracking_page_ready()
+            return
+        Navbar(self.page).go_to("Tracking")
         self.wait_for_tracking_page_ready()
 
     def wait_for_tracking_page_ready(self):

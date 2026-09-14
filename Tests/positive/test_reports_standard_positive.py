@@ -1,7 +1,7 @@
 import re
 import pytest
 from playwright.sync_api import expect
-from config.config import REPORT_TEST_VEHICLE_NAME
+from config.config import REPORT_END_DATE, REPORT_START_DATE, REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -58,8 +58,8 @@ def test_rep_com_019_export_report_successfully(page, config, credentials):
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.generate_standard_report(
         "Fleet Summary",
-        start_date="01/09/2026",
-        end_date="01/09/2026",
+        start_date=REPORT_START_DATE,
+        end_date=REPORT_END_DATE,
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )

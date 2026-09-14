@@ -217,10 +217,10 @@ def test_vt_129_alert_type_specific(vt_report_page):
 @pytest.mark.video_telematics
 def test_vt_130_131_notification_filter_sent_and_skipped(vt_report_page):
     """VT-130: Filtering by "Sent" returns only SENT records. VT-131
-    (Bug #42, Bug_Report.md): there is no "Skipped" filter option at
-    all, even though SKIPPED is this account's most common real
-    notification value -- pinned here instead of attempting an
-    impossible selection."""
+    (Bug #42, Bug_Report.md): reverified live 2026-09-14, ✅ FIXED -- a
+    "Skipped" filter option now exists and correctly filters to only
+    SKIPPED rows. Originally there was no such option at all despite
+    SKIPPED being this account's most common real notification value."""
     vt_report_page.expand_filters()
     vt_report_page.select_notification("Sent")
     vt_report_page.generate()
@@ -234,9 +234,17 @@ def test_vt_130_131_notification_filter_sent_and_skipped(vt_report_page):
     options = panel.get_by_role("option")
     option_texts = [options.nth(i).inner_text() for i in range(options.count())]
     vt_report_page.page.keyboard.press("Escape")
-    assert "Skipped" not in option_texts, (
-        "Bug #42: expected no 'Skipped' filter option (if this now fails, the app has been fixed)"
+    assert "Skipped" in option_texts, (
+        "Bug #42 regression: expected the 'Skipped' filter option to (still) be present"
     )
+
+    vt_report_page.select_notification("Skipped")
+    vt_report_page.generate()
+    rows = vt_report_page.rows()
+    count = rows.count()
+    assert count > 0, "Expected real SKIPPED records to exist"
+    for i in range(count):
+        assert vt_report_page.row_notification_text(rows.nth(i)) == "SKIPPED"
 
 
 @pytest.mark.functional
@@ -259,19 +267,24 @@ def test_vt_132_report_data_evidence(vt_report_page):
 @pytest.mark.functional
 @pytest.mark.video_telematics
 def test_vt_133_clear_all_filters(vt_report_page):
-    """VT-133: Clear All resets the filters. Confirmed live: this
-    clears the Vehicle multi-select to NO selection (a blank display),
-    not back to "every vehicle selected" -- a real, distinct default
-    from the page's own initial load state."""
+    """VT-133: Clear All resets the filters. Fixed 2026-09-14: the
+    original assertion here (clears to a blank/no-selection display)
+    doesn't match the vehicle selector's own real default -- confirmed
+    live, before any interaction at all, the selector already shows
+    "B123456, B123459" (both vehicles) -- the same "starts fully
+    selected" pattern already documented as Bug #40. Clear All
+    correctly restoring that same default state is the right, expected
+    behavior, not a bug."""
     vt_report_page.expand_filters()
+    default_vehicle_text = vt_report_page.vehicle_select.inner_text()
     vt_report_page.select_vehicle("B123459")
     vt_report_page.select_alert_type("Speeding")
     vt_report_page.page.wait_for_timeout(500)
 
     vt_report_page.clear_all()
 
-    assert vt_report_page.vehicle_select.inner_text().strip() == "", (
-        "Expected the vehicle filter cleared to no selection after Clear All"
+    assert vt_report_page.vehicle_select.inner_text() == default_vehicle_text, (
+        "Expected the vehicle filter restored to the page's own real default selection after Clear All"
     )
     vt_report_page.generate()
     assert vt_report_page.record_count() > 0, "Expected Generate to still work with filters cleared"
@@ -315,10 +328,19 @@ def test_vt_135_generate_filtered_report(vt_report_page):
 @pytest.mark.video_telematics
 def test_vt_136_generate_no_result_report(vt_report_page):
     """VT-136: A date range with no real data produces a clean 0-record
-    empty state, not an error."""
+    empty state, not an error.
+
+    Fixed 2026-09-14: originally used a 10-years-back range, requiring
+    ~120 sequential "Previous month" clicks in _select_date() -- this
+    made the date selection itself unreliable (confirmed live: the
+    resulting request still showed today's default date range, meaning
+    the picker interaction silently failed partway through the long
+    loop, not a real report-generation bug). A 90-days-back range is
+    just as genuinely data-free for this account and far more reliable
+    to select."""
     vt_report_page.expand_filters()
-    vt_report_page.select_from_date(date.today() - timedelta(days=3650))
-    vt_report_page.select_to_date(date.today() - timedelta(days=3649))
+    vt_report_page.select_from_date(date.today() - timedelta(days=90))
+    vt_report_page.select_to_date(date.today() - timedelta(days=89))
     vt_report_page.generate()
     assert vt_report_page.record_count() == 0
     assert vt_report_page.rows().count() == 0
@@ -393,12 +415,27 @@ def test_vt_143_144_location_handling(vt_report_page):
 @pytest.mark.video_telematics
 def test_vt_145_146_notification_states_display(vt_report_page):
     """VT-145/146: Both real notification states (SENT, SKIPPED) render
-    correctly in the table."""
+    correctly in the table. Fixed 2026-09-14: an unfiltered pull (even
+    widened to 30 days) no longer surfaces any SENT rows on its first
+    50-row page -- confirmed live SENT rows do exist (72 of them, via
+    the Notification filter directly) but SKIPPED rows are now
+    overwhelmingly more frequent and crowd out SENT within any one
+    page. Checking each notification state through its own filter
+    avoids depending on both states happening to co-occur on one page."""
+    vt_report_page.expand_filters()
+    vt_report_page.select_notification("Sent")
     vt_report_page.generate()
-    rows = vt_report_page.rows()
-    values = {vt_report_page.row_notification_text(rows.nth(i)) for i in range(rows.count())}
-    assert "SENT" in values, "VT-145: expected at least one real SENT row"
-    assert "SKIPPED" in values, "VT-146: expected at least one real SKIPPED row"
+    sent_rows = vt_report_page.rows()
+    assert sent_rows.count() > 0, "VT-145: expected at least one real SENT row"
+    for i in range(sent_rows.count()):
+        assert vt_report_page.row_notification_text(sent_rows.nth(i)) == "SENT"
+
+    vt_report_page.select_notification("Skipped")
+    vt_report_page.generate()
+    skipped_rows = vt_report_page.rows()
+    assert skipped_rows.count() > 0, "VT-146: expected at least one real SKIPPED row"
+    for i in range(skipped_rows.count()):
+        assert vt_report_page.row_notification_text(skipped_rows.nth(i)) == "SKIPPED"
 
 
 @pytest.mark.functional
@@ -415,11 +452,16 @@ def test_vt_147_148_evidence_available_and_no_evidence_states(vt_report_page):
     assert has_no_evidence_row, "VT-148: expected at least one real 'No Evidence' row"
 
 
-def _first_evidence_row(vt_report_page):
+def _first_evidence_row(vt_report_page, min_buttons: int = 2):
+    """min_buttons=2 (the default) just needs SOME evidence (Location +
+    at least one of View/Snapshots/Play). Reverified 2026-09-14: not
+    every evidence-bearing row has all 4 buttons -- some rows lack a
+    Play Video button specifically (index 3), so VT-151 needs a row
+    with at least 4 buttons, not just >1."""
     rows = vt_report_page.rows()
     for i in range(rows.count()):
         row = rows.nth(i)
-        if vt_report_page.row_has_evidence(row):
+        if row.get_by_role("button").count() >= min_buttons:
             return row
     return None
 
@@ -454,10 +496,14 @@ def test_vt_150_view_all_snapshots(vt_report_page):
 @pytest.mark.video_telematics
 def test_vt_151_play_video(vt_report_page):
     """VT-151: Clicking the play icon opens the evidence panel including
-    its Video Evidence section."""
+    its Video Evidence section. Fixed 2026-09-14: needs a row with a
+    real Play Video button (index 3) specifically, not just any row
+    with SOME evidence -- some evidence-bearing rows only have
+    View/Snapshots, not Play (confirmed live, not every event has
+    video)."""
     vt_report_page.generate()
-    row = _first_evidence_row(vt_report_page)
-    assert row is not None
+    row = _first_evidence_row(vt_report_page, min_buttons=4)
+    assert row is not None, "Expected at least one row with a real Play Video button"
     vt_report_page.open_play_video(row)
     assert "Video Evidence" in vt_report_page.visible_text()
 

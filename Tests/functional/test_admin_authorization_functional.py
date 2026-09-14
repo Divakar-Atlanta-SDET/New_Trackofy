@@ -20,6 +20,18 @@ import pytest
 from Pages.driver_page import DriverPage
 from Pages.home_page import HomePage
 from Pages.login_page import LoginPage
+from Pages.settings_page import SettingsSideMenu
+from components.navbar import Navbar
+
+
+def _open_settings_driver(page):
+    """A raw goto() to /settings/driver hits NEW-1 (retest_bug_report.md)
+    and bounces to /home, for every account including a freshly-logged-in
+    sub-user -- reach it via the real nav bar + accordion instead."""
+    Navbar(page).go_to("Settings")
+    menu = SettingsSideMenu(page)
+    menu.wait_for_visible(menu.driver_management_btn)
+    menu.open_driver()
 
 
 def _unique_username(prefix: str) -> str:
@@ -27,6 +39,11 @@ def _unique_username(prefix: str) -> str:
 
 
 def _delete_if_exists(admin, username: str):
+    # A wizard dialog can still be closing (or, rarely, still open) right
+    # after click_submit() when this teardown runs immediately afterward --
+    # its backdrop blocks the searchbox otherwise. Confirmed live.
+    if admin.wizard_dialog().is_visible():
+        admin.wizard_dialog().wait_for(state="hidden", timeout=admin.DEFAULT_TIMEOUT_MS)
     admin.clear_search()
     if admin.user_row(username).count() > 0:
         admin.delete_button(username).click()
@@ -149,8 +166,7 @@ def test_authz_general_permission_create_driver_enforced(administrator_page, bro
 
         ctx, page = _login_fresh(browser, config, granted_user, password)
         try:
-            page.goto(f"{config['base_url']}/settings/driver")
-            page.wait_for_timeout(2000)
+            _open_settings_driver(page)
             driver_page = DriverPage(page)
             assert driver_page.add_btn.count() > 0 and driver_page.add_btn.is_visible(), (
                 "Expected 'Add Driver' visible when Driver permission is granted"
@@ -160,8 +176,7 @@ def test_authz_general_permission_create_driver_enforced(administrator_page, bro
 
         ctx2, page2 = _login_fresh(browser, config, denied_user, password)
         try:
-            page2.goto(f"{config['base_url']}/settings/driver")
-            page2.wait_for_timeout(2000)
+            _open_settings_driver(page2)
             driver_page2 = DriverPage(page2)
             assert driver_page2.add_btn.count() == 0, (
                 "Expected 'Add Driver' absent when Driver permission is denied (default), but it was present"
@@ -203,14 +218,21 @@ def test_authz_unit_scope_limits_visible_fleet(administrator_page, browser, conf
 
 @pytest.mark.functional
 @pytest.mark.admin
-def test_authz_bug27_unit_permission_without_scope_is_inert(administrator_page, browser, config):
-    """Resolves the open question in Bug #27 (Bug_Report.md, Administrator
-    Module): a sub-user is scoped to Vehicle A only in Step 1 (Unit Scope),
-    but is given a Step 4 Unit Permission (Manage Services) for a SECOND
-    vehicle that was never assigned in Step 1. Per the design doc's own
-    model, this configuration should be inert -- the un-scoped vehicle
-    must not become visible/accessible just because it has a Step 4
-    permission on file.
+def test_authz_bug27_step4_unit_selector_scoped_to_step1(administrator_page):
+    """Regression pin for Bug_Report.md #27 (Administrator Module).
+    Reverified live (2026-09-13): FIXED -- Step 4's unit selector used to
+    be a completely independent multi-select showing the entire fleet
+    regardless of Step 1's scope; it's now correctly scoped to only the
+    vehicle(s) selected in Step 1, confirmed via the dropdown's own UI
+    copy ("Only vehicles selected in Step 1 are available") and directly
+    by scoping to exactly one vehicle in Step 1 and confirming Step 4
+    offers no other option. (This session's Phase 8 test had already
+    separately confirmed a Step 4 permission on an out-of-scope vehicle
+    has no effective access anyway -- that finding stands; this pins the
+    now-fixed UX/data-integrity gap on top of it. The old setup this test
+    used, selecting a second out-of-scope vehicle in Step 4, is no longer
+    constructible at all, since the dropdown simply doesn't offer it
+    anymore -- rewritten to assert the new scoped behavior directly.)
     """
     admin = administrator_page
     username = _unique_username("pytestscopeperm")
@@ -224,39 +246,19 @@ def test_authz_bug27_unit_permission_without_scope_is_inert(administrator_page, 
         admin.click_next_step()
         admin.page.wait_for_timeout(1000)
 
-        # Step 4: grant a Unit Permission for a DIFFERENT, unscoped vehicle
         admin.open_units_dropdown()
         options = admin.page.get_by_role("option")
-        second_vehicle_id = None
-        for i in range(options.count()):
-            text = options.nth(i).inner_text()
-            if text != "HP12G9691":
-                second_vehicle_id = text
-                break
-        assert second_vehicle_id, "Expected at least one other vehicle in the account to use as the unscoped one"
-        admin.select_unit(second_vehicle_id)
-        admin.page.wait_for_timeout(500)
+        option_texts = [options.nth(i).inner_text() for i in range(options.count())]
         admin.close_units_dropdown()
-        admin.expand_permission_category("Unit")
-        admin.unit_permission_checkbox("Manage Services").click()
-        admin.page.wait_for_timeout(400)
-        admin.click_submit()
-        admin.page.wait_for_timeout(1500)
 
-        ctx, page = _login_fresh(browser, config, username, password)
-        try:
-            home = HomePage(page)
-            page.wait_for_timeout(1500)
-            visible_ids = home.visible_vehicle_ids()
-            assert second_vehicle_id not in visible_ids, (
-                f"Vehicle '{second_vehicle_id}' has a Step 4 Unit Permission but was never assigned in "
-                f"Step 1 scope -- it must not be visible/accessible. Visible fleet: {visible_ids}"
-            )
-            assert visible_ids == ["HP12G9691"], (
-                f"Expected only the Step-1-scoped vehicle visible, got {visible_ids}"
-            )
-        finally:
-            ctx.close()
+        assert option_texts == ["HP12G9691"], (
+            f"Bug #27 regression: expected Step 4's unit selector to offer only the Step-1-scoped "
+            f"vehicle ('HP12G9691'), got {option_texts}"
+        )
+        assert "Only vehicles selected in Step 1 are available" in admin.wizard_dialog().inner_text(), (
+            "Expected the scoping hint text confirming Step 4 is restricted to Step 1's selection"
+        )
+        admin.close_wizard()
     finally:
         _delete_if_exists(admin, username)
 

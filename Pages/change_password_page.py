@@ -13,7 +13,10 @@ class ChangePasswordPage(BasePage):
 
     def __init__(self, page: Page):
         super().__init__(page)
-        self.heading = page.get_by_text("Change Password", exact=True)
+        # Confirmed live: a sidebar nav item shares this exact text with
+        # the page's own <h1>, so a bare get_by_text() hits a strict-mode
+        # violation (2 matches) -- the accessible heading role disambiguates.
+        self.heading = page.get_by_role("heading", name="Change Password", exact=True)
         # Confirmed live: New Password and Confirm New Password share the
         # SAME placeholder text ("Enter new password") -- their accessible
         # names (from the mat-form-field label) differ, so role+name is

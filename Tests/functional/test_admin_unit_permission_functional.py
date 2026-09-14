@@ -27,6 +27,37 @@ def _to_step4(admin, username: str):
     admin.page.wait_for_timeout(1000)
 
 
+def _to_step4_multi(admin, username: str, count: int = 2):
+    """Same as _to_step4, but scopes `count` vehicles in Step 1 -- Step 4's
+    unit selector is now correctly scoped to Step 1's selection (confirmed
+    live 2026-09-13, Bug_Report.md #27 fixed), so a test needing multiple
+    Step 4 options needs multiple Step 1 vehicles too. Picks generically
+    from Step 1's own dropdown rather than hardcoding a second vehicle ID,
+    which isn't otherwise used/guaranteed stable anywhere in this suite.
+    """
+    admin.open_add_user_wizard()
+    admin.open_vehicles_dropdown()
+    options = admin.page.get_by_role("option")
+    vehicle_ids = [options.nth(i).inner_text() for i in range(min(count, options.count()))]
+    assert len(vehicle_ids) >= count, (
+        f"Expected at least {count} vehicles available on this account, found {len(vehicle_ids)}"
+    )
+    for vehicle_id in vehicle_ids:
+        admin.select_vehicle(vehicle_id)
+    admin.close_vehicles_dropdown()
+    admin.username_input().fill(username)
+    admin.password_input().fill("ValidPassword123@")
+    admin.confirm_password_input().fill("ValidPassword123@")
+    admin.select_arm_disarm("No")
+    admin.page.wait_for_timeout(500)
+    admin.click_next_step()
+    admin.select_menu_group("example21")
+    admin.click_next_step()
+    admin.click_next_step()
+    admin.page.wait_for_timeout(1000)
+    return vehicle_ids
+
+
 def _selected_vehicles_line(admin) -> str:
     text = admin.wizard_dialog().inner_text()
     lines = text.splitlines()
@@ -57,11 +88,15 @@ def test_adm_134_unit_selector_lists_available_units(administrator_page):
 @pytest.mark.admin
 def test_adm_135_136_select_one_and_multiple_units(administrator_page):
     """ADM-135/136: Selecting one unit shows it under 'Vehicles'; selecting
-    a second adds to the same selection rather than replacing it."""
+    a second adds to the same selection rather than replacing it. Uses
+    _to_step4_multi (2 vehicles scoped in Step 1) since Step 4's unit
+    selector is now correctly scoped to Step 1's selection (Bug_Report.md
+    #27, fixed 2026-09-13) -- a single-vehicle scope would leave Step 4
+    with only one option, unable to test a second selection."""
     admin = administrator_page
     username = _unique_username("pytestqa")
     try:
-        _to_step4(admin, username)
+        _to_step4_multi(admin, username)
         admin.open_units_dropdown()
         opts = admin.page.get_by_role("option")
         first_id = opts.nth(0).inner_text()
@@ -85,11 +120,13 @@ def test_adm_135_136_select_one_and_multiple_units(administrator_page):
 @pytest.mark.functional
 @pytest.mark.admin
 def test_adm_137_change_selected_units(administrator_page):
-    """ADM-137: Selecting a different unit changes the selection."""
+    """ADM-137: Selecting a different unit changes the selection. Uses
+    _to_step4_multi -- see test_adm_135_136's comment on why (Bug #27's
+    fix scopes Step 4 to Step 1's selection)."""
     admin = administrator_page
     username = _unique_username("pytestqa")
     try:
-        _to_step4(admin, username)
+        _to_step4_multi(admin, username)
         admin.open_units_dropdown()
         opts = admin.page.get_by_role("option")
         first_id = opts.nth(0).inner_text()

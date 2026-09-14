@@ -64,34 +64,41 @@ def test_misc_116_current_password_required(change_password_page):
 
 @pytest.mark.functional
 @pytest.mark.misc
-def test_misc_bug37_verify_rejects_the_correct_current_password(change_password_page, credentials):
-    """Regression pin for Bug #37 (Bug_Report.md, CRITICAL): entering the
-    real, currently-authenticating password and clicking Verify always
-    fails with "Unable to verify password" -- Stage 2 never unlocks. This
-    covers MISC-117 (correct current password should verify). Asserts the
-    confirmed-broken behavior; flip both assertions once the app is fixed.
+def test_misc_117_correct_current_password_verifies(change_password_page, credentials):
+    """MISC-117: entering the real, currently-authenticating password and
+    clicking Verify unlocks Stage 2. Reverified live (2026-09-13): this
+    part of Bug_Report.md #37 is now FIXED -- the correct password is
+    accepted. (See test_misc_bug37_verify_accepts_any_password below for
+    the more severe issue this reverification also found: Stage 2 unlocks
+    for a WRONG password too, with no server-side check at all.)
     """
     change_password_page.verify_current_password(credentials["password"])
-    assert change_password_page.contains_any_text(["Unable to verify password"]), (
-        "Bug #37: expected the 'Unable to verify password' error even for the correct password. "
-        "If this no longer appears, the app may have been fixed."
-    )
-    assert not change_password_page.is_stage_two_unlocked(), (
-        "Bug #37: Stage 2 (New/Confirm Password) should currently (still) stay locked. If it's now "
-        "unlocked, the app has been fixed -- un-skip MISC-121 through MISC-144 below."
+    assert change_password_page.is_stage_two_unlocked(), (
+        "Expected Stage 2 to unlock for the correct current password."
     )
 
 
 @pytest.mark.functional
 @pytest.mark.misc
 @pytest.mark.negative
+@pytest.mark.security
 def test_misc_118_incorrect_current_password_rejected(change_password_page):
-    """MISC-118: An incorrect current password is rejected. Note: because
-    of Bug #37, verification currently fails unconditionally -- but
-    rejection is also the correct, expected behavior for a genuinely wrong
-    password, so this remains a meaningful check either way."""
+    """MISC-118: Regression pin for Bug_Report.md #37 (CRITICAL,
+    SECURITY -- symptom evolved from the original report). An incorrect
+    current password should be rejected, keeping Stage 2 locked. Reverified
+    live (2026-09-13): this is NOT the case -- Stage 2 unlocks for a
+    deliberately wrong password too, confirmed 3x, with zero /api/ calls
+    firing during Verify (no server-side check occurs at all; the success
+    appears to be an unconditional client-side pass). This asserts the
+    confirmed-broken (and confirmed genuinely dangerous -- Update Password
+    also becomes enabled from this state) behavior; flip once Verify
+    performs a real server-side check.
+    """
     change_password_page.verify_current_password("definitely-wrong-password-123!")
-    assert not change_password_page.is_stage_two_unlocked()
+    assert change_password_page.is_stage_two_unlocked(), (
+        "Bug #37 (security): expected Stage 2 to (still) incorrectly unlock for a wrong password -- "
+        "if it's genuinely locked now, Verify has been fixed to perform a real server-side check."
+    )
 
 
 @pytest.mark.functional
@@ -119,10 +126,14 @@ def test_misc_120_current_password_visibility_toggle(change_password_page):
 
 
 _BLOCKED_REASON = (
-    "is blocked by Bug #37 (Bug_Report.md, CRITICAL): Change Password's Stage 1 identity check always "
-    "rejects the correct current password, so Stage 2 (New Password / Confirm New Password) stays "
-    "genuinely disabled and can never be reached to test. Un-skip once Bug #37 is fixed -- see "
-    "test_misc_bug37_verify_rejects_the_correct_current_password."
+    "was originally blocked by Bug #37 (Bug_Report.md, CRITICAL): Stage 1 rejected even the correct "
+    "current password, so Stage 2 (New Password / Confirm New Password) could never be reached. "
+    "Reverified 2026-09-13: that specific block is gone (see test_misc_117_correct_current_password_verifies "
+    "-- Stage 2 IS now reachable with the correct password) but Bug #37 itself is not fixed -- it has "
+    "evolved into a more severe issue (Stage 1 accepts ANY password with no server-side check at all, "
+    "see test_misc_118_incorrect_current_password_rejected). These Stage-2 field tests remain stub-only "
+    "placeholders (never implemented, not currently blocked) -- implementing them is separate follow-up "
+    "work, not part of this reverification pass."
 )
 
 

@@ -23,10 +23,22 @@ import pytest
 
 from Pages.driver_page import DriverPage
 from Pages.login_page import LoginPage
+from Pages.settings_page import SettingsSideMenu
+from components.navbar import Navbar
 
 
 def _unique_username(prefix: str) -> str:
     return f"{prefix}{int(time.time() * 1000) % 10_000_000}"
+
+
+def _open_settings_driver(page):
+    """A raw goto() to /settings/driver hits NEW-1 (retest_bug_report.md)
+    and bounces to /home -- reach it via the real nav bar + accordion
+    instead, same as test_admin_authorization_functional.py."""
+    Navbar(page).go_to("Settings")
+    menu = SettingsSideMenu(page)
+    menu.wait_for_visible(menu.driver_management_btn)
+    menu.open_driver()
 
 
 def _delete_if_exists(admin, username: str):
@@ -66,7 +78,7 @@ def test_adm_164_change_menu_group_via_permissions_enforced(administrator_page, 
     try:
         admin.create_user(username, password, ["HP12G9691"], arm_disarm="No", menu_group="example21")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -101,7 +113,7 @@ def test_adm_165_166_add_remove_general_permission_via_permissions_enforced(admi
     try:
         admin.create_user(username, password, ["HP12G9691"], arm_disarm="No", menu_group="Full control")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -118,15 +130,14 @@ def test_adm_165_166_add_remove_general_permission_via_permissions_enforced(admi
 
         ctx, page = _login_fresh(browser, config, username, password)
         try:
-            page.goto(f"{config['base_url']}/settings/driver")
-            page.wait_for_timeout(2000)
+            _open_settings_driver(page)
             driver_page = DriverPage(page)
             assert driver_page.add_btn.count() > 0, "Expected 'Add Driver' after granting Driver permission"
         finally:
             ctx.close()
 
         # revoke Driver again
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.clear_search()
@@ -141,8 +152,7 @@ def test_adm_165_166_add_remove_general_permission_via_permissions_enforced(admi
 
         ctx2, page2 = _login_fresh(browser, config, username, password)
         try:
-            page2.goto(f"{config['base_url']}/settings/driver")
-            page2.wait_for_timeout(2000)
+            _open_settings_driver(page2)
             driver_page2 = DriverPage(page2)
             assert driver_page2.add_btn.count() == 0, "Expected 'Add Driver' gone after revoking Driver permission"
         finally:
@@ -176,7 +186,7 @@ def test_adm_169_unit_permission_change_persists(administrator_page):
     try:
         admin.create_user(username, password, ["HP12G9691"], arm_disarm="No", menu_group="Full control")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -195,7 +205,7 @@ def test_adm_169_unit_permission_change_persists(administrator_page):
         admin.page.wait_for_timeout(400)
         admin.save_permissions_dialog()
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.clear_search()
@@ -228,7 +238,7 @@ def test_adm_permissions_dialog_close_without_save_discards_changes(administrato
     try:
         admin.create_user(username, password, ["HP12G9691"], arm_disarm="No", menu_group="Full control")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -244,7 +254,7 @@ def test_adm_permissions_dialog_close_without_save_discards_changes(administrato
         admin.page.wait_for_timeout(400)
         admin.close_permissions_dialog()  # Close, not Save
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.clear_search()
@@ -279,7 +289,7 @@ def test_adm_permissions_action_stays_scoped_to_one_user(administrator_page):
         admin.page.wait_for_timeout(1500)
         admin.create_user(user_ex21, password, ["HP12G9691"], arm_disarm="No", menu_group="example21")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 

@@ -105,14 +105,8 @@ def test_home_0058_select_all(home_page):
 @pytest.mark.functional
 @pytest.mark.home
 @pytest.mark.negative
-def test_home_0058b_select_all_when_already_full_drops_to_minimum(home_page):
-    """Regression pin for Bug #21 (Bug_Report.md, Home Module): clicking
-    'Select All' while every KPI is already selected does not stay at max
-    -- it paradoxically deselects down to the protected minimum of 6, with
-    no change to the button's own label. This assertion documents the
-    confirmed-broken behavior; it should start failing (and be flipped to
-    assert full selection is preserved) once the app is fixed.
-    """
+def test_home_0058b_select_all_preserves_full_selection(home_page):
+    """Regression for Bug #21: Select All must preserve full selection."""
     home_page.open_kpi_settings()
     home_page.kpi_settings_check_all()
     home_page.page.wait_for_timeout(500)
@@ -122,17 +116,16 @@ def test_home_0058b_select_all_when_already_full_drops_to_minimum(home_page):
         f"got {home_page.kpi_settings_selected_count()}"
     )
 
-    home_page.kpi_settings_dialog().get_by_text("Select All", exact=True).click()
+    home_page.kpi_settings_select_all()
     home_page.page.wait_for_timeout(2500)
     after = home_page.kpi_settings_selected_count()
-    assert after == 6, (
-        "Bug #21: clicking 'Select All' while already fully selected should drop selection "
-        f"to the protected minimum of 6 (confirmed live app behavior) -- got {after}. If this "
-        "now stays at 10, the bug is fixed and this test should be flipped to assert that."
+    if after != total_options:
+        home_page.page.screenshot(path="Tests/home_select_all_astra.png", full_page=True)
+    assert after == total_options, (
+        f"Select All must preserve all {total_options} selections; got {after}"
     )
     # Leave the dialog in a clean, known state for whatever runs next.
-    home_page.kpi_settings_check_all()
-    home_page.kpi_settings_save()
+    home_page.kpi_settings_cancel()
     home_page.wait_for_loading_to_finish()
 
 
@@ -169,22 +162,17 @@ def test_home_0061_less_than_6_kpis_blocks_save(home_page):
     sixth_checkbox = home_page.kpi_settings_checkbox(sixth_kpi)
     try:
         sixth_checkbox.uncheck(timeout=5000)
-        went_below_6 = True
     except PlaywrightTimeoutError:
-        went_below_6 = False
+        pass  # A disabled checkbox can enforce the minimum proactively.
 
-    if went_below_6:
-        assert home_page.kpi_settings_selected_count() < 6, (
-            f"Expected fewer than 6 selected, got {home_page.kpi_settings_selected_count()}"
-        )
+    home_page.page.wait_for_timeout(700)
+    selected_count = home_page.kpi_settings_selected_count()
+    if selected_count < 6:
         assert home_page.kpi_settings_validation_visible(), "Expected 'Select at least 6 KPIs' validation to show"
         save_button = home_page.kpi_settings_dialog().get_by_role("button", name="Save")
         assert not save_button.is_enabled(), "Save should be disabled/blocked with fewer than 6 KPIs selected"
     else:
-        assert not sixth_checkbox.is_enabled(), (
-            f"'{sixth_kpi}' checkbox neither unchecked nor reported disabled at the 6-KPI minimum -- "
-            "the app should block going below 6 one way or the other"
-        )
+        assert sixth_checkbox.is_checked(), "Minimum selection should retain the protected checkbox"
         assert home_page.kpi_settings_selected_count() == 6, (
             "Selection should still be exactly 6 after the blocked uncheck attempt, "
             f"got {home_page.kpi_settings_selected_count()}"
@@ -221,6 +209,9 @@ def test_home_0059_0060_0065_unselect_select_save_and_reopen_reflects_state(home
     """
     home_page.open_fleet_tab()
     assert home_page.kpi_card("Idle").is_visible(), "Idle KPI should be visible before this test starts"
+    home_page.open_kpi_settings()
+    original_selections = home_page.kpi_settings_snapshot()
+    home_page.kpi_settings_cancel()
 
     try:
         home_page.open_kpi_settings()
@@ -243,18 +234,15 @@ def test_home_0059_0060_0065_unselect_select_save_and_reopen_reflects_state(home
         home_page.page.wait_for_timeout(1000)  # header re-render lags the save response briefly
         assert home_page.kpi_card("Idle").is_visible(), "Idle KPI should reappear after reselecting and saving"
     finally:
-        # Restore the account's default configuration (all 10) regardless of
-        # pass/fail, so this test doesn't leave the account in a different
-        # KPI configuration for later tests/users. Bounded retry: dialog
+        # Restore the captured starting configuration regardless of
+        # pass/fail. Bounded retry: dialog
         # interaction under this much back-to-back load has occasionally
         # stalled on a single attempt (confirmed live, cause not fully
         # isolated) -- a page reload plus one retry has reliably recovered
         # it, and this is a cleanup path, not a behavior under test.
         for attempt in range(2):
             try:
-                home_page.open_kpi_settings()
-                home_page.kpi_settings_check_all()
-                home_page.kpi_settings_save()
+                home_page.restore_kpi_settings(original_selections)
                 home_page.wait_for_loading_to_finish()
                 break
             except PlaywrightTimeoutError:
@@ -271,10 +259,15 @@ def test_home_0073_kpi_api_failure_shows_clear_state(home_page, config):
     """HOME-0073: If the Home data API fails, a clear error/empty state is
     shown -- stale KPI values are not presented as current."""
     page = home_page.page
-    page.route("**/user_test_home.php*", lambda route: route.abort())
+    intercepted = []
+    def fail_home_request(route):
+        intercepted.append(route.request.url.split("?")[0])
+        route.abort()
+    page.route("**/user_test_home.php*", fail_home_request)
     page.reload()
     page.wait_for_timeout(3000)
     page.unroute("**/user_test_home.php*")
+    assert intercepted, "Failure simulation did not intercept the Home API; update the API matcher"
 
     # Either a recognizable error/empty state is shown, or the KPI cards
     # simply never populate with misleading numbers.

@@ -127,6 +127,7 @@ test suite itself and is not listed here. Reproduction is against
   which can lead a user to act on the wrong one.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 on both Location Control and Vehicle Group.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED** on both Location Control and Vehicle Group. Creating a second Location (or Vehicle Group) with a name identical to an existing one is now rejected client-side with an "already exist"-style validation message, and the entity count stays at 1 -- no duplicate row is created. `test_set_085_duplicate_location_name_not_prevented` and `test_set_196_duplicate_vehicle_group_name_not_prevented` flipped to assert the fixed behavior and now pass.
 ### 9. Assign Unit dialog: "Assign Units" button never enables (feature unusable)
 - **Test**: `Tests/positive/test_settings_location_control_positive.py::test_set_086_assign_unit_to_location`
 - **Symptom**: In Location Control's "Assign units to location" dialog, picking
@@ -142,6 +143,7 @@ test suite itself and is not listed here. Reproduction is against
   the most severe finding in this module so far.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED.** Picking a vehicle from the Assign Units dialog's "Select Vehicles" multi-select now correctly updates the "X selected" counter, and the Assign Units button enables and submits the assignment successfully. `test_set_086_assign_unit_button_stays_disabled` flipped to assert the fixed behavior and now passes.
 ### 10. POI Alert creation fails server-side despite a fully valid form
 - **Test**: `Tests/negative/test_settings_alerts_negative.py::test_poi_alert_create_rejected_server_side`
 - **Symptom**: In the "Create POI Alert" dialog, after selecting a unit, a
@@ -155,6 +157,7 @@ test suite itself and is not listed here. Reproduction is against
   server does not -- the form gives no actionable feedback.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED.** A fully filled-out POI Alert form (unit, POI, notification channel) now submits successfully -- the dialog closes with no "Missing required fields" rejection, and the new alert appears in the list. `test_poi_alert_create_valid_configuration` (renamed from the rejection-expecting version) flipped to assert the fixed behavior and now passes.
 ### 11. BMS Alert and Vehicle Odometer Alert: list never shows a newly created record
 - **Test**: `Tests/negative/test_settings_alerts_negative.py::test_bms_and_odometer_list_not_refreshed`
 - **Symptom**: Creating a BMS Alert or a Vehicle Odometer Alert configuration
@@ -170,6 +173,7 @@ test suite itself and is not listed here. Reproduction is against
   or manage what was just configured.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 for both BMS Alert and Vehicle Odometer Alert.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED** for both BMS Alert and Vehicle Odometer Alert. Creating a configuration for a vehicle now genuinely persists and shows up in the list after a full page reload -- confirmed via the reloaded table containing the configured vehicle's name. One caveat worth noting for anyone re-testing this: the app enforces one configuration per vehicle per alert type, so re-running this check against a vehicle that *already* has a configuration updates its existing row instead of adding a new one -- that's a business rule, not a regression of this bug, and one earlier check in this pass briefly mistook it for one before re-running against a vehicle with no prior configuration confirmed the real (fixed) behavior. `test_alert_created_and_listed_after_reload` (parametrized over both alert types) flipped to assert the fixed behavior and now passes.
 ### 12. Leaving the Create Route page (Save or Cancel) redirects to the Dashboard instead of back to Route Management
 - **Test**: `Tests/positive/test_settings_route_positive.py::test_set_156_create_valid_route`,
   `Tests/functional/test_settings_route_functional.py::test_set_168_open_custom_route_tab`
@@ -189,6 +193,7 @@ test suite itself and is not listed here. Reproduction is against
   their own list).
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 for both Save Route and Cancel.
+- **Reverification (2026-09-13, live, confirmed via automated suite):** ❌ **STILL BROKEN.** Both `test_set_156_create_valid_route` (Save) and the Custom Route tab's Cancel path still land on `/home` after the action, requiring the test's own `_recover_to_route_list()` workaround (re-entering Settings via the nav bar) to get back to Route Management. Unchanged from the 2026-09-07 finding.
 ### 12b. Driver list export downloads a file misnamed "Unit_List"
 - **Test**: `Tests/functional/test_settings_cross_cutting_functional.py::test_set_184_export_contains_correct_data`
 - **Symptom**: Exporting the Driver list to CSV produces correct driver data
@@ -224,6 +229,7 @@ test suite itself and is not listed here. Reproduction is against
   form gives no indication beforehand that Email has a length limit at all.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 -- identical SQLSTATE truncation error every time; also observed the same class of bug triggers off an over-length Name value, truncating at the name column instead -- worth noting as a related manifestation, not a separate bug.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED.** The Email field on the Create Driver form now carries a hard `maxlength="30"` attribute matching the DB column's real limit, and Angular's own validator marks the field invalid (visible "Invalid email" error, Create Driver button stays disabled) the instant the value would exceed it -- confirmed the browser truncates keystrokes at exactly 30 characters as they're typed, so an over-length email can never reach the submit handler through the form. Also tried bypassing the client-side `maxlength` directly via a DOM `value` set + dispatched `input` event (to check whether this is enforced anywhere besides the `maxlength` attribute) -- Angular's own reactive-form validator re-ran on the injected value and re-disabled the Create Driver button anyway, so there is no way to get an over-length email submitted through the actual UI attack surface. No raw SQL error or HTTP 500 could be triggered in 3 independent attempts. Backend-level defense-in-depth (does `POST /api/add-driver` itself reject an over-length value if called directly, bypassing the UI entirely) was not separately tested -- out of scope for this pass, which targets the form flow a real user goes through.
 ### 13. Route Name is not actually enforced as mandatory
 - **Test**: `Tests/negative/test_settings_route_negative.py::test_set_157_route_name_mandatory`
 - **Symptom**: Leaving the route name blank and saving a route (with valid
@@ -239,6 +245,7 @@ test suite itself and is not listed here. Reproduction is against
   the list.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED.** Leaving Route Name blank now keeps the Save Route button disabled (confirmed for missing name, missing origin, and missing destination alike -- the form validates via a disabled button rather than submit-then-reject now) -- no more silent "My Route" default-and-save. `test_set_157_route_name_not_actually_enforced` (renamed) flipped to assert the fixed behavior and now passes.
 ### 14. Driver create form: Address field is silently required
 - **Test**: found while building `Tests/positive/test_settings_driver_positive.py`
 - **Symptom**: The **Create Driver** button stays disabled until the Address
@@ -248,6 +255,7 @@ test suite itself and is not listed here. Reproduction is against
   be stuck with a disabled Create button and no explanation why.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED.** The Address field now displays a required-field asterisk ("Address *") matching the other mandatory fields on the form. As a side effect of this UI change, the visible label text is no longer programmatically associated with the input (no `<label for>`/`aria-labelledby`), so its accessible name falls back to its placeholder ("Enter complete address") -- `Pages/driver_page.py`'s `address_input` locator was updated to match on the placeholder instead of `name="Address"`, which had started matching zero elements.
 ### 15. Driver create form: Address field visually appears empty after typing
 - **Found by**: manual testing (reported directly, not yet reproduced by an
   automated test)
@@ -267,6 +275,105 @@ test suite itself and is not listed here. Reproduction is against
   input's `scrollTop` or a screenshot-based check) -- not yet added.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 -- and more severe than originally described: the typed text rendered fully invisible in the textarea, not just the lines past the first.
+- **Reverification (2026-09-13, live, 3x pass, screenshot-confirmed):** ✅ **FIXED.** Typing an address into the field now shows the entered text immediately and correctly in the visible viewport -- confirmed via a screenshot of the field after typing, no scroll/visibility gap.
+
+### 75. [High] BMS Alert list rows have no Edit or Delete action buttons at all -- a BMS Alert configuration, once created, can never be managed or removed through the UI
+- **Found**: 2026-09-13, while regression-testing the fix for Bug #11 (BMS/Odometer Alert list not refreshing)
+- **Test**: `Tests/negative/test_settings_alerts_negative.py::test_alert_created_and_listed_after_reload[BMS Alert]`
+  (surfaced as a cleanup failure -- `delete_alert()` timed out finding a Delete
+  button on a real BMS Alert row -- then confirmed directly)
+- **Symptom**: Every other alert type checked -- AC, Ignition, Main Power,
+  Panic, Speed, Idle, Temperature, POI, and Vehicle Odometer Alert -- renders
+  at least one action button (Edit and/or Delete) per row. BMS Alert is the
+  sole exception: inspecting the row HTML directly across all 10 existing
+  BMS Alert rows (and the first 5 rows specifically checked for button
+  count) shows **zero `<button>` elements of any kind** in every row, in 3
+  independent live checks. The row itself renders correctly (Unit, Mode,
+  Alert Type, Battery, Email, WhatsApp No, Created Date columns all populate
+  with real data) -- only the action-button column is missing.
+- **Impact**: A user (or this automated suite) can create a BMS Alert
+  configuration, but can never edit or delete it again through the UI --
+  every BMS Alert this account creates is permanent. This is a more severe,
+  distinct issue from the now-fixed Bug #11 (which was about the list not
+  refreshing to show a new row at all): here the row does appear correctly,
+  it simply cannot be acted on afterward. The Settings-module regression
+  test that creates one of these on every suite run had to add a
+  best-effort-only cleanup guard (skip cleanup entirely for BMS Alert,
+  since there's no button to click) to avoid asserting on the cleanup step
+  itself, which would otherwise fail for reasons unrelated to what the test
+  is actually checking.
+- **Reverification (2026-09-13, live, 3x pass):** REPRODUCED 3/3 -- identical zero-button result across all three independent checks (two full-module surveys across every other alert type for contrast, plus the original cleanup-step timeout).
+
+### 76. [High] A fixed-position "FEEDBACK" widget can intercept clicks on real row controls beneath it, app-wide
+- **Found**: 2026-09-13, while cleaning up test data left in Location Control
+- **Test**: surfaced as a real click failure during Settings test-data cleanup
+  (a `Locator.click` on a Location's Delete button timed out with Playwright
+  reporting `<div class="fixed top-[40vh] right-0 ...">` intercepting pointer
+  events), then confirmed directly and surveyed across modules.
+- **Symptom**: A "FEEDBACK" button (`<div class="fixed top-[40vh] right-0
+  z-[90] ...">`, rotated -90deg, fixed at 40% viewport height on the right
+  edge) is rendered on top of the normal page content on at least Dashboard,
+  Unit, and Settings (confirmed absent on Home, Tracking, and Reports in the
+  same pass -- inconsistent across modules, not universal). Because its
+  position is fixed relative to the viewport, not the page content, any real
+  interactive control that happens to scroll to around that screen height --
+  which row that is depends entirely on how much content/how many rows
+  render above it -- becomes genuinely unclickable through a normal click; a
+  real Delete button in Location Control was blocked this way in live
+  testing (`force=True` did not help; only hiding the widget via a
+  JS override let the click land). Same class of defect as Bug #74 (CAN
+  module's map overlay intercepting clicks), but this widget is a shared,
+  app-level component rather than one module's own overlay, and its
+  interception is data/scroll-position-dependent rather than constant.
+- **Impact**: Any user whose data happens to place a real action button
+  (Edit/Delete/Assign/etc., not specific to Location Control -- any row
+  control rendering near 40% viewport height on an affected module) behind
+  this widget cannot click it at all through normal interaction, with no
+  visual indication anything is blocking the click.
+- **Reverification (2026-09-13, live, 3x pass):** REPRODUCED 3/3 -- the direct click-interception (1x, during real cleanup work) plus 2 independent module surveys confirming the widget's presence, fixed position, and visibility on Dashboard/Unit/Settings.
+
+## Administrator Module (continued)
+
+### 77. [WITHDRAWN -- test automation bug, not a product bug] Driver reassignment/unassign
+- **Status: RETRACTED 2026-09-13.** Not a real bug -- a bug in this
+  session's own test automation helper produced a false positive.
+- **What happened**: Two rounds of live diagnostics both concluded
+  something was broken in the driver Assign/Unassign dialog -- first that
+  a direct vehicle swap via "Update Assignment" was rejected as "already
+  assigned," then, after correctly being told the real flow is
+  unassign-then-reassign, that Unassign's own success toast was lying
+  about clearing the assignment. The user directly verified Unassign
+  manually and reported it works correctly, and flagged the diagnostic
+  script as the likely problem rather than the app.
+- **Root cause, confirmed**: `Pages/driver_page.py`'s `unassign_vehicle()`
+  helper clicked the "Unassign current vehicle" icon (which -- confirmed
+  live via network capture -- immediately fires `POST /api/unassign-driver`
+  and genuinely commits, 200 OK, independent of anything else) and then
+  **also** clicked "Update Assignment" right after. At that point the
+  Select Vehicle dropdown still visually showed the just-unassigned
+  vehicle (a stale UI artifact, not yet re-rendered) -- clicking
+  "Update Assignment" against that stale, still-populated dropdown
+  silently re-submitted and re-assigned the same vehicle, undoing the
+  unassignment the icon click had already correctly performed. This
+  extra click is what produced every downstream symptom: the
+  driver ending up still assigned to the "unassigned" vehicle, and every
+  later reassignment attempt correctly being rejected as already-assigned
+  (because the driver genuinely still was).
+- **Confirmed via a corrected script** using the real intended flow
+  (click the Unassign icon, close the dialog via Cancel -- no further
+  confirm click) end-to-end: assign driver to Vehicle A (succeeds) ->
+  unassign (icon click only, "Unit Unassigned Successfully", driver's row
+  genuinely shows no vehicle after reload) -> assign to a different
+  Vehicle B (button correctly reads "Assign Vehicle," not "Update
+  Assignment," confirming the clean unassigned state; succeeds; row shows
+  Vehicle B after reload). The full assign/unassign/reassign cycle works
+  correctly end-to-end.
+- **Fix applied**: `Pages/driver_page.py`'s `unassign_vehicle()` no longer
+  clicks "Update Assignment" after the unassign icon -- it closes the
+  dialog via Cancel instead, matching the real, correct flow.
+  `test_set_053_change_driver_assigned_unit` rewritten to exercise and
+  assert the genuine, correct assign -> unassign -> reassign cycle.
+
 ## Reports Module
 
 ### 17. Vehicle Summary, Trip Report and Cumulative Distance fail with a raw SQL error for any date range whose monthly telemetry table doesn't exist
@@ -370,6 +477,56 @@ test suite itself and is not listed here. Reproduction is against
   affordances (no cancel, no retry, no message) to escape it.
 
 - **Reverification (2026-09-07, live 3x pass):** NOT REPRODUCED this pass -- an initial false positive (a stale "Generating..." label sitting in a closed, off-screen Filters drawer) was ruled out; on proper re-test, all-vehicles Fleet Summary rendered correctly with real data in 2.3-6.9s across 6 attempts (3 all-vehicles + 3 single-vehicle), no hang, no stuck skeleton rows, no zero pagination. Possibly fixed since the original finding.
+### 70. Distance Chart, Stoppage Summary and Engine Hour report three mutually contradictory total-distance figures for the identical vehicle and date range
+- **Test**: Manual data-validation pass over the Standard Reports catalog (staging,
+  vehicle `GCBL10536MHG14AG04459`, date range 03/01/2026-03/10/2026)
+- **Symptom**: Generating Distance Chart, Stoppage Summary, and Engine Hour back-to-back for
+  the exact same vehicle and date range returns three different answers to "how far did this
+  vehicle travel":
+  - Distance Chart: **Total(km) = 180.55** (daily breakdown 0 + 65.28 + 80.37 + 34.9 = 180.55,
+    internally consistent with itself)
+  - Stoppage Summary: **Distance = 1,114.32 km** -- roughly 6x Distance Chart's figure
+  - Engine Hour: **Total Distance = 0**, with Status shown as "Inactive" for the same vehicle
+    and range
+- **Impact**: A report is only useful if its numbers are trustworthy; here three different
+  Standard reports give three incompatible answers for the same query, so at least two of
+  the three (and possibly all three) are computing distance incorrectly. A user cross-checking
+  fleet mileage across reports (a normal use case) gets contradictory numbers with no
+  indication which, if any, is correct.
+- **Reverification (2026-09-10, live 3x pass):** REPRODUCED 3/3 -- identical 180.55 / 1,114.32 / 0 figures across 3 independent fresh sessions.
+- **Reverification #2 (2026-09-10, corrected date range, live):** The original 03/01/2026-03/10/2026 range predates this account's real telemetry window (confirmed separately: any report using that range returns a raw SQL error for a missing monthly partition, Bug #17), so it was re-tested with a genuinely in-range last-2-months window. Two sub-findings:
+  - A **short, real-data range (15 days, 2026-08-25 to 2026-09-09)** shows Distance Chart (281.68 km) and Stoppage Summary/Engine Hour (282.13 km, identical to each other) agreeing within 0.16% -- effectively consistent, not a meaningful mismatch.
+  - A **longer, real-data range (~2 months, 2026-07-11 to 2026-09-09)** reproduces a large mismatch again, **3/3 identical across independent fresh sessions**: Distance Chart = **900.62 km** vs Stoppage Summary/Engine Hour = **2634.16 km** (both identical to each other) -- a ~2.9x disagreement.
+  - **Revised conclusion: CONFIRMED, still a real bug** -- but the discrepancy is range-length-dependent, not a fixed ratio, and does not manifest (or is negligible) over short windows. Distance Chart's per-day-bucketed total and Stoppage Summary/Engine Hour's trip-based total diverge increasingly as the requested date range grows, suggesting Distance Chart under-counts (missing/dropped days beyond a certain range) or Stoppage Summary/Engine Hour over-counts (e.g. double-counting overlapping trip segments) for longer queries. Root cause not isolated further; flagging the range-dependence for whoever investigates the calculation.
+### 71. Stoppage Summary shows a non-zero Distance with 0m Total Running and 0m Total Idle -- an internally impossible combination
+- **Test**: Manual data-validation pass over the Standard Reports catalog (staging,
+  vehicle `GCBL10536MHG14AG04459`, date range 03/01/2026-03/10/2026)
+- **Symptom**: The Stoppage Summary row for the vehicle shows **Total Running = 0m**,
+  **Total Idle = 0m**, and **Distance = 1,114.32 km** in the same row. A vehicle cannot cover
+  over a thousand kilometers while its own report records zero minutes of running time for
+  the period -- the three columns are self-contradictory regardless of what the "correct"
+  distance value should be (see also Bug #70).
+- **Impact**: The report's own columns don't agree with each other, which is a stronger signal
+  of a broken duration/distance calculation than a bad number alone -- the underlying
+  aggregation is not deriving Distance from the same trip/running data it uses for
+  Total Running/Total Idle.
+- **Reverification (2026-09-10, live 3x pass):** REPRODUCED 3/3 -- identical 0m / 0m / 1,114.32 km row across 3 independent fresh sessions.
+- **Reverification #2 (2026-09-10, corrected date range, live 3x pass):** NOT REPRODUCED with a genuinely in-range date (2026-07-11 to 2026-09-09, avoiding the missing-partition range from Bug #17) -- Total Running showed a real, non-zero value (**90h**, identical across 3 independent fresh sessions) alongside the (still mismatched, per Bug #70) Distance figure. **Withdrawn as a standalone finding**: the original 0m-Total-Running symptom was an artifact of querying a date range with no real underlying telemetry (see Bug #17), not a genuine calculation defect independent of Bug #70. The Distance-figure disagreement itself remains open under Bug #70.
+### 72. Driver Performance returns all-zero metrics for every driver, including one assigned to a vehicle with confirmed real activity in the same range
+- **Test**: Manual data-validation pass over the Standard Reports catalog (staging,
+  date range 03/01/2026-03/10/2026, drivers: syam, Test Driver Alpha/Bravo/Charlie)
+- **Symptom**: Generating Driver Performance for the full driver list returns 4 rows where
+  every numeric column -- Max Speed, Avg Speed, Total Distance, Harsh Breaking, Harsh
+  Acceleration, Fuel Consumption, Mileage, No Of Trips -- is exactly `0` for all 4 drivers,
+  and Rating is `NA` for all 4. Driver "syam" is associated with vehicle
+  `GCBL10536MHG14AG04459`, which independently shows real distance (180.55 km, per Bug #70)
+  and real speed data (up to 41 km/h, per the Maxspeed Chart report) for this exact date
+  range -- so driver-level metrics should not be zero across the board.
+- **Impact**: Driver Performance is non-functional as a data source -- it cannot currently be
+  used to evaluate or compare any driver's behaviour, since it returns identical, uninformative
+  all-zero rows regardless of a driver's actual underlying vehicle activity.
+- **Reverification (2026-09-10, live 3x pass):** REPRODUCED 3/3 -- identical all-zero rows for all 4 drivers across 3 independent fresh sessions.
+- **Reverification #2 (2026-09-10, corrected date range, live):** NOT REPRODUCED with a genuinely in-range date (2026-07-11 to 2026-09-09, avoiding the missing-partition range from Bug #17). Driver "syam" (assigned to the same test vehicle) now returns real, differentiated data: Max Speed 40.74, Avg Speed 19.09, Total Distance 2664.38, Rating "Good", 9 trips -- not all-zero. **Withdrawn as a standalone finding**: the original all-zero symptom was an artifact of querying a date range with no real underlying telemetry (see Bug #17), not a genuine defect in Driver Performance's calculation. Note in passing (not separately filed, needs its own investigation before treating as a bug): one other driver in the same result set ("Test Driver Alpha") showed Avg Speed 178.2 km/h against a Total Distance of only 1.17 km for the period -- an implausible speed/distance combination worth a closer look in a future pass.
 ---
 
 ## Home Module
@@ -471,6 +628,7 @@ test suite itself and is not listed here. Reproduction is against
   meaningful security and data-integrity issue, not just a UX rough edge.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live, 4x pass):** ✅ **FIXED.** The Step 1 -> Step 2 "Next Step" transition no longer fires a `POST /api/save_subuser` (or any other save-shaped) API call at all -- confirmed via full network-response logging across the whole wizard flow. Closing the wizard via the "X" icon, tested both right after Step 1->2 and again after progressing all the way through Step 4 (menu group, permissions, unit selection) without ever clicking Submit, leaves the user count unchanged and the attempted username absent from User Management on a fresh reload -- confirmed 4x total (1 automated pytest run via the existing regression pin, 3 independent manual diagnostic runs, one of which exercised the full Step-1-through-4 path). The save now appears to genuinely wait for final Submit, matching the app's own stated design intent. `test_adm_053_close_wizard_without_submit_still_creates_user` needs flipping to assert no user is created (not done automatically here since it's a meaningful behavior-assertion change worth a deliberate pass, not a locator fix).
 ### 26. "Add Group" on the Create User wizard re-fetches its (static) menu list from the API on every click, with no loading indicator, and no debounce -- causing a multi-second open delay and stacked duplicate dialogs on repeat clicks
 - **Tests**:
   `Tests/functional/test_admin_menu_access_functional.py::test_adm_065_add_group_opens_new_group_dialog`,
@@ -509,6 +667,7 @@ test suite itself and is not listed here. Reproduction is against
   already in flight.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 for the stacking defect; the open-delay is confirmed present every time (1.16-1.29s) though measured smaller than the originally reported ~5s.
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED (the stacking defect).** The "Add Group" button now disables itself immediately on click and stays disabled until its dialog opens -- confirmed live a second/third rapid click during that window is simply blocked (Playwright's own actionability check reports the button `disabled` and cannot click it), so multiple dialogs can no longer stack. Also confirmed exactly one `GET /api/v1/user/menus`-shaped request fires per open, not one per click. The disabled state during the fetch also doubles as a (minimal) busy indicator, partially addressing the original "looks broken, no feedback" complaint too. `test_adm_065b_rapid_add_group_clicks_stack_duplicate_dialogs` needs flipping to assert the button blocks rapid clicks / exactly one dialog opens (not done automatically here since it's a meaningful behavior-assertion change).
 ### 27. Step 4's unit selector is a separate, unfiltered picker over the entire fleet, disconnected from Step 1's vehicle scope (confirmed harmless, UX-only)
 - **Test**: `Tests/functional/test_admin_authorization_functional.py::test_authz_bug27_unit_permission_without_scope_is_inert`
 - **Symptom**: Step 1's vehicle selector is explicitly documented (design
@@ -536,6 +695,7 @@ test suite itself and is not listed here. Reproduction is against
   administrator effort, but confirmed harmless from a security standpoint.
   Worth a UX fix (filter Step 4's list to Step 1's scope, or at least
   visually flag out-of-scope options) but not a security bug.
+- **Reverification (2026-09-13, live):** ✅ **FIXED (the UX gap itself).** Step 4's unit selector is no longer an unfiltered picker over the entire fleet -- confirmed live it now shows only the vehicle(s) selected in Step 1, with explicit UI copy ("Only vehicles selected in Step 1 are available", "1 in scope") confirming the scoping. With only `HP12G9691` selected in Step 1, Step 4's dropdown now offers no other vehicle at all -- the exact scenario this bug described (30+ unscoped vehicles listed) no longer reproduces, and the original regression test's setup (select a second, out-of-scope vehicle in Step 4) is no longer constructible, since the option simply isn't offered anymore. `test_authz_bug27_unit_permission_without_scope_is_inert` needs rewriting to assert the new scoped-dropdown behavior directly (not attempt the now-impossible unscoped-selection setup).
 
 ### 28. [CRITICAL] Clicking "Edit" on a user row opens a completely different, unrelated user's data
 - **Test**: `Tests/functional/test_admin_submit_flow_functional.py::
@@ -639,6 +799,7 @@ test suite itself and is not listed here. Reproduction is against
   hiding the nav link.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live) -- INCONCLUSIVE, NOT confirmed fixed:** direct `page.goto()` to both `/administrator` and `/settings/driver` as a freshly created, correctly-scoped-away sub-user now redirects to `/home` instead of rendering the page shell. On its own this looks like a fix -- but this app has a separate, independently confirmed, app-wide defect (NEW-1, `retest_bug_report.md`) where a raw `goto()`/reload to **any** module's direct URL bounces to `/home` for **every** account, including the fully-authorized owner account, regardless of permissions. That means this exact redirect is fully explained by NEW-1 alone and does **not** distinguish "real route-level authorization was added" from "nobody, authorized or not, can reach any module by direct URL anymore for an unrelated reason." Confirming this one way or the other would require reaching the route through a mechanism NEW-1 doesn't intercept (e.g. a client-side route change via the History API rather than a full navigation) -- not attempted this pass. Leaving this bug's status as unresolved/unverifiable under current conditions rather than claiming it fixed; `test_authz_bug29_direct_url_bypasses_menu_access` still fails (in the sense of no longer matching its original "loads real page" assertion) but for a confounded reason, not necessarily the fix it was written to catch -- left as-is rather than incorrectly flipped to "fixed."
 ### 30. General Permission category "User" (Create User wizard, Step 3) is relabelled "Global" in the Permissions dialog's General Permission tab
 - **Test**: not yet automated as a regression pin -- a minor consistency
   note found while building Phase 9 (Edit/Permissions coverage).
@@ -655,6 +816,7 @@ test suite itself and is not listed here. Reproduction is against
   fix.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live):** ✅ **FIXED.** Confirmed both surfaces now consistently label the category "User" -- the Create User wizard's Step 3, and an existing user's Permissions dialog's General Permission tab both show "User", not "Global".
 ### 31. Unicode (non-Latin) characters in a username are corrupted to literal "?" characters
 - **Test**: `Tests/functional/test_admin_data_integrity_functional.py::test_adm_unicode_username_handled_cleanly`
   (regression pin)
@@ -711,6 +873,7 @@ test suite itself and is not listed here. Reproduction is against
   elsewhere on the platform, not within this administrator's own users.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 (9/9 individual attempts across "test"/"admin"/"demo") -- confirmed HTTP 200 with status:false, message:"user_alread_exist" [sic] every time.
+- **Reverification (2026-09-13, live):** ❌ **STILL BROKEN**, unchanged -- "test", "admin", and "demo" all rejected again with the identical "User already exist" [sic] error toast, tested through the full wizard (Step 1 -> Submit) this time rather than just Step 1 -> 2, to account for Bug #25's fix moving the real save to final Submit.
 ### 33. [Low] No show/hide (eye) toggle on the Password / Confirm Password fields in the Create User wizard
 - **Test**: `Tests/functional/test_admin_create_user_step1_functional.py::
   test_adm_bug33_no_password_visibility_toggle_in_wizard` (regression pin)
@@ -731,6 +894,7 @@ test suite itself and is not listed here. Reproduction is against
   pattern already used in the User Management table to both password
   fields in the Create User wizard (and, if applicable, in the Edit/
   Permissions surfaces if a password field exists there too).
+- **Reverification (2026-09-13, live):** ✅ **FIXED.** Both fields now have a working, genuinely functional show/hide toggle -- "Show password" and "Show confirm password" (distinct, per-field aria-labels), confirmed live that clicking one flips its own field from `type="password"` to `type="text"` without affecting the other field. `test_adm_bug33_no_password_visibility_toggle_in_wizard` needs flipping to assert the toggles exist and work (not done automatically here since it's a meaningful behavior-assertion change).
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
 ---
@@ -762,7 +926,8 @@ test suite itself and is not listed here. Reproduction is against
   the responsive layout rather than relocated.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
-### 35. [CRITICAL, escalated] Raise Support Ticket cannot be submitted -- "X selected" vehicle counter never updates, and Submit stays permanently disabled even when every field is genuinely valid
+- **Reverification (2026-09-13, live):** ✅ **FIXED.** At a 390x844 mobile viewport, My Profile, Support, Change Password, and Sign Out are all now genuinely reachable and functional -- confirmed live clicking each correctly navigates to its real page (`/profile`, `/profile/support`, `/profile/change-password`) or, for Sign Out, opens the confirmation. The mobile layout implements these as real `<a>` anchor links (not `role="button"` elements like the desktop layout), which is why `get_by_role("button", ...)` locators found nothing at this viewport -- not a product bug, just a locator that needed to account for the mobile markup using link semantics instead of button semantics. `test_misc_012_account_menu_responsive` needs updating to check for these via link/text locators instead of button role before it can be flipped to assert reachability (not done automatically here, since it's a genuine test-code update, not a one-line flip).
+### 35. [RESOLVED 2026-09-13] Raise Support Ticket cannot be submitted -- originally: "X selected" counter stuck and Submit stayed disabled. Now confirmed FIXED end-to-end (an earlier same-day "Submit does nothing" reverification note was itself a false positive from an insufficient wait, corrected below).
 - **Test**: not yet automated as a regression pin -- to be added to Phase 5
   (`Tests/functional/test_misc_raise_ticket_functional.py`).
 - **Symptom (original, display-only)**: In the Raise Support Ticket
@@ -810,6 +975,10 @@ test suite itself and is not listed here. Reproduction is against
   users from getting support.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live) -- ✅ FIXED. Earlier same-day reverification notes below (the "Submit is enabled but the click does nothing" finding) were themselves a false positive -- corrected after the user pushed back, having manually confirmed tickets genuinely do get created.** Root cause of my own false positive: my diagnostic script's wait after clicking Submit was too short for this page's real (and separately confirmed, see the new performance finding below) slow response time, so I was reading an in-flight state as a final "nothing happened" result. Re-tested properly with generous waits across 4 independent fresh-vehicle attempts: every one showed a "Ticket successfully created" toast, and a fresh reload + search confirmed the exact new ticket present in the list every time (e.g. `TCKT/130926/14551` for one run, matching its unique marker comment exactly). The "X selected" counter fix from earlier the same day still holds. `Tests/functional/test_misc_raise_ticket_functional.py`'s regression pins rewritten to assert genuine success (submission, toast, and list presence) instead of the retracted "inert click" finding.
+- **New, related finding (not a bug in isolation, flagged for product awareness):** attempting a second ticket for a vehicle that already has ANY open ticket is rejected with "Complaint already exists for `<vehicle IMEI>`" -- confirmed this is **not** scoped to the same category as the existing ticket (tested same-category-repeat and different-category-repeat against the same vehicle, both rejected identically, across 3 independent vehicles). This means a vehicle with an open "Odometer is wrong" ticket cannot also have a separate "Invalid gps" ticket raised for an unrelated issue until the first is closed. May be an intentional one-active-complaint-per-vehicle business rule rather than a bug, but is worth product-team confirmation given it can block reporting a second, genuinely distinct issue on the same vehicle.
+- **New finding (real, confirmed root cause of a user-reported point of confusion): the rejection message identifies the vehicle by its raw IMEI, not by the name/plate shown in the selector, making it look like an unrelated vehicle is being cited.** The user directly hit this confusion live ("I am selecting a different vehicle... why does it matter") after seeing "Complaint already exists for 865820071135078" despite having picked a vehicle by its plate-style name. Ran a full RCA across 9 vehicles spanning the account's entire fleet (first/middle/last of 36): the Select Vehicles combobox's displayed value matched the actually-selected vehicle name exactly in all 9/9 attempts (no selection-tracking bug); of those, 5 were rejected as already having an open ticket and 4 succeeded fresh; each of the 5 rejected vehicles was re-tested a second time and cited the exact same IMEI both times (5/5 consistent); and no two different vehicle names ever shared the same cited IMEI (zero cross-vehicle collisions). This rules out a real vehicle-selection or vehicle-mapping bug -- the block is always correctly tied to the vehicle actually selected. The genuine issue is purely a display/UX one: the selector uses plate-style names (e.g. "ptc400-demo", "GCBL10536MHG19CG06323") while the rejection message switches to a completely different-looking raw IMEI number (e.g. "864688053444367") with no visible link between the two, so a user has no way to recognize the cited vehicle as the one they just picked. Recommend the rejection message cite the same identifier the selector uses (or both), e.g. "Complaint already exists for ptc400-demo" instead of the bare IMEI.
+- **New finding: intermittent slow loading, both for the ticket list and for ticket submission** -- confirmed live (and independently by the user manually) that the Support ticket list can take several seconds longer than expected to replace its "No support tickets found" placeholder with real data, and that Submit Ticket's own response can likewise take noticeably longer than a typical form submission. Confirmed this is intermittent/flaky rather than a constant fixed delay (varied between fast and slow across repeated checks). `Pages/support_page.py`'s `open()` and `open_ticket_history()` were hardened to wait for real content rather than a fixed timeout, which was masking this as apparent data-loss in this session's own test framework before being corrected.
 ### 36. [Low] Raise Support Ticket's Comment field ignores any programmatic value change -- only real keystrokes register
 - **Test**: `Pages/base_page.py::type_into()` (workaround) is used by all
   Comment-field tests in
@@ -847,7 +1016,8 @@ test suite itself and is not listed here. Reproduction is against
   keyboard-event handler.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 under the literal repro steps, with a nuance worth carrying into the Jira ticket: this looks like a load/binding timing race on dialog-open rather than an absolute rejection of all programmatic writes -- adding a short settle delay before fill() made it succeed consistently in a follow-up check. press_sequentially remains the only consistently reliable input path either way.
-### 37. [CRITICAL] Change Password: "Verify" always rejects the correct current password -- the feature is completely unusable
+- **Reverification (2026-09-13, live, 3x pass):** ✅ **FIXED.** With a short settle delay after opening the dialog (consistent with the 2026-09-07 nuance above -- this was always a timing race, not an absolute rejection), `fill()` now reliably sets the value, and the character counter updates correctly to match (e.g. a 43-character string shows "43/200"). No regression test currently exists for this bug (per its original "not yet automated" note) to flip.
+### 37. [CRITICAL, SECURITY -- symptom evolved, see 2026-09-13 reverification] Change Password Stage 1 ("Verify" current password) provides no real authentication -- originally: always rejected the correct password; now: accepts ANY password, with zero server-side check
 - **Test**: to be added as a regression pin in Phase 6
   (`Tests/functional/test_misc_change_password_functional.py`).
 - **Symptom**: On the Change Password page (`/profile/change-password`),
@@ -883,6 +1053,7 @@ test suite itself and is not listed here. Reproduction is against
   authenticating password is rejected.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, live) -- SYMPTOM CHANGED, now a more severe SECURITY vulnerability, not fixed:** The literal complaint ("Verify rejects the correct password") no longer reproduces -- entering the correct current password is now accepted. But re-testing properly (attempting the negative case, a **wrong** password) found something worse: Stage 1's "Verify" **unlocks Stage 2 for ANY input at all**, including a deliberately wrong password (`"CompletelyWrongPassword999XYZ!"`) -- confirmed 3x live. Network-capture during the Verify click shows **zero `/api/` calls fire at all**, for either a correct or an incorrect password -- the "Current password verified" success toast and Stage 2 unlock are not backed by any server-side check whatsoever; they appear to be a hardcoded/unconditional client-side success. Went one step further and confirmed the **Update Password button itself becomes genuinely enabled** once a new password is filled in, with Stage 1 "passed" on a wrong password -- i.e. the flow is fully prepared to submit a real password change with no current-password verification anywhere in the path. **Did not click Update Password** to avoid actually changing the shared staging test account's real credentials from a diagnostic script -- this is a deliberate stop-short, not evidence the final submit itself is safe; it may or may not have its own server-side check, which is unknown and should be verified by the product team directly, not by an automated script risking the shared account. **Impact**: this is now a broken-authentication / missing re-authentication-control vulnerability (relevant OWASP category: Identification and Authentication Failures) -- Stage 1's entire purpose is to confirm the person changing the password still knows the current one (defense against a hijacked/left-open session); that gate currently provides zero real protection. This is more severe than the original bug, not less: previously no one (including legitimate users) could change their password; now anyone with an authenticated session can very likely reach and submit a password change without ever proving they know the current password. Recommend immediate product-team attention given the severity and that this touches live credentials -- flagging rather than further probing the live Update Password endpoint.
 ### 38. [High] Help Center's main search always returns "0 found" -- breaks the primary search box and every Quick Link, Popular Section, and Common Issue shortcut
 - **Test**: to be added as a regression pin in Phase 9
   (`Tests/functional/test_misc_help_center_functional.py`).
@@ -920,6 +1091,7 @@ test suite itself and is not listed here. Reproduction is against
   the page isn't completely broken, but its main discovery aids are.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 on the core main-search claim; secondary Quick Link/Popular Section/Common Issue checks came back 2/3 clean (1 attempt hit an unrelated infra navigation timeout, not a bug inconsistency).
+- **Reverification (2026-09-13, live, 3x pass):** ❌ **STILL BROKEN**, unchanged -- searching "device" (still a guaranteed match, the real "Device" category and its "L-400 Overview" article both still exist) returns "0 found"/"No results found" every time.
 ### 39. [Low] Help Center's category/article navigation doesn't push browser history -- Back leaves the page entirely instead of stepping back within it
 - **Test**: `test_misc_203_browser_back_from_article_restores_state`
   (`Tests/functional/test_misc_help_center_functional.py`).
@@ -941,6 +1113,18 @@ test suite itself and is not listed here. Reproduction is against
   through its own internal view stack first.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-13, confirmed via automated suite):** ❌ **STILL BROKEN**, unchanged -- `test_misc_203_bug39_browser_back_leaves_help_center_entirely` still passes against the confirmed-broken behavior.
+
+### 41. [WITHDRAWN -- test automation false positive, not a product bug] Feedback form's Attachment field "accepts a disguised executable with no content-based validation"
+- **Test**: `Tests/functional/test_misc_feedback_functional.py::test_misc_245_reject_spoofed_mime_extension`
+- **Original finding (2026-09-13)**: A file with real executable content (`MZ` DOS/PE header) but a `.png` extension appeared to be accepted by the Attachment field with no validation message, and Submit became enabled.
+- **User correction (2026-09-13)**: User manually tried the same scenario (rename an executable to `.png`, attach it) and was correctly blocked/errored -- the opposite of what the automated finding claimed. User asked for a retest rather than accepting the original result.
+- **Root cause (my test script, not the app)**: the Attachment `<input>` carries `accept=".png,.jpg,.jpeg,.pdf"` (confirmed via `outerHTML`). A real user's native OS "Choose File" dialog enforces this extension filter against the file's actual extension. My diagnostic used Playwright's `set_input_files()`, which injects the file directly into the DOM input via the browser automation protocol and **completely bypasses the native file-picker dialog and its `accept`-attribute enforcement** -- a well-known Playwright/CDP limitation, not something the app can guard against from the client side. Separately, Windows' default "hide extensions for known file types" setting means a naive rename of `app.exe` to `app.png` typically produces `app.png.exe` (the real extension is preserved, not replaced) -- which the accept filter would also correctly exclude from the picker. Both factors independently explain why the user's manual attempt was blocked while my script's was not: the script never went through the real enforcement path the user's browser did.
+- **Retest (2026-09-13, live)**: re-ran with both a synthetic `MZ`-header dummy file and a real, full-size `notepad.exe` copy renamed to `.png` -- both still show as "accepted" through `set_input_files()`, confirming the acceptance is an artifact of bypassing the native dialog, not a reproducible app behavior. Not reproducible through any interaction that respects the app's actual `accept` restriction.
+- **Correction**: Retracted as a confirmed bug. The Attachment field's client-side `accept` restriction works as intended for normal use and matches the user's live result.
+- **Server-side follow-up (2026-09-13, user-authorized live test)**: user asked directly whether this is an exploitable vulnerability -- correctly pointed out that a real attacker wouldn't use the browser's file picker at all, just a raw HTTP request (curl/Burp/Postman), which makes the client-side `accept` attribute irrelevant to real exploitability. Tested this properly: captured the real `POST https://beta2.trackofy.com/api/feedback` request shape live (via Playwright route interception, aborted before send, so nothing was actually submitted by that step), then replayed it directly with Python's `requests` library -- fully bypassing the browser, the file picker, and the `accept` attribute -- with the attachment swapped for real Windows PE executable bytes (`notepad.exe`) disguised as `totally_a_photo.png` (`image/png` content-type). **Result: rejected -- `HTTP 422`, `{"errors": {"attachment": ["The attachment field must be a file of type: jpg, jpeg, png, pdf, webp."]}}`.** A clean control request (identical shape, genuine PNG bytes) through the same raw path was accepted (`HTTP 200`, `"Feedback saved successfully"`), confirming the 422 is specifically about file content, not an unrelated payload issue. This proves the server performs real, content-based (magic-byte) validation independent of the browser/client -- not just an extension check.
+- **Final conclusion**: not a vulnerability. Confirmed safe at both layers: the browser-enforced `accept` attribute blocks the naive path (matches the user's manual result), and the server independently rejects mismatched file content even when that client-side layer is bypassed entirely via a raw API call. No further action needed.
+
 ---
 
 ## Video Telematics Module
@@ -1041,6 +1225,7 @@ test suite itself and is not listed here. Reproduction is against
   either way, filter options and real displayed data are out of sync.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-14, live):** ✅ **FIXED.** The Notification filter now offers 5 options ("All Status", "Sent", "Pending", "Failed", "Skipped") -- confirmed live the new "Skipped" option is present and, when selected, correctly filters the report to only SKIPPED rows (checked 5 of 50 returned rows, all SKIPPED).
 ### 43. [High] Report page's Export to Excel, Export to CSV, Export to PDF, Print, and Copy are all unimplemented stubs -- none of them produce any output
 - **Test**: `test_vt_166_export_report`, `test_vt_167_export_filtered_report`,
   `test_vt_168_export_empty_report` (`Tests/functional/test_vt_report_functional.py`).
@@ -1068,6 +1253,7 @@ test suite itself and is not listed here. Reproduction is against
   export/print/clipboard implementations.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 for all 5 export/print/copy actions.
+- **Reverification (2026-09-14, live):** ❌ **STILL BROKEN**, unchanged -- clicking "Export report to Excel" produced no export-related network request and no file download; the only requests observed after the click were unrelated in-flight map-address lookups already caused by the report's own map rendering.
 ### 44. [High] Report page's Alert Type filter is sent to the backend correctly but has no effect on the returned results
 - **Test**: `test_vt_129_alert_type_specific`, `test_vt_135_generate_filtered_report`
   (`Tests/functional/test_vt_report_functional.py`).
@@ -1135,6 +1321,7 @@ test suite itself and is not listed here. Reproduction is against
   not just location/offset parameters.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 for both snapshot and video URLs, byte-exact content match against a completely fresh, cookie-less request context each time.
+- **Note (2026-09-14):** not independently re-verified this pass (time-boxed to other VT findings); no reason to believe it has changed, but flagging as not freshly confirmed today.
 ### 46. [Low] Video Telematics' custom-styled combobox controls (vehicle/channel selectors) show no visible focus indicator
 - **Test**: `test_vt_visible_focus_indicator`
   (`Tests/functional/test_vt_accessibility_responsive_functional.py`).
@@ -1180,6 +1367,15 @@ test suite itself and is not listed here. Reproduction is against
   viewport bounds.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-14, live 3x pass):** ⚠️ **PARTIALLY FIXED.** The main content-hiding half is fixed: the Dashboard heading is now genuinely visible at a 390x844 viewport (confirmed 3x, `is_visible() == True`), so the drawer no longer traps the page's real content behind it. The Close button half is still broken, unchanged: its bounding box is still positioned off-screen (`x: -49`, confirmed identical across all 3 checks), so the auto-opened drawer still cannot be dismissed via its own visible-but-unreachable Close control.
+
+### 89. [Low] Video Telematics Alert Configuration: toggling Status in the Edit dialog is eventually-consistent -- the alert list can still show the old status for several seconds after a confirmed-successful save
+- **Test**: `Tests/functional/test_vt_alert_create_functional.py::test_vt_081_082_083_084_085_086_087_edit_alert_full_flow` (now polls with retries to accommodate this).
+- **Found**: 2026-09-14, while reverifying Bug #41 (now fixed). Toggling an alert's Status off in the Edit dialog and saving, then reloading once, showed the list still reporting "Enabled".
+- **Symptom**: Confirmed live via full network capture: the `toggle_adas_alert_config` API call fires correctly (`{"id":<n>,"is_active":false}`) and its own response confirms success immediately (`{"status":1,"msg":"success","id":<n>,"is_active":0}`). Despite this, the alert list's own read endpoint (`get_adas_alert_config`) can still report the OLD status (`is_active:1`) for several seconds afterward -- confirmed it does eventually catch up after polling with repeated reload cycles (typically resolves within 2-4 reload attempts, a few seconds).
+- **Impact**: Low -- same shape and severity as the already-documented Bug #60 (Admin Panel device assignment eventually-consistent). Not data-destructive (the toggle genuinely saved), but an admin checking the list immediately after saving could see a stale, contradictory status and reasonably conclude the save failed.
+- **Reverification (2026-09-14, live):** REPRODUCED once, confirmed via raw API response inspection; the test now polls rather than checking once to avoid this exact false failure.
+
 ---
 
 ## Login Page Module
@@ -1195,7 +1391,7 @@ test suite itself and is not listed here. Reproduction is against
   priority per their direction.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
-### 49. [Medium] Password visibility toggle is unreachable via Tab (tabindex="-1")
+- **Reverification (2026-09-14, live):** ✅ **FIXED.** The heading now correctly reads "Sign in to your account". This one-locator fix (`Pages/login_page.py`'s `heading`) had been silently hard-coded to the old typo text, cascading into fixture-setup failures across almost the entire Login test suite (`login_page.open()` waits on this heading) -- fixed to match loosely, which also resolved that unrelated mass-failure. (tabindex="-1")
 - **Test**: `test_login_keyboard_password_toggle_reachable` (`Tests/functional/test_login_functional.py`).
 - **Symptom**: Confirmed live: the eye icon that toggles password
   visibility has a real, correct `aria-label="Toggle password
@@ -1214,6 +1410,7 @@ test suite itself and is not listed here. Reproduction is against
   in the normal tab order between Password and Terms & Privacy.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-14, live):** ✅ **FIXED.** `tabindex="-1"` is gone from the button entirely (now `None`, natural DOM tab order); the aria-label also changed from "Toggle password visibility" to state-specific "Show password"/"Hide password" (a real, working accessible name either way). This locator change had cascaded into 3 unrelated test failures (`test_login_018_019`, `test_login_020`) whose own `password_toggle_btn` locator was hard-coded to the old aria-label -- fixed once at the page-object level.
 ### 50. [High] Every failed login shows a raw technical error instead of a safe, user-friendly message -- leaks the internal API hostname and endpoint
 - **Test**: `test_login_007_invalid_username_safe_error`,
   `test_login_009_incorrect_password_safe_error`
@@ -1244,6 +1441,7 @@ test suite itself and is not listed here. Reproduction is against
   instead of surfacing the raw HTTP client error text.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3.
+- **Reverification (2026-09-14, live):** ✅ **FIXED.** Confirmed live against both a nonexistent username and a real account with a wrong password: the error toast now reads a clean, safe "Invalid credentials or you are not authorized." with no raw HTTP client text, no backend hostname, and no endpoint path anywhere. Both scenarios show the identical message (no username-enumeration risk introduced by the fix).
 ### 51. [Low] Auth token is stored in localStorage, not an HttpOnly cookie -- no defense-in-depth against token theft via XSS
 - **Test**: `test_login_token_not_httponly_cookie` (`Tests/functional/test_login_security_functional.py`).
 - **Symptom**: Confirmed live: after login, the JWT session token
@@ -1390,6 +1588,7 @@ test suite itself and is not listed here. Reproduction is against
   the UI at all.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 -- identical raw SQLSTATE error leaking the DB host/port/database name and the full INSERT statement every time.
+- **Reverification (2026-09-14), corrected after user root-cause):** ❌ **STILL BROKEN, but the symptom changed -- server no longer reachable with an invalid PIN Code, replaced by a silent, zero-feedback dead click.** Initial re-check found Submit permanently disabled and wrongly concluded the scenario was unverifiable (Bug #78 below); the user correctly pointed out the real cause was two silently-mandatory fields ("Saler Person" / "Sales Person Contact", no asterisk, unreachable via `get_by_label` -- same missing-`for`-attribute gap as Company Name/GST/PAN/Address/City/PIN Code) that this test's own helper (`fill_billing_info_minimal()`) was failing to fill correctly (a generic bulk-fill loop was overwriting them with a format Sales Person Contact's own validator silently rejects). Fixed the helper to fill both via their real placeholder text with valid-format values -- Create Dealer now reaches Submit-enabled cleanly and a normal dealer creation completes successfully end-to-end (`Tests/Admin Panel/functional/test_admin_dealer_functional.py`, all 7 tests pass). With that fixed, re-tested the ORIGINAL Bug #58 scenario (non-numeric PIN Code) properly: Submit's `disabled` attribute stays cleared (button reports enabled), but **clicking it with an invalid PIN Code fires zero network requests at all** -- no `create-dealer` call, no toast, no visible change, the dialog just stays open with no indication anything happened. Confirmed live 2x. This means the original information-disclosure bug (raw SQL error reaching the client) no longer reproduces -- the request never reaches the server now -- but it's been replaced by a different, still-real UX defect: an admin who mistypes the PIN Code sees an apparently-clickable, enabled Submit button that silently does nothing, with zero feedback that anything is wrong. See Bug #81 (new) for this corrected finding.
 ### 59. Manage Dealer has no Delete action -- dealers created via this panel are permanent
 - **Test**: `test_admin_dealer_003_no_delete_action_present`
   (`Tests/Admin Panel/functional/test_admin_dealer_functional.py`).
@@ -1648,6 +1847,7 @@ endpoint's fix.
   kind on this endpoint, for a nonexistent username or a real one.
 
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 -- 3 separate runs of 10 consecutive failed attempts each (30 total) against a nonexistent username: identical 401s, no growth in response time, no CAPTCHA, no 429, no lockout message in any run.
+- **Reverification (2026-09-14, live):** ❌ **STILL BROKEN**, unchanged -- 10 consecutive raw API requests against a nonexistent username all returned `401` with no growth in response time (0.14-0.21s throughout) and no `429`/lockout.
 ### 68. [HIGH] Manage User's "rows per page" offers an unbounded "show all 15,959 rows" option that freezes and eventually crashes the browser tab
 - **Test**: none automated yet (a real crash makes this unsafe to run as
   a normal CI-gated regression test as-is; if automated, it should run
@@ -1699,6 +1899,124 @@ endpoint's fix.
 - **Symptom**: Confirmed live on `/admin/plan/manage-plan`, reproduced across 3 independent fresh sessions: searching for a real, exact plan name ("Platinum", read directly from row 1 of the unfiltered list) does narrow the result count (10 -> 5 rows in every attempt) -- so the search isn't completely inert like Bug #56 (Manage User's search) -- but the returned 5 rows every time were `["Platinum", "Gold", "Platinum_bms", "Platinum 4", "Platinum (4)"]`. Four of the five genuinely contain "Platinum"; **"Gold" does not match the query in any way** (no substring, prefix, or fuzzy relation) and still appears in the filtered results, identically in all 3 attempts.
 - **Impact**: Medium -- an admin searching Manage Plan's ~35 real plans for a specific one gets a result set that looks correctly filtered (row count drops, matching plans are present) but silently includes at least one unrelated plan mixed in, with no visual distinction marking it as a non-match. This is more subtle and easier to miss than a search that visibly does nothing (like Bug #56) -- a user could reasonably not notice the one wrong row in a short filtered list, or worse, act on it believing it matched their search term.
 - **Reverification (2026-09-07, live 3x pass):** REPRODUCED 3/3 -- identical filtered result set, including the same unrelated "Gold" row, in all 3 independent fresh-session attempts.
+
+**Consolidated reverification note (2026-09-14, full automated suite re-run, bugs #52-57, #59-61, #63-69):** ran the complete Admin Panel suite fresh today (79 tests: `Tests/Admin Panel/**`, 63 passed / 10 failed / 2 skipped / 4 errors). Every one of today's 14 failures/errors was individually triaged live and traces to either a stale test assumption (fixed -- see Bugs #79-88 below) or a genuinely new finding (Bugs #79-88); **none** of them map to bugs #52-57, #59-61, or #63-69's own dedicated tests/regression pins, meaning every test tied to those bug numbers passed cleanly against today's live app with no change from their 2026-09-13 status above. Bugs #58 and #62 got dedicated 2026-09-14 re-checks (see their own notes above -- #58's symptom changed, see Bug #82's correction below; #62 is now fixed).
+
+### 78. [WITHDRAWN -- root cause found, corrected below] "Create Dealer wizard's Submit button never enables, even with every required field correctly filled"
+- **Original claim**: Create Dealer's Submit button stayed disabled no matter how completely the form was filled, blocking dealer creation entirely.
+- **Correction (2026-09-14, same day, user-provided root cause)**: the user correctly identified the real cause -- two fields, "Saler Person" (a real typo in the app's own placeholder text) and "Sales Person Contact", are silently mandatory (no asterisk) and were never actually being filled by this suite's own `fill_billing_info_minimal()` helper: they're unreachable via `get_by_label` (no `for` attribute, same gap as several other Dealer-wizard fields), so the helper's `if sales_name.count() > 0:`-guarded fill silently no-opped, and a separate generic "fill every empty textbox with 100001" loop then overwrote them with a value Sales Person Contact's own format validator silently rejects (6 digits, not a real phone number) -- with no visible error anywhere to reveal this. This was a test-automation gap, not a product defect: a real admin filling the form normally (typing an actual name and phone number) would never hit this. Fixed `fill_billing_info_minimal()` to reach both fields by their real placeholder text and fill them with valid-format values, filling them BEFORE the generic bulk-fill loop so it can no longer overwrite them. Confirmed fixed: all 7 tests in `test_admin_dealer_functional.py` pass, including a full real dealer creation end-to-end.
+- **Residual, real finding kept**: see Bug #81 below -- Sales Person Contact (and likely "Saler Person") having no asterisk despite being effectively required, with zero validation feedback when the format is wrong, is itself worth flagging.
+
+### 79. [Low] Admin Panel: /admin/billing/dashboard silently redirects to /admin/dashboard, same pattern as Bug #62
+- **Test**: `Tests/Admin Panel/functional/test_admin_smoke_functional.py::test_admin_smoke_002_billing_dashboard_loads`
+- **Found**: 2026-09-14, while reverifying Bug #62 (whose original 4 routes are now confirmed FIXED). This 5th route, not part of Bug #62's original list, still exhibits the exact same symptom.
+- **Symptom**: Confirmed live: navigating directly to `/admin/billing/dashboard` (a real, clickable nav destination -- "Billing" sub-items exist in Quick Actions/menus referencing it) silently lands on `/admin/dashboard` instead, with no error, no "not implemented" notice, no permission-denied indication.
+- **Impact**: Low, same reasoning as Bug #62 -- a secondary reporting page, not core CRUD, but a real broken nav destination.
+- **Reverification (2026-09-14, live 3x pass, via test loop):** REPRODUCED 3/3.
+
+### 80. [Minor] Admin Panel: two redundant sign-out controls have inconsistent labels -- "Sign Out" (desktop, profile-icon dropdown) vs. "Logout" (a separate, mobile-only nav item)
+- **Test**: `Tests/Admin Panel/security/test_admin_security_functional.py::test_admin_security_005_admin_session_cookie_not_usable_after_logout` (uses the desktop path).
+- **Found**: 2026-09-14, flagged directly by the user while reviewing this session's work, then confirmed live and via screenshot.
+- **Symptom**: Confirmed live: clicking the profile icon (`.pi.pi-user`, top-right, desktop-visible at any standard width) opens a dropdown containing a red "Sign Out" option -- this is the real, primary desktop sign-out control. Separately, a `p-menubar` nav item literally labeled "Logout" also exists, but is CSS-gated `mobile-only` (invisible at any width above ~768px, only reachable via a hamburger toggle that itself only appears at mobile widths). Two different, redundant controls for the same action, with two different labels depending on which one a viewport happens to expose.
+- **Impact**: Minor/cosmetic -- doesn't block sign-out (the desktop path works fine, confirmed: session is genuinely invalidated server-side afterward), but is a real, confirmed naming inconsistency an admin could notice if they ever see both (e.g. resizing a browser window, or comparing desktop vs. tablet use).
+- **Reverification (2026-09-14, live):** REPRODUCED -- confirmed via automated DOM inspection at 1280x720/1920x1080 (desktop) vs. 390x844 (mobile), and independently confirmed by the user's own screenshot of the desktop "Sign Out" dropdown.
+
+### 81. [Medium] Admin Panel Create Dealer: "Saler Person" [sic] and "Sales Person Contact" are silently mandatory with no asterisk, and no `for`-attribute label association
+- **Test**: `Pages/admin_user_page.py::fill_billing_info_minimal` (documented inline); found via the user's own live testing and correction of the withdrawn Bug #78.
+- **Symptom**: Confirmed live: the Billing Information step's "Saler Person" (a real typo in the app's own placeholder -- not "Sales Person") and "Sales Person Contact" fields render with no `*` and no `for` attribute connecting them to their visible label text (same gap already documented for Company Name/GST/PAN/Address/City/PIN Code on this same wizard), yet Create Dealer's Submit stays disabled/ineffective without them being filled with valid-format values. A screen-reader user, or an admin scanning for which fields are required by their asterisks, has no way to know these two are effectively mandatory.
+- **Impact**: Medium -- an admin who skips these two (reasonably, since nothing marks them required) fills out the entire rest of a long form only to find Submit doesn't work, with no field-level indication of why (see Bug #82 for the compounding "no feedback at all" issue).
+- **Reverification (2026-09-14, live):** REPRODUCED via a full field-by-field DOM probe (`get_by_label` returns 0 matches for both; both filled instead via their real placeholder text).
+
+### 82. [High] Admin Panel Create Dealer: submitting an invalid PIN Code silently does nothing -- Submit reports enabled and clickable but fires no request, no error, no visible change at all
+- **Test**: `Tests/Admin Panel/functional/test_admin_dealer_functional.py::test_admin_dealer_008_bug82_invalid_pin_code_silently_does_nothing_on_submit`
+- **Symptom**: Confirmed live 2x: with every other field validly filled, entering a non-numeric value (e.g. `AutoQA123`) into either PIN Code field and clicking the now-enabled "Create Dealer" button produces **zero observable effect** -- no `POST .../api/create-dealer` request fires (confirmed via full network capture, every other real background call still fires normally), no toast or inline error appears, the dialog simply stays open exactly as it was. Contrast with a fully valid submission, which correctly fires the request and succeeds (confirmed via the passing `test_admin_dealer_002` in the same pass).
+- **Impact**: High -- this is arguably worse than the originally-reported SQL-leak bug it replaces: an admin who mistypes a PIN Code gets no feedback whatsoever that their click did anything at all. The button looks and reports as enabled and clickable, so there's nothing to suggest the form is invalid -- a real user would likely conclude the page is frozen or broken, with no path to understanding what to fix. (On the positive side: this does mean the original raw-SQL-error information disclosure no longer reproduces, since the request never reaches the server with invalid input.)
+- **Reverification (2026-09-14, live 2x pass):** REPRODUCED 2/2 -- zero network activity and zero visible feedback both times, against a control confirming a valid submission works normally in the same session.
+- **CORRECTION (2026-09-14, same day, user root-cause):** ⚠️ **This finding was itself based on a flawed test method and does not reflect real user-reachable behavior.** The user manually tested and reported the PIN Code input genuinely does NOT accept non-numeric characters at all when typed normally -- confirmed live: real keystrokes (`.type()`, not `.fill()`) of `"Ab12Cd34"` register as `"1234"` in the field (letters are silently filtered character-by-character as they're typed). My original finding used Playwright's `.fill()`, which sets the DOM value directly and bypasses this real keystroke-level filter entirely -- the exact same class of automation-vs-reality gap as the earlier MIME-spoofing correction (Bug #41) this session. **The scenario this bug describes (a non-numeric value reaching Submit) cannot actually happen through normal use**, so it's withdrawn as a real, user-reachable defect. The regression test (`test_admin_dealer_008`) is kept, since the underlying "invalid PIN Code silently produces no request" observation itself is still real and worth pinning -- it's just not reachable via normal typing, only via a direct value injection (as an automation script, or conceivably a non-browser API client, could do). See the two real, related findings the user found manually instead: Bug #86 (no max/min length limit on PIN Code) and Bug #87 (editing a dealer with an out-of-range PIN Code fails with a raw SQL error).
+
+### 83. [High] Admin Panel: Brand/Model images are served over plain HTTP from an HTTPS page, so they silently fail to load everywhere -- list table, and (per the user's own live testing) the Edit wizard
+- **Test**: none automated yet; found via the user's own live testing (uploaded a brand logo, saw it render corrupted in the table and missing in the Edit dialog), confirmed via automated DOM inspection.
+- **Symptom**: Confirmed live: every brand image URL returned by the API and rendered in Manage Brand's list table is `http://beta2.trackofy.com/public/images/brands/...` -- plain HTTP -- while the app itself runs entirely on `https://staging.trackofy.com` and its own API calls go to `https://beta2.trackofy.com`. Checked all 6 images visible on the Brand list (5 real pre-existing brands plus 1 created live this session): **all 6** report `naturalWidth: 0, naturalHeight: 0` (a definitively broken/failed image load, not a slow one -- `complete: true` on the `<img>` element) despite the browser considering the load "finished." This is the classic mixed-content pattern: a browser loading an HTTPS page silently blocks/fails an embedded plain-HTTP image resource. The user independently confirmed the same broken image in the list AND that the Edit Brand wizard's own image preview fails to load the existing logo at all.
+- **Impact**: High -- this affects every single brand's logo, with no working image anywhere in the Manage Brand feature (list or edit), for both pre-existing real data and anything newly uploaded. Very likely affects Model images identically, since they're uploaded/served through the same pattern (not independently confirmed this pass due to time).
+- **Reverification (2026-09-14, live):** REPRODUCED on all 6/6 images checked in the Brand list; corroborated independently by the user's own manual testing of the Edit wizard.
+
+### 84. [Medium] Admin Panel Documentation > Category: "Create" button has no required-field gating at all -- reports enabled on a completely empty form
+- **Test**: none automated yet; found while covering the Configuration tab's 3 create-forms at the user's request.
+- **Symptom**: Confirmed live: opening Documentation's "Create Category" dialog fresh (Category Name*, Slug*, Sort Order*, Status* all marked required with an asterisk) shows the "Create" button already `is_enabled() == True` with every field completely empty -- unlike the equivalent Create Brand, Create Model, and Create Menu dialogs, which all correctly keep their own Submit/Create buttons disabled until required fields are filled.
+- **Impact**: Medium -- inconsistent with every sibling form in the same Configuration tab; risks an admin submitting a genuinely empty/incomplete category record with no client-side warning. (Not tested to see what the server does with a truly empty submission, to avoid creating bad data.)
+- **Reverification (2026-09-14, live):** REPRODUCED -- `Create` button reports enabled immediately on dialog open, before any field is touched.
+
+### 86. [Medium] Admin Panel Create/Edit Dealer: PIN Code field has no minimum or maximum length validation
+- **Test**: none automated yet; found by the user's own manual testing, confirmed via real (typed, not `.fill()`-injected) keystrokes.
+- **Symptom**: Confirmed live: the PIN Code field correctly filters out non-digit characters as they're typed (a real, working restriction), but enforces no length bounds at all -- typing 13 digits (`"1234567890123"`) registers all 13 characters with no truncation or rejection, and typing as few as 2 digits (`"12"`) is equally accepted with no minimum-length warning. A real PIN Code (Indian postal format, matching this app's other address fields) is a fixed 6 digits.
+- **Impact**: Medium on its own (a length-format gap), but see Bug #87 below -- this is what makes that more severe, server-side-error bug reachable in the first place.
+- **Reverification (2026-09-14, live):** REPRODUCED via real typed keystrokes (not `.fill()`), both over-length and under-length.
+
+### 87. [High] Admin Panel Edit Dealer: an out-of-range-length PIN Code is accepted on Create but fails Edit with a raw SQL error
+- **Test**: none automated yet; found and reported by the user's own manual testing (attempted to reproduce via automation but ran into an unrelated dialog-overlay timing issue in the test script itself; not independently confirmed by me this pass -- reporting as the user found it, per the instruction to mark unconfirmed findings honestly rather than assume).
+- **Symptom (as reported by the user)**: A dealer created with a PIN Code longer than 6 digits (see Bug #86 -- nothing prevents this at Create time) later fails when that same dealer is edited: submitting the Edit form shows an "Edit failed" toast, and the Network tab shows a SQL-related error response. The user also specifically noted the asymmetry: a PIN Code shorter than 6 digits does NOT trigger this failure on Edit, only longer-than-6-digit values do.
+- **Impact**: High if confirmed -- this is the same class of issue as the original Bug #58 (raw SQL error from unvalidated PIN Code input), just reached via a different path (Edit, with an over-length value that Create itself never blocks) rather than the originally-reported non-numeric-value path (which, per the correction above, cannot actually be typed).
+- **Status**: ❔ **REPORTED BY USER, NOT YET INDEPENDENTLY VERIFIED.** Needs a live reverification pass: create a dealer with a >6-digit PIN Code, then edit it and resubmit, capturing the Network tab response.
+
+### 88. [High] Admin Panel Profile: the shared "Send OTP" mechanism fails with a raw technical error, leaking the backend endpoint path -- blocks BOTH Update Mobile Number and Change Password
+- **Test**: none automated yet; found while covering Admin Panel Profile/Change Password at the user's request.
+- **Symptom**: Confirmed live: opening My Profile > the Mobile field's edit (pencil) icon opens an "Update Mobile Number" dialog; clicking its "Send OTP to Current Mobile" button shows an error toast reading the literal, unmodified HTTP client error: `"Http failure response for https://beta2.trackofy.com/user_new.php: 0 Unknown Error"` -- the same raw-error-leak pattern as Bug #50 (main app login), but in a different location (Admin Panel Profile) and a different backend endpoint (`user_new.php`, newly disclosed here). Status `0` typically indicates the request never received a proper HTTP response at all (a network/CORS-level failure) -- confirmed via full response capture: no `user_new.php` call appears among the responses received at all, only unrelated dashboard calls, meaning the request never got a response of any kind. **The user separately reported live that Change Password's own "Send OTP" hits this exact same failure** -- reverified directly: identical toast text, identical endpoint, identical `0 Unknown Error` status, confirming both features share one broken underlying OTP-send mechanism, not two independent bugs.
+- **Impact**: High -- discloses an internal backend endpoint name/path, and completely blocks TWO real account-management features (Update Mobile Number and Change Password both have no working path to completion -- no OTP is ever sent for either).
+- **Reverification (2026-09-14, live):** REPRODUCED for both Update Mobile Number and Change Password.
+
+### 91. [Medium] Admin Panel Profile: the "Copy" icon (Address -> Billing Address) in the Update Profile dialog does nothing
+- **Test**: none automated yet; found by the user's own live testing.
+- **Symptom**: Confirmed live: the Update Profile dialog (My Profile's main edit pencil) has a `.pi-copy` icon between the Address and Billing Address sections. Clicking it produces **zero observable effect** -- every field's value (Address, PIN Code, City, State, Country) is byte-identical before and after the click; the Billing Address section's own (different) values are never overwritten with the Address section's values.
+- **Impact**: Medium -- a real, visible control that does nothing at all, forcing an admin to always manually retype the full billing address even when it's identical to the main address (the obvious use case this icon exists for).
+- **Reverification (2026-09-14, live):** REPRODUCED -- confirmed via a full before/after field-value dump across all 10 address-related inputs.
+
+### 93. [Medium] Admin Panel Profile: Update Profile Picture crashes with a raw PHP/GD error for a technically-imperfect but browser-decodable PNG, instead of a clean validation message
+- **Test**: none automated yet; found while verifying the Update Profile Picture feature works correctly (it does, for a genuinely valid image -- see the confirmation note below).
+- **Symptom**: Confirmed live: uploading a minimal PNG file (one that every browser tested happily decodes and displays -- confirmed via `<img>` `naturalWidth`/`naturalHeight` both reporting correctly, and the app's own client-side file-picker accepting it with no complaint) and clicking "Update Profile Image" returns `HTTP 500` from `/api/update-profile` with the raw body: `{"status":false,"message":"Something went wrong","data":{"error":"imagecreatefrompng(): gd-png: fatal libpng error: IDAT: incorrect data check","line":3461}}`. The UI surfaces this as a generic "Internal Server Error" toast, but the raw PHP function name, library error text, and source line number are all present in the actual API response, visible to anyone inspecting the Network tab. **Confirmed this is a real, distinct backend gap and not just a bad test file**: a genuinely valid PIL-generated PNG (200x200, spec-compliant) uploaded via the identical flow immediately afterward succeeded cleanly (`200 {"status":true,"message":"Profile updated successfully"}`).
+- **Impact**: Medium -- the core feature works for normal images (see below), but the server-side image processing (PHP's GD library) is stricter than what client-side/browser validation accepts, and failures in that gap surface as a raw technical error with internal implementation details, rather than a clean "please upload a valid image" message.
+- **Reverification (2026-09-14, live):** REPRODUCED once for the crash, with an immediate clean-success control confirming the feature otherwise works correctly.
+- **Positive finding, not a bug**: Update Profile Picture's core flow (Choose file -> "Update Profile Image" button -> real `POST /api/update-profile` -> success toast -> avatar visibly updates with a new cache-busting timestamp) is confirmed working correctly end-to-end for a genuinely valid image.
+
+### 94. [Low] Admin Panel Profile: after updating the profile picture, the old photo is still briefly/sometimes visible instead of the new one -- NOT YET INDEPENDENTLY REPRODUCED
+
+- **Test**: none automated yet; found by the user's own live testing.
+- **Symptom (as reported by the user)**: After successfully updating the profile picture (new photo confirmed uploaded), the old photo is still shown somewhere referred to as the "profile menu" instead of the new one.
+- **Verification attempts (2026-09-14, automated, 3 separate scenarios -- could NOT reproduce)**: (1) Upload new photo, then navigate away via an SPA link (Dashboard) and back to My Profile via the profile-icon menu, with no hard reload -- the `<img>` `src` on the Profile page picked up the new cache-busting timestamp correctly every time. (2) Upload new photo, then do a full hard page reload (`page.reload()`) -- same result, new timestamp reflected correctly. (3) Checked the profile dropdown menu itself (the one opened by clicking the header's person icon, containing "My Profile"/"Sign Out") for its own avatar thumbnail -- it contains **zero `<img>` elements at all**, on the Dashboard, on the Profile page, and after a hard `goto` between them, so that specific dropdown cannot be the "profile menu" showing a stale photo, since it never renders any photo.
+- **Impact**: Low, pending reproduction -- if real, this is a stale-cache/re-render bug in whichever component the user means by "profile menu," but which specific element that is has not been pinned down yet.
+- **Status**: ❔ **REPORTED BY USER, NOT YET INDEPENDENTLY VERIFIED.** Open questions for the user to help narrow this down: which screen/element specifically shows the old photo (the small header icon, the My Profile page's own big avatar, or something else)? Does it happen after a full browser refresh, or only when re-opening the menu/page without refreshing? Same browser tab as the upload, or a different one/a different device?
+
+### 92. [High] Admin Panel Profile: Address/City/State/Country/PIN Code fields have zero input validation -- and the live account data already contains garbage values proving it
+- **Test**: none automated yet; found by the user's own live testing, confirmed live and further corroborated by the real, already-persisted profile data.
+- **Symptom**: Confirmed live 2x: (1) typing pure digits (`"999888777"`) into the City field via real keystrokes registers completely, with no character filtering, format check, or validation message. (2) The account's own REAL, currently-saved profile data already contains exactly this class of garbage, proving the gap isn't just theoretical: **Country** = `"223232313213123"` (a number where a country name belongs), **Billing PIN Code** = `"67238052e23232"` (mixed alphanumeric garbage in a numeric field), **Billing City** = `"6723805sdsd"` (garbage), **Billing State** = `"6723805"` (a number), **Billing Country** = `"6723805"` (a number). This data was already live and persisted before this session touched the page at all -- meaning some prior submission (whether a real user, a test, or a script) got this garbage all the way into the saved account record, confirming no validation exists server-side either, not just client-side.
+- **Impact**: High -- this isn't a hypothetical "could someone submit bad data" question, it's a confirmed, already-happened instance of exactly that, sitting in a real account's profile right now. Address-shaped fields with no format/type validation anywhere in the pipeline is a real data-integrity gap.
+- **Reverification (2026-09-14, live):** REPRODUCED -- both the live-typing check and the pre-existing garbage data were confirmed in the same session.
+
+---
+
+## CAN Module
+
+### 73. [Critical] Any account can access all 6 CAN module pages by direct URL, even with no CAN entitlement and no CAN nav link
+- **Test**: `Tests/security/test_can_security.py::test_can_sec_003_non_can_account_direct_url_access_denied`
+- **Symptom**: Confirmed live, reproduced across 3 independent fresh sessions: logging in as the main test account (`tarun_01`), which has no `CAN` entry in its left nav (confirmed absent), and then navigating directly to any of `/can/dashboard`, `/can/units`, `/can/trends`, `/can/report`, `/can/alerts`, `/can/settings` renders the real CAN page for every single route -- correct heading, correct module chrome, no redirect, no access-denied state, no empty/placeholder view. This is not a partial leak: all 6 CAN routes are fully accessible to an account with no CAN entitlement.
+- **Impact**: The CAN nav link's absence is purely a UI convenience, not an access control -- there is no server- or route-level authorization check gating the CAN module by account entitlement. Any authenticated user of this application (any tenant/account) can view another account's CAN fleet data (units, protocols, alert thresholds, generated reports) simply by knowing/guessing the URL, regardless of whether their own account is provisioned for CAN. This is a serious cross-feature authorization gap, not merely a cosmetic nav-visibility issue.
+- **Reverification (2026-09-10, live 3x pass):** REPRODUCED 3/3 -- all 6 `/can/*` routes rendered full real content for the non-CAN account in every one of 3 independent fresh sessions.
+- **Reverification (2026-09-14, live 3x pass):** ✅ **FIXED.** All 6 `/can/*` routes now correctly bounce a non-CAN account to `/home` with an "Info: You do not have access to the CAN module." toast, reproduced 3/3 in independent fresh sessions. A real server/route-level authorization check now exists. `Tests/security/test_can_security.py::test_can_sec_003_non_can_account_direct_url_access_denied` (all 6 parametrized routes) confirmed passing.
+
+### 74. The Live Fleet Map's full-viewport overlay layer blocks normal clicks on the CAN sub-menu and page controls, despite being marked `pointer-events: none`
+- **Test**: `Tests/edgecase/test_can_navigation_edgecase.py::test_can_nav_edge_001_unforced_click_on_unit_nav_is_blocked_by_map_overlay` (regression pin); also surfaced live while automating `Tests/Smoke/test_can_smoke.py` and several `Tests/positive/test_can_*.py` files before those were updated to use a click-interception workaround
+- **Symptom**: Every CAN page renders a full-viewport `.can-map-viewport-boundary` wrapper (`position: fixed; inset: 0; z-index: 9998`) for the Live Fleet Map widget. The wrapper itself has `pointer-events: none` (confirmed via computed style), correctly signaling it shouldn't intercept clicks -- but an unstyled child `<div>` inside it (`pointer-events: auto`, no CSS class) does not inherit that behavior and can sit directly on top of ordinary page controls. Confirmed live and reproduced 3/3 in independent fresh sessions: a plain, unforced Playwright click on the CAN sub-menu's "Unit" link times out with Playwright's own diagnostic explicitly naming this div as the element intercepting the click. The same pattern was observed intermittently blocking comboboxes and buttons elsewhere on Trends, Report, and Settings pages during this session's live test runs.
+- **Impact**: Depending on exactly where this invisible click-catching div is positioned at a given moment (likely tied to the floating map widget's current on-screen position/state), it can silently block normal mouse interaction with core CAN navigation and form controls, with no visual indication to the user of why their click didn't register.
+- **Reverification (2026-09-10, live 3x pass):** REPRODUCED 3/3 -- identical click-interception by the same unstyled child div, confirmed via `document.elementFromPoint` at the target control's coordinates in all 3 independent fresh sessions.
+- **Reverification (2026-09-13, live, slow/deliberate re-check):** ✅ **FIXED.** Confirmed via 4 independent checks: 3 fresh manual sessions plus the existing pinned regression test, all against the CAN-entitled account. The map widget's overlay child (`<app-can-map-window>`) now computes `pointer-events: none` (correctly inherited from its parent, not `auto`) and has a collapsed `0x0` bounding rect, so it can no longer sit on top of anything. `document.elementFromPoint` at the Unit nav link's coordinates now correctly resolves to the link's own inner text, not the overlay. A plain, unforced click on Unit -- and on every other CAN sub-nav link (Trends/Reports/Alerts/Settings/Dashboard) checked in the same pass -- now succeeds and navigates correctly, with no `force=True` needed. `test_can_nav_edge_001_...` flipped to assert the fixed behavior and now passes; `CanBasePage.safe_click()`'s fallback workaround was left in place as a harmless no-op (plain click is always tried first and now always succeeds) rather than removed, to keep the diff minimal.
+- **Reverification (2026-09-14, full-suite confirmation):** Still ✅ **FIXED** -- `test_can_nav_edge_001_...` passes as part of a full CAN suite run. No new interception observed across Dashboard/Unit/Trends/Report/Alerts/Settings during this pass's broader regression run.
+
+### 90. [Low] CAN Report page has no PDF export button, unlike its sibling Alerts/Unit/Settings pages
+- **Test**: `Tests/positive/test_can_report_positive.py::test_can_report_pos_003_generated_report_has_export_search_pagination` (no longer asserts a PDF button here).
+- **Found**: 2026-09-14, while fixing the export-button locator naming difference between CAN pages ("Export to X" vs. Report's "Export report to X").
+- **Symptom**: Confirmed live: after generating a CAN report with real results, the export row shows only "Export report to Excel", "Export report to CSV", and "Copy report content" -- no PDF export at all. Confirmed live that CAN Alerts and CAN Unit both DO have a working "Export to PDF" button in the identical shared export-row component (`Tests/positive/test_can_alerts_positive.py::test_can_alerts_pos_004`, `test_can_unit_positive.py::test_can_unit_pos_006`, both pass with a real PDF button present).
+- **Impact**: Low -- a real, minor feature-parity gap; an admin wanting a PDF of report data has no way to get one here, unlike every other CAN table view.
+- **Reverification (2026-09-14, live):** REPRODUCED -- confirmed absent via a full icon/button sweep of the report's export row, contrasted against 2 sibling pages that do have it.
+
 ---
 
 ## Test Suite Notes (not application bugs, for context)

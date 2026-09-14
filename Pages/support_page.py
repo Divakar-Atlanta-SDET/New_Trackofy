@@ -30,6 +30,19 @@ class SupportPage(BasePage):
         self.page.goto(f"{base_url}/profile/support")
         self.expect_path("/profile/support")
         self.wait_for_visible(self.table)
+        # Confirmed live (2026-09-13): the table can render a "No support
+        # tickets found" placeholder for 5-8s before the real ticket data
+        # arrives (a genuine slow load, not a permanent empty state) -- a
+        # fixed 2s wait isn't long enough and left tests reading the
+        # placeholder as final. Wait for it to be replaced by a real row,
+        # falling back to the fixed settle time if the account genuinely
+        # has zero tickets (the placeholder would never disappear then).
+        try:
+            self.table.locator("tbody tr").filter(
+                has_not_text=re.compile(r"no .*(found|records|tickets)", re.I)
+            ).first.wait_for(state="visible", timeout=10000)
+        except Exception:
+            pass
         self.page.wait_for_timeout(2000)
 
     def ticket_count(self) -> int:
@@ -69,9 +82,16 @@ class SupportPage(BasePage):
         self.page.wait_for_url(re.compile(r".*/profile/support/ticket-history/.+"), timeout=self.DEFAULT_TIMEOUT_MS)
         self.wait_until_ready()
         # Confirmed live: this detail page's real data (Status/Priority/
-        # Assigned To/etc.) populates a couple of seconds after the shell
-        # renders -- reading immediately shows placeholder dashes.
-        self.page.wait_for_timeout(3000)
+        # Assigned To/etc.) populates some time after the shell renders --
+        # reading immediately shows placeholder dashes ("STATUS\n----").
+        # A fixed wait was measured too short under load (matching the
+        # same slow-load pattern fixed in open() above) -- poll for the
+        # placeholder pattern to be gone from the page text.
+        for _ in range(20):
+            if "STATUS\n----" not in self.page.inner_text("body"):
+                break
+            self.page.wait_for_timeout(500)
+        self.page.wait_for_timeout(1000)
 
     def search(self, query: str):
         self.search_input.fill(query)

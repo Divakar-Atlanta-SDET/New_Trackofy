@@ -113,6 +113,11 @@ def test_vt_179_map_api_failure(vt_dashboard_page):
     page.route(re.compile(r".*maps\.gstatic\.com.*"), lambda route: route.abort("failed"))
     try:
         page.reload()
+        # NEW-1: a raw reload bounces to /home regardless of the map-API
+        # mock above -- reopen (nav-bar re-entry) to actually reach
+        # Dashboard again, so the map-failure simulation is what's under
+        # test here, not NEW-1 itself.
+        vt_dashboard_page.reopen()
         page.wait_for_timeout(3000)
         assert vt_dashboard_page.heading.is_visible(), "Expected the rest of the Dashboard to remain functional despite a map failure"
     finally:

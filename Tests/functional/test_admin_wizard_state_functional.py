@@ -146,7 +146,7 @@ def test_adm_056_double_click_submit_creates_only_one_user(administrator_page):
             pass  # expected once the dialog closes after the first click registers
         admin.page.wait_for_timeout(2000)
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         after_count = int(admin.user_count_text() or "0")

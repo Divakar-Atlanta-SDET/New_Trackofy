@@ -69,43 +69,62 @@ class SettingsSideMenu(BasePage):
             section_btn.click()
             self.wait_for_loading_to_finish()
 
-    def _goto(self, path: str):
-        # Direct navigation, not click-through-the-accordion: confirmed live
-        # that re-clicking an already-expanded section button collapses it
-        # instead of leaving it open, which made the click-chain silently
-        # strand tests on the wrong page (aria-expanded state was not
-        # reliably re-checked in time). Real URLs confirmed per-page below.
-        # The accordion click/expand behavior itself is covered separately
-        # in test_settings_nav_functional.py using these same locators.
-        if not self.page.url.endswith(path):
-            # Re-navigating to the URL already loaded (e.g. /settings ->
-            # /settings/driver, the default route) triggers a real full-page
-            # reload that this Angular app doesn't handle cleanly -- confirmed
-            # live, it left the heading unrenderable well past a 15s wait.
-            self.page.goto(path)
+    def _ensure_in_settings_module(self):
+        # A raw page.reload() (used by tests that need a real reload, via
+        # the reopen() callable this class's fixtures attach) bounces all
+        # the way to /home per NEW-1 -- not just off the current Settings
+        # sub-page, but out of the module entirely, so the side menu these
+        # accordion buttons live in isn't even rendered. Confirmed live
+        # (2026-09-13). Re-enter via the nav-bar link whenever that's
+        # happened, mirroring ReportsPage's equivalent guard.
+        if "/settings" in self.page.url:
+            return
+        from components.navbar import Navbar
+        Navbar(self.page).go_to("Settings")
+        self.wait_for_visible(self.driver_management_btn)
+
+    def _open_leaf(self, leaf_btn, path: str, parent_btn=None):
+        # Click-through-the-accordion, not page.goto(path): confirmed live
+        # (2026-09-13) that a raw goto() to ANY /settings/* path -- even the
+        # bare /settings landing route -- hits NEW-1 (retest_bug_report.md,
+        # app-wide SPA routing defect) and silently bounces to /home. Every
+        # Settings sub-page must be reached via a real in-app click instead.
+        if self.page.url.endswith(path):
+            return
+        self._ensure_in_settings_module()
+        if parent_btn is not None:
+            self._ensure_expanded(parent_btn)
+        leaf_btn.click()
+        self.expect_path(path)
         self.wait_for_loading_to_finish()
 
     def open_driver(self):
-        self._goto("/settings/driver")
+        self._open_leaf(self.driver_btn, "/settings/driver", self.driver_management_btn)
 
     def open_driver_performance(self):
-        self._goto("/settings/driver-performance")
+        self._open_leaf(self.driver_performance_btn, "/settings/driver-performance", self.driver_management_btn)
 
     def open_vehicle_group(self):
-        self._goto("/settings/group")
+        self._open_leaf(self.vehicle_group_btn, "/settings/group", self.vehicle_management_btn)
 
     def open_vehicle_performance(self):
-        self._goto("/settings/vehicle-performance")
+        self._open_leaf(self.vehicle_performance_btn, "/settings/vehicle-performance", self.vehicle_management_btn)
 
     def open_location_control(self):
-        self._goto("/settings/location")
+        self._open_leaf(self.location_control_btn, "/settings/location", self.vehicle_management_btn)
 
     def open_alert(self, alert_type: str):
         """`alert_type` must be one of ALERT_TYPES (e.g. 'Speed Alert')."""
-        self._goto(f"/settings/alert/{ALERT_URL_SLUGS[alert_type]}")
+        self._open_leaf(
+            self.alert_type_buttons[alert_type],
+            f"/settings/alert/{ALERT_URL_SLUGS[alert_type]}",
+            self.alert_configuration_btn,
+        )
 
     def open_route_management(self):
-        self._goto("/settings/route")
+        # Route Management has no sub-items -- it's a direct-nav leaf button
+        # itself (no aria-expanded, confirmed live), not an accordion parent.
+        self._open_leaf(self.route_management_btn, "/settings/route")
 
     def search_settings(self, query: str):
         self.search_input.fill(query)
@@ -178,7 +197,13 @@ class SettingsListPage(BasePage):
             # multi-dialog flow (confirmed live, cause not fully pinned down)
             # -- a reload is the reliable way back to a clean list state,
             # which is all callers actually need this for (usually teardown).
+            # A raw reload() hits NEW-1 and bounces to /home -- recover via
+            # the fixture's reopen() (same workaround used everywhere else)
+            # if this page has one attached.
             self.page.reload()
+            reopen = getattr(self, "reopen", None)
+            if reopen is not None:
+                reopen()
             self.wait_for_loading_to_finish()
             self.wait_for_visible(self.search.search_input)
             return

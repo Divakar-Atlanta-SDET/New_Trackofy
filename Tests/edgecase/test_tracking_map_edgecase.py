@@ -8,8 +8,14 @@ def test_trk_map_008_map_service_unavailable(tracking):
     """TRK-MAP-008: Edge Case - Map service/network unavailable is handled without breaking the form."""
     tracking.page.route("**/maps.googleapis.com/**", lambda route: route.abort())
     tracking.page.route("**/maps.gstatic.com/**", lambda route: route.abort())
+    # A plain page.reload() lands on /home, not back on /tracking --
+    # confirmed live, app-wide SPA routing defect (retest_bug_report.md,
+    # NEW-1), unrelated to this test's actual intent. Still perform a real
+    # reload (so the map-failure routes above take effect on a fresh page
+    # load) but recover via the nav-link workaround afterward instead of
+    # asserting on the URL a reload doesn't actually land on.
     tracking.page.reload()
-    tracking.wait_for_tracking_page_ready()
+    tracking.open_tracking_page()
     tracking.page.wait_for_timeout(2000)
     # The tracking form itself must stay usable even if map tiles fail to load.
     expect(tracking.split_screen_select).to_be_visible()

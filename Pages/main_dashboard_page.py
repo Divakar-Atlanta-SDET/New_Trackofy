@@ -13,6 +13,15 @@ class MainDashboardPage(BasePage):
 
         # Header and Top Controls
         self.dashboard_heading = page.get_by_role("heading", name="Dashboard", exact=True)
+        # Confirmed live 2026-09-11: a direct page.goto("/dashboard/graphical")
+        # (fresh navigation OR a plain in-place refresh while already on the
+        # page) silently bounces back to /home instead of loading the
+        # Dashboard -- the SPA does not support deep-linking/refresh on this
+        # route (see retest_bug_report.md, "Dashboard deep-link/refresh"). The
+        # only reliable way to reach the page is a real in-app navigation via
+        # this header link, so open_graphical_dashboard() below uses it
+        # instead of goto().
+        self.dashboard_nav_link = page.get_by_role("link", name="Dashboard", exact=True)
         self.graphical_view_button = page.get_by_role("button", name=re.compile(r"Graphical", re.I)).first
         self.tabular_view_button = page.get_by_role("button", name=re.compile(r"Tabular", re.I)).first
         self.refresh_dashboard_button = page.get_by_role("button", name=re.compile(r"Refresh dashboard", re.I)).first
@@ -39,8 +48,20 @@ class MainDashboardPage(BasePage):
         self.video_telematics_store_link = page.get_by_role("link", name=re.compile(r"Video Telematics", re.I)).first
 
     def open_graphical_dashboard(self):
-        """Navigate directly to the graphical dashboard route."""
-        self.page.goto("/dashboard/graphical")
+        """Navigate to the graphical dashboard via the header nav link.
+
+        A direct page.goto("/dashboard/graphical") does not work on this
+        app -- confirmed live 2026-09-11 it silently bounces back to /home
+        (see the dashboard_nav_link comment above and
+        retest_bug_report.md) -- so this uses a real in-app click instead,
+        which is also what actually exercises the navigation the way a
+        user does.
+        """
+        if "/dashboard/graphical" in self.page.url:
+            self.wait_for_dashboard_ready()
+            return
+        self.wait_for_visible(self.dashboard_nav_link)
+        self.dashboard_nav_link.click()
         self.wait_for_dashboard_ready()
 
     def open_tabular_dashboard(self):
@@ -131,27 +152,54 @@ class MainDashboardPage(BasePage):
         self.ai_insights_button.click()
         self.wait_for_loading_to_finish()
 
+    def view_details_dialog(self) -> Locator:
+        """Return the 'View details' modal opened by click_card_view_details().
+
+        Confirmed live 2026-09-11: this is a real modal dialog titled
+        "<Widget> - View, search and sort detailed widget data", separate
+        from the small inline table shown directly on the dashboard card.
+        Column-header sorting only works inside this dialog (real Angular
+        Material `mat-sort-header` columns) -- the earlier version of this
+        page object queried column headers unscoped (`self.page.locator("th
+        ...")`), which on a page with many cards matched the wrong
+        (non-sortable) inline table and made sorting look completely
+        broken. See retest_bug_report.md, "NEW-3 retracted".
+        """
+        return self.page.get_by_role("dialog").filter(
+            has_text="View, search and sort detailed widget data"
+        )
+
     def get_widget_column_header(self, widget_title: str, column_name: str) -> Locator:
-        """Get column header locator for a given table column."""
-        header = self.page.locator("th, [role='columnheader']").filter(has_text=column_name).first
-        return header
+        """Get a column header locator inside the open View details dialog
+        for the given column. Requires click_card_view_details() to have
+        been called first."""
+        return self.view_details_dialog().locator("th, [role='columnheader']").filter(has_text=column_name).first
 
     def click_column_header_to_sort(self, widget_title: str, column_name: str):
-        """Click a widget table column header to toggle sorting (Ascending / Descending)."""
+        """Click a column header inside the open View details dialog to
+        toggle sorting (Ascending / Descending). Requires
+        click_card_view_details() to have been called first."""
         header = self.get_widget_column_header(widget_title, column_name)
         self.wait_for_visible(header)
         header.click()
         self.wait_for_loading_to_finish()
 
     def get_widget_table_column_values(self, widget_title: str, column_name: str) -> list[str]:
-        """Extract visible cell values under a given column in a widget table."""
-        rows = self.page.locator("tbody tr, table tr").all()
+        """Extract visible cell values under a given column inside the open
+        View details dialog. Requires click_card_view_details() to have
+        been called first."""
+        dialog = self.view_details_dialog()
+        headers = [h.strip() for h in dialog.locator("th, [role='columnheader']").all_inner_texts()]
+        col_index = headers.index(column_name) if column_name in headers else 0
+        rows = dialog.locator("tbody tr, table tr").all()
         values: list[str] = []
         for r in rows:
+            if not r.is_visible():
+                continue
             cells = r.locator("td, [role='cell']").all()
-            if cells:
-                txt = cells[0].inner_text().strip()
-                if txt and txt != "No data available" and txt != "No data found":
+            if len(cells) > col_index:
+                txt = cells[col_index].inner_text().strip()
+                if txt and txt not in ("No data available", "No data found"):
                     values.append(txt)
         return values
 
@@ -257,7 +305,12 @@ class MainDashboardPage(BasePage):
         trash_btn = self.page.get_by_role("button", name=re.compile(r"Add to Trash", re.I)).first
         self.wait_for_visible(trash_btn)
         trash_btn.click()
-        confirm_dialog = self.page.get_by_role("dialog", name=re.compile(r"Move to Trash", re.I))
+        # Confirmed live 2026-09-11: this dialog has no aria-label, so its
+        # computed accessible name is empty -- get_by_role(..., name=...)
+        # (which filters on accessible name) never matched it despite the
+        # dialog rendering correctly with "Move to Trash" as visible text.
+        # filter(has_text=...) matches on rendered content instead.
+        confirm_dialog = self.page.get_by_role("dialog").filter(has_text=re.compile(r"Move to Trash", re.I))
         self.wait_for_visible(confirm_dialog)
         confirm_dialog.get_by_role("button", name=re.compile(r"^Move$", re.I)).click()
         self.wait_for_dialog_closed()
@@ -278,6 +331,28 @@ class MainDashboardPage(BasePage):
         card = self.get_card_locator(title)
         rows = card.locator("tbody tr, table tr").all()
         return len([r for r in rows if r.is_visible() and "No data" not in r.inner_text()])
+
+    def get_card_column_values(self, title: str, column_name: str) -> list[str]:
+        """Return the values under a named column in a widget card's table,
+        scoped to that specific card (not the whole page -- get_by_role
+        text matching on an unscoped page locator would pick up rows from
+        any other table-bearing card too).
+        """
+        card = self.get_card_locator(title)
+        headers = self.get_card_table_headers(title)
+        if column_name not in headers:
+            return []
+        col_index = headers.index(column_name)
+        rows = card.locator("tbody tr, table tr")
+        values = []
+        for i in range(rows.count()):
+            row = rows.nth(i)
+            if not row.is_visible() or "No data" in row.inner_text():
+                continue
+            cells = row.locator("td, [role='cell']")
+            if cells.count() > col_index:
+                values.append(cells.nth(col_index).inner_text().strip())
+        return values
 
     # ─── Card Settings (Edit Panel) ───────────────────────────────────────────────
     # The "Edit" action opens an inline "Widget Settings" panel (not a modal dialog),

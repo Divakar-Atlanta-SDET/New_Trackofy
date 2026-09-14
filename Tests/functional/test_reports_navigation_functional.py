@@ -1,7 +1,7 @@
 import re
 import pytest
 from playwright.sync_api import expect
-from config.config import REPORT_TEST_VEHICLE_NAME
+from config.config import REPORT_END_DATE, REPORT_START_DATE, REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
 from Pages.reports_page import ReportsPage
@@ -28,6 +28,30 @@ def test_rep_com_001_open_reports_module(page, config, credentials):
     assert tabs["Standard"], "Standard tab not visible"
     assert tabs["Custom"], "Custom tab not visible"
     assert tabs["Schedule"], "Schedule tab not visible"
+
+
+@pytest.mark.functional
+@pytest.mark.reports
+def test_reports_accessible_via_direct_url(authenticated_page, config):
+    """Regression test for retest_bug_report.md NEW-1 (app-wide SPA routing
+    defect, confirmed on Dashboard/Unit/Tracking as of 2026-09-11/12): a
+    module must be reachable by navigating straight to its URL, not only
+    via an in-app nav-link click. Deliberately uses page.goto() directly
+    (not ReportsPage.open_standard_reports(), which works around this
+    exact bug by clicking the nav link instead) -- this test exists
+    specifically to catch a regression on direct URL access itself.
+
+    Expected to FAIL until the underlying app bug is fixed: as of this
+    writing, a direct goto("/reports/standard") silently redirects to
+    /home instead of loading Reports. Once the app fix lands, this test
+    turns green automatically -- no code change needed here to detect it.
+    """
+    page = authenticated_page
+    page.goto(f"{config['base_url']}/reports/standard")
+    page.wait_for_timeout(3000)
+
+    expect(page).to_have_url(re.compile(rf"{re.escape(config['base_url'])}/reports/standard/?$"))
+    expect(ReportsPage(page).standard_tab).to_be_visible()
 
 
 @pytest.mark.functional
@@ -108,8 +132,8 @@ def test_rep_com_018_export_options_visible(page, config, credentials):
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.generate_standard_report(
         "Fleet Summary",
-        start_date="01/09/2026",
-        end_date="01/09/2026",
+        start_date=REPORT_START_DATE,
+        end_date=REPORT_END_DATE,
         vehicle_name=REPORT_TEST_VEHICLE_NAME,
         driver_name="",
     )

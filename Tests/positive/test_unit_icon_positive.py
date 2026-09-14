@@ -77,8 +77,14 @@ def test_tc073_icon_selection_persists_across_sessions(unit_settings):
     unit_settings_page.icon_update_btn.click()
     unit_settings_page.wait_for_loading_to_finish()
 
+    # A plain page.reload() lands on /home, not back on /unit -- confirmed
+    # live 2026-09-11, app-wide SPA routing defect (retest_bug_report.md,
+    # NEW-1), unrelated to icon persistence itself. Still perform a real
+    # reload (to verify server-persisted state, not just Angular's client
+    # cache) but recover via the nav-link workaround afterward instead of
+    # asserting on the URL a reload doesn't actually land on.
     unit_settings_page.page.reload()
-    unit_page.wait_for_unit_page_ready()
+    unit_page.open_unit_list()
 
     try:
         unit_page.open_unit_settings_by_index(0)

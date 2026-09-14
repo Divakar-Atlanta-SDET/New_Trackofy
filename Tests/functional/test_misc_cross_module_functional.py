@@ -31,6 +31,7 @@ import time
 import pytest
 
 from Pages.account_menu_page import AccountMenuPage
+from components.navbar import Navbar
 from Pages.downloads_page import DownloadsPage
 from Pages.feedback_page import FeedbackPage
 from Pages.home_page import HomePage
@@ -125,15 +126,16 @@ def test_misc_gap1_account_menu_from_administrator(authenticated_page, config):
 
 @pytest.mark.functional
 @pytest.mark.misc
-def test_misc_gap1_account_menu_from_video_telematics(authenticated_page, config):
-    """Gap #1: The Account menu opens correctly from Video Telematics."""
-    page = authenticated_page
-    page.goto(f"{config['base_url']}/home")
-    page.wait_for_timeout(1000)
-    nav_link = page.get_by_role("link", name="Video Telematics", exact=True)
-    if nav_link.count() == 0:
-        nav_link = page.get_by_text("Video Telematics", exact=True)
-    nav_link.first.click()
+def test_misc_gap1_account_menu_from_video_telematics(vt_authenticated_page):
+    """Gap #1: The Account menu opens correctly from Video Telematics.
+    Confirmed live (2026-09-13): the main test account has no Video
+    Telematics entitlement at all (nav shows only Home/Dashboard/Unit/
+    Tracking/Reports/Settings/Administrator) -- same situation as CAN
+    needing its own entitled account. Uses vt_authenticated_page (the
+    ADAS-credentialed account, already wired up for Video Telematics
+    testing elsewhere in this suite) instead."""
+    page = vt_authenticated_page
+    Navbar(page).go_to("Video Telematics")
     page.wait_for_timeout(1500)
     menu = AccountMenuPage(page)
     menu.open()

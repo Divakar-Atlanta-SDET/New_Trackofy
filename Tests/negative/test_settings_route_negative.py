@@ -2,47 +2,27 @@ import pytest
 from playwright.sync_api import expect
 
 
-def _attempt_save_and_confirm_rejected(route_page):
-    """Save Route is always enabled (confirmed live -- this form validates
-    on submit attempt, not via a disabled button); clicking it with
-    incomplete data must not navigate away or show a success toast."""
-    route_page.save_btn.click()
-    route_page.page.wait_for_timeout(1500)
-    assert route_page.is_on_path("/settings/route/create-route"), (
-        "expected to stay on the create-route page after an incomplete submit"
-    )
-    toast = route_page.page.locator("app-toast")
-    if toast.count() > 0 and toast.is_visible():
-        assert "success" not in toast.inner_text().lower()
+def _confirm_save_disabled(route_page):
+    """Reverified live (2026-09-13): this form now validates via a disabled
+    Save Route button, not submit-then-reject -- confirmed for missing
+    name, missing origin, and missing destination alike. Superseded
+    the older submit-and-check-for-rejection assumption, which is stale."""
+    expect(route_page.save_btn).to_be_disabled()
 
 
 @pytest.mark.negative
 def test_set_157_route_name_not_actually_enforced(route_page):
-    """SET-157: route name is documented as mandatory, but saving without
-    one is NOT rejected -- confirmed live it silently defaults to "My
-    Route" and the save succeeds. See Bug_Report.md #13. This documents the
-    real (broken) behavior rather than asserting a rejection the app
-    doesn't perform.
+    """SET-157: Regression pin for Bug_Report.md #13. Reverified live
+    (2026-09-13): this is now FIXED -- Save Route stays disabled when the
+    route name is blank (previously it silently saved with a defaulted
+    "My Route" name). Confirmed 3x live prior to updating this test.
     """
     route_page.open_create_route()
     route_page.pick_location(route_page.origin_input, "Noida")
     route_page.pick_location(route_page.destination_input, "Delhi")
     route_page.page.wait_for_timeout(500)
-    route_page.save_btn.click()
-    route_page.expect_path("/home")
-    route_page.page.goto("/settings/route")
-    route_page.expect_path("/settings/route")
-    route_page.wait_for_loading_to_finish()
-    route_page.page.wait_for_timeout(1000)
-
-    row = route_page.row_containing("My Route")
-    expect(row.first).to_be_visible(timeout=10000)
-    del_btn = row.first.locator("td").nth(9).locator("button")
-    del_btn.click()
-    route_page.wait_for_visible(route_page.confirm_delete_btn)
-    route_page.page.wait_for_timeout(400)
-    route_page.confirm_delete_btn.click()
-    route_page.wait_for_dialog_closed()
+    _confirm_save_disabled(route_page)
+    route_page.cancel_create_route()
 
 
 @pytest.mark.negative
@@ -52,7 +32,7 @@ def test_set_158_start_location_mandatory(route_page):
     route_page.name_input.fill("NoOriginRoute")
     route_page.pick_location(route_page.destination_input, "Delhi")
     route_page.page.wait_for_timeout(500)
-    _attempt_save_and_confirm_rejected(route_page)
+    _confirm_save_disabled(route_page)
     route_page.cancel_create_route()
 
 
@@ -63,7 +43,7 @@ def test_set_159_destination_mandatory(route_page):
     route_page.name_input.fill("NoDestRoute")
     route_page.pick_location(route_page.origin_input, "Noida")
     route_page.page.wait_for_timeout(500)
-    _attempt_save_and_confirm_rejected(route_page)
+    _confirm_save_disabled(route_page)
     route_page.cancel_create_route()
 
 
@@ -73,17 +53,32 @@ def test_set_168_custom_route_requires_drawn_path(route_page):
     fields only populated by drawing on the map (confirmed live: real
     input HTML carries readonly + placeholder "Draw the route to select
     source") -- a name alone, with no manually drawn path, is not enough
-    for a successful save."""
+    for a successful save.
+
+    Reverified live (2026-09-13): unlike the main Create Route tab, this
+    tab's own Save Route button (form="customRouteForm") is NOT disabled
+    client-side when source/destination are empty -- it validates via a
+    submit-then-reject toast ("name, source, and destination are required")
+    instead. End result is correct (no route is created, confirmed 3x live:
+    URL stays on create-route, no new row appears), just an inconsistent
+    validation UX vs. the other tab's disabled-button pattern -- not a
+    functional bug, so this asserts the rejection instead of a disabled
+    button."""
     route_page.open_create_route()
     route_page.open_custom_route_tab()
     expect(route_page.custom_source_input).to_have_attribute("readonly", "true")
     expect(route_page.custom_destination_input).to_have_attribute("readonly", "true")
     route_page.name_input.fill("CustomRouteNoPathTest")
     route_page.page.wait_for_timeout(500)
+    expect(route_page.save_btn).to_be_enabled()
     route_page.save_btn.click()
     route_page.page.wait_for_timeout(1500)
+    toast_text = route_page.page.locator("app-toast").inner_text()
+    assert "required" in toast_text.lower(), (
+        f"expected a rejection toast for the missing source/destination, got: {toast_text!r}"
+    )
     assert route_page.is_on_path("/settings/route/create-route"), (
-        "expected to stay on the create-route page without a drawn path"
+        "expected the rejected submit to leave the user on the create-route form, not navigate away"
     )
     route_page.cancel_create_route()
 

@@ -75,18 +75,18 @@ def test_adm_025_valid_username_accepted(administrator_page):
 @pytest.mark.negative
 def test_adm_026_duplicate_username_rejected(administrator_page):
     """ADM-026: An existing username is rejected server-side (with a clear
-    error) when Next Step is clicked, and the wizard stays on Step 1 --
-    confirmed live this is enforced server-side, not blocked client-side
-    (the button itself stays enabled for a duplicate value)."""
+    error). Confirmed live (2026-09-13): since Bug #25's fix, the real
+    save (and this validation) now happens on final Submit, not on the
+    Step 1 -> 2 transition -- updated to drive the full wizard through
+    Submit rather than checking after Next Step, which no longer triggers
+    any save/validation call at all."""
     admin = administrator_page
-    admin.open_add_user_wizard()
-    admin.fill_step1("bruce", "ValidPassword123@", ["HP12G9691"], "No")
-    admin.click_next_step()
+    admin.create_user("bruce", "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
     admin.page.wait_for_timeout(1000)
     toast = admin.wizard_error_toast_text()
     assert toast, "Expected an error toast when submitting a duplicate username"
-    assert "STEP 1" in admin.wizard_dialog().inner_text() or "Personal info" in admin.wizard_dialog().inner_text(), (
-        "Wizard should remain on Step 1 after a duplicate-username rejection"
+    assert admin.wizard_dialog().is_visible(), (
+        "Wizard should remain open (submission rejected) after a duplicate-username rejection"
     )
     admin.close_wizard()
 
@@ -96,20 +96,18 @@ def test_adm_026_duplicate_username_rejected(administrator_page):
 @pytest.mark.negative
 @pytest.mark.parametrize("common_word", ["test", "admin", "demo"])
 def test_adm_bug32_common_username_falsely_rejected_as_duplicate(administrator_page, common_word):
-    """Regression pin for Bug #32 (Bug_Report.md, Administrator Module):
+    """Regression pin for Bug_Report.md #32 (Administrator Module):
     reported directly by the user -- common words like "test"/"admin"/
     "demo" are rejected with the same 'user_alread_exist' error as a real
     same-account duplicate, even though this account's only real user is
     "bruce" (confirmed live via a full list read). This indicates username
     uniqueness is checked globally across the platform, not scoped to this
-    account, with a misleading error message. Asserts the confirmed-broken
-    (misleading) behavior; it should start failing -- and be flipped --
-    once the error message is fixed to clarify the check is global, or the
-    check is scoped per-account."""
+    account, with a misleading error message. Reverified live (2026-09-13):
+    STILL BROKEN, unchanged -- updated to drive the full wizard through
+    Submit (since Bug #25's fix moved the real save/validation there, off
+    the Step 1 -> 2 transition this test originally checked after)."""
     admin = administrator_page
-    admin.open_add_user_wizard()
-    admin.fill_step1(common_word, "ValidPassword123@", ["HP12G9691"], "No")
-    admin.click_next_step()
+    admin.create_user(common_word, "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
     admin.page.wait_for_timeout(1000)
     toast = admin.wizard_error_toast_text()
     assert "user_alread_exist" in toast or "already exist" in toast.lower(), (
@@ -122,15 +120,12 @@ def test_adm_bug32_common_username_falsely_rejected_as_duplicate(administrator_p
 
 @pytest.mark.functional
 @pytest.mark.admin
-def test_adm_bug33_no_password_visibility_toggle_in_wizard(administrator_page):
-    """Regression pin for Bug #33 (Bug_Report.md, Administrator Module,
-    Low priority): reported directly by the user -- the Password and
-    Confirm Password fields on Step 1 have no show/hide (eye) toggle,
-    unlike the User Management table's own "Show password" reveal button.
-    Confirmed live: both fields stay plain type="password" inputs with no
-    visibility-toggle button anywhere in their container. This asserts the
-    confirmed-missing behavior; it should start failing -- and be flipped
-    to assert a toggle IS present and works -- once the app adds one.
+def test_adm_bug33_password_visibility_toggle_in_wizard(administrator_page):
+    """Regression pin for Bug_Report.md #33 (Administrator Module).
+    Reverified live (2026-09-13): FIXED -- both Password and Confirm
+    Password now have a genuinely working, per-field show/hide toggle
+    ("Show password" / "Show confirm password"), confirmed clicking one
+    flips only its own field to type="text" without affecting the other.
     """
     admin = administrator_page
     admin.open_add_user_wizard()
@@ -138,18 +133,21 @@ def test_adm_bug33_no_password_visibility_toggle_in_wizard(administrator_page):
     admin.confirm_password_input().fill("SomePassword123@")
     admin.page.wait_for_timeout(500)
 
-    assert admin.password_input().get_attribute("type") == "password", (
-        "Bug #33: the Password field should currently (still) have no way to reveal it (stays "
-        "type='password' with no toggle button nearby). If a visibility toggle now exists and "
-        "changes this to type='text' on click, this test should be flipped/updated."
-    )
-    assert admin.confirm_password_input().get_attribute("type") == "password"
-
     dialog = admin.wizard_dialog()
     visibility_buttons = dialog.locator("button[aria-label*='assword' i], button[aria-label*='visib' i]")
-    assert visibility_buttons.count() == 0, (
-        f"Bug #33: expected no password-visibility-toggle button in the wizard, found "
-        f"{visibility_buttons.count()}. If this now finds one, the app has been fixed."
+    assert visibility_buttons.count() >= 2, (
+        f"Bug #33 regression: expected a show/hide toggle for both Password and Confirm Password, "
+        f"found {visibility_buttons.count()} toggle button(s)."
+    )
+
+    assert admin.password_input().get_attribute("type") == "password"
+    visibility_buttons.nth(0).click()
+    admin.page.wait_for_timeout(300)
+    assert admin.password_input().get_attribute("type") == "text", (
+        "Bug #33 regression: clicking the Password toggle should reveal it (type='text')."
+    )
+    assert admin.confirm_password_input().get_attribute("type") == "password", (
+        "Expected the Password toggle to only affect its own field, not Confirm Password."
     )
     admin.close_wizard()
 
@@ -344,7 +342,7 @@ def test_adm_051_cancel_from_step1_creates_no_user(administrator_page):
     admin.cancel_wizard()
     admin.page.wait_for_timeout(1000)
 
-    admin.page.reload()
+    admin.page.reload(); admin.reopen()
     admin.wait_until_ready()
     admin.page.wait_for_timeout(1000)
     after_count = int(admin.user_count_text() or "0")

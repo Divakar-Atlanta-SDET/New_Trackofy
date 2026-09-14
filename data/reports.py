@@ -105,21 +105,21 @@ CUSTOM_REPORT_FIELDS = [
     "Create Custom Report",
     "General",
     "Components",
-    "General Information",
-    "Name",
-    "Description:",
-    "Next Step",
+    "Template Details",
+    "Template name",
+    "Description",
+    "Continue",
 ]
 
 SCHEDULE_REPORT_FIELDS = [
-    "Schedule Report",
+    "Create Schedule Report",
     "Select Vehicles",
     "Select Report Type",
     "Select Frequency",
     "Schedule Till",
     "Schedule Time",
     "Email 1",
-    "Export Type",
+    "Export Format",
     "Excel",
     "CSV",
 ]

@@ -45,7 +45,7 @@ def test_set_087_edit_location(location_control_page):
         location_control_page.wait_for_visible(location_control_page.row_containing(new_name))
         name = new_name
 
-        location_control_page.page.reload()
+        location_control_page.page.reload(); location_control_page.reopen()
         location_control_page.wait_for_loading_to_finish()
         expect(location_control_page.row_containing(new_name)).to_be_visible()
     finally:
@@ -64,6 +64,6 @@ def test_set_088_delete_location(location_control_page):
     expect(location_control_page.row_containing(name)).to_be_visible()
 
     location_control_page.delete_location(name)
-    location_control_page.page.reload()
+    location_control_page.page.reload(); location_control_page.reopen()
     location_control_page.wait_for_loading_to_finish()
     expect(location_control_page.row_containing(name)).to_have_count(0)

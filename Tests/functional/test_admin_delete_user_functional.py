@@ -53,7 +53,7 @@ def test_adm_179_180_confirm_delete_removes_user_and_updates_count(administrator
     username = _unique_username("pytestdelconfirm")
     admin.create_user(username, "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
     admin.page.wait_for_timeout(1500)
-    admin.page.reload()
+    admin.page.reload(); admin.reopen()
     admin.wait_until_ready()
     admin.page.wait_for_timeout(1000)
     before_count = int(admin.user_count_text() or "0")
@@ -64,7 +64,7 @@ def test_adm_179_180_confirm_delete_removes_user_and_updates_count(administrator
     admin.confirm_delete()
     admin.page.wait_for_timeout(1500)
 
-    admin.page.reload()
+    admin.page.reload(); admin.reopen()
     admin.wait_until_ready()
     admin.page.wait_for_timeout(1000)
     after_count = int(admin.user_count_text() or "0")
@@ -119,7 +119,7 @@ def test_adm_182_deleting_one_user_does_not_affect_another(administrator_page):
         admin.page.wait_for_timeout(1500)
         admin.create_user(username_remove, "ValidPassword123@", ["HP12G9691"], arm_disarm="No")
         admin.page.wait_for_timeout(1500)
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
 
@@ -179,7 +179,7 @@ def test_adm_184_delete_api_failure_does_not_falsely_remove_user(administrator_p
         admin.page.wait_for_timeout(2000)
         admin.page.unroute("**/delete_subuser*")
 
-        admin.page.reload()
+        admin.page.reload(); admin.reopen()
         admin.wait_until_ready()
         admin.page.wait_for_timeout(1000)
         admin.search(username)

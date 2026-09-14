@@ -1,13 +1,43 @@
+import re
+
 import pytest
 from playwright.sync_api import expect
+
+from components.navbar import Navbar
 
 
 @pytest.mark.functional
 def test_set_001_settings_module_opens(authenticated_page):
-    """SET-001: Verify Settings module opens and the Settings side menu is displayed."""
-    authenticated_page.goto("/settings")
+    """SET-001: Verify Settings module opens and the Settings side menu is displayed.
+
+    Routes through the nav-bar link, not goto("/settings") -- confirmed live
+    (2026-09-13) that a direct goto to /settings hits NEW-1 and bounces to
+    /home. See test_settings_accessible_via_direct_url below for the
+    dedicated regression pin on the raw-goto case itself.
+    """
+    Navbar(authenticated_page).go_to("Settings")
     authenticated_page.wait_for_load_state("domcontentloaded")
     expect(authenticated_page.get_by_role("complementary", name="Settings navigation")).to_be_visible()
+
+
+@pytest.mark.functional
+def test_settings_accessible_via_direct_url(authenticated_page, config):
+    """Regression test for retest_bug_report.md NEW-1 (app-wide SPA routing
+    defect): a module must be reachable by navigating straight to its URL,
+    not only via an in-app nav-link click. Deliberately uses page.goto()
+    directly (not SettingsSideMenu, which works around this exact bug by
+    clicking through the module) -- this test exists specifically to catch
+    a regression on direct URL access itself.
+
+    Expected to FAIL until the underlying app bug is fixed: as of this
+    writing, a direct goto("/settings") silently redirects to /home instead
+    of loading Settings. Once the app fix lands, this test turns green
+    automatically -- no code change needed here to detect it.
+    """
+    page = authenticated_page
+    page.goto(f"{config['base_url']}/settings")
+    page.wait_for_timeout(2000)
+    expect(page).to_have_url(re.compile(rf"{re.escape(config['base_url'])}/settings/?$"))
 
 
 @pytest.mark.functional

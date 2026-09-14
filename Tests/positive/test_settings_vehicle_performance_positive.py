@@ -46,7 +46,7 @@ def test_set_080_edit_vehicle_performance(vehicle_performance_page):
         vehicle_performance_page.update_btn.click()
         vehicle_performance_page.wait_for_dialog_closed()
 
-        vehicle_performance_page.page.reload()
+        vehicle_performance_page.page.reload(); vehicle_performance_page.reopen()
         vehicle_performance_page.wait_for_loading_to_finish()
         vehicle_performance_page.wait_for_visible(vehicle_performance_page.row_containing(category))
         row = vehicle_performance_page.row_containing(category)

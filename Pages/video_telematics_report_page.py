@@ -50,7 +50,12 @@ class VideoTelematicsReportPage(VideoTelematicsBasePage):
         self.copy_button = page.get_by_role("button", name="Copy report")
 
     def open(self, base_url: str):
-        self.page.goto(f"{base_url}/video_telematics/report")
+        # NEW-1: a raw page.goto() to any /video_telematics/* route
+        # silently bounces to /home -- route through the nav bar (lands
+        # on Dashboard) then the module's own internal sub-nav click.
+        from components.navbar import Navbar
+        Navbar(self.page).go_to("Video Telematics")
+        self.nav_report.click()
         self.expect_path("/video_telematics/report")
         self.wait_for_visible(self.heading)
 

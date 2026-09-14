@@ -1,10 +1,9 @@
 """Login Page Phase 1 -- Page load, fields, Sign In, Password,
 Terms & Privacy (LOGIN-001 to LOGIN-028).
 
-Confirmed live: the heading reads "Sign in to you account" (a real
-typo, Bug #48, Bug_Report.md) -- LoginPage.heading matches this exact
-live text rather than the correct "your account", since that's what
-actually renders. The Terms & Privacy checkbox is CHECKED by default;
+Confirmed live 2026-09-14: the heading typo (Bug #48, Bug_Report.md,
+"Sign in to you account") is now fixed -- it correctly reads "Sign in
+to your account". The Terms & Privacy checkbox is CHECKED by default;
 unchecking it disables the real Sign in button (a genuine `disabled`
 attribute), confirmed live. Every failed-login scenario (invalid
 username, wrong password) surfaces the same raw technical error --
@@ -89,14 +88,16 @@ def test_login_006_valid_email_login():
 @pytest.mark.login
 @pytest.mark.negative
 def test_login_007_invalid_username_safe_error(login_page):
-    """LOGIN-007 (Bug #50, Bug_Report.md): authentication fails for an
-    invalid username -- pinned here as the current real error text,
-    not the safe message the CSV expects."""
+    """LOGIN-007 (Bug #50, Bug_Report.md). Reverified live 2026-09-14:
+    ✅ FIXED -- the error toast now shows a safe, generic message
+    ("Invalid credentials or you are not authorized."), not the raw
+    HTTP client error/backend hostname it used to."""
     login_page.login("totally_invalid_user_xyz", "SomePass123!")
     login_page.page.wait_for_timeout(2000)
     assert "/home" not in login_page.page.url
-    assert "401 Unauthorized" in _error_text(login_page.page), (
-        "Bug #50: expected the raw technical error (if this now fails with a safe message, the app has been fixed)"
+    error_text = _error_text(login_page.page)
+    assert "Http failure response" not in error_text and "trackofy_api_new" not in error_text, (
+        f"Bug #50 regression: expected no raw technical error text -- got {error_text!r}"
     )
 
 
@@ -116,13 +117,16 @@ def test_login_008_invalid_email_format(login_page):
 @pytest.mark.login
 @pytest.mark.negative
 def test_login_009_incorrect_password_safe_error(login_page, credentials):
-    """LOGIN-009 (Bug #50, Bug_Report.md): a real username with the
-    wrong password fails to authenticate -- same raw error as an
-    invalid username (at least not a username-enumeration vector)."""
+    """LOGIN-009 (Bug #50, Bug_Report.md). Reverified live 2026-09-14:
+    ✅ FIXED -- same safe, generic error as an invalid username (still
+    not a username-enumeration vector, since both cases match)."""
     login_page.login(credentials["username"], "TotallyWrongPassword999!")
     login_page.page.wait_for_timeout(2000)
     assert "/home" not in login_page.page.url
-    assert "401 Unauthorized" in _error_text(login_page.page)
+    error_text = _error_text(login_page.page)
+    assert "Http failure response" not in error_text and "trackofy_api_new" not in error_text, (
+        f"Bug #50 regression: expected no raw technical error text -- got {error_text!r}"
+    )
 
 
 @pytest.mark.functional
@@ -315,11 +319,12 @@ def test_login_028_open_privacy(login_page):
 @pytest.mark.functional
 @pytest.mark.login
 def test_login_bug48_heading_typo(login_page):
-    """Bug #48 (Bug_Report.md, Minor): regression pin for the real
-    "Sign in to you account" typo (missing "r" in "your")."""
-    assert login_page.heading.is_visible(), (
-        "Bug #48: expected the heading text (with its current typo) to still match "
-        "(if this now fails, the typo may have been fixed -- update the locator)"
+    """Bug #48 (Bug_Report.md, Minor). Reverified live 2026-09-14:
+    ✅ FIXED -- the heading now correctly reads "Sign in to your
+    account" (the missing "r" in "your" is restored)."""
+    assert login_page.heading.inner_text().strip() == "Sign in to your account", (
+        "Bug #48 regression: expected the heading typo to (still) be fixed -- "
+        f"got {login_page.heading.inner_text()!r}"
     )
 
 
@@ -327,9 +332,11 @@ def test_login_bug48_heading_typo(login_page):
 @pytest.mark.login
 @pytest.mark.accessibility
 def test_login_bug49_password_toggle_not_keyboard_reachable(login_page):
-    """Bug #49 (Bug_Report.md, Medium): regression pin -- the password
-    visibility toggle has tabindex="-1" and is skipped by Tab."""
+    """Bug #49 (Bug_Report.md, Medium). Reverified live 2026-09-14:
+    ✅ FIXED -- tabindex="-1" is gone and the toggle's aria-label
+    changed from "Toggle password visibility" to "Show password"/"Hide
+    password" (still a real, working accessible name)."""
     tabindex = login_page.password_toggle_btn.get_attribute("tabindex")
-    assert tabindex == "-1", (
-        "Bug #49: expected tabindex=-1 on the password toggle (if this now fails, the app has been fixed)"
+    assert tabindex != "-1", (
+        f"Bug #49 regression: expected tabindex != -1 (still fixed) -- got {tabindex!r}"
     )

@@ -66,4 +66,44 @@ def test_dash_tbl_004_record_count_matches_source(page, config, credentials):
 @pytest.mark.functional
 @pytest.mark.dashboard
 def test_dash_tbl_007_table_order_matches_sort(page, config, credentials):
-    pytest.skip("Sorting logic check requires parsing, skipping for now")
+    """Verify the Widget Settings 'Sorting' (Ascending/Descending) control
+    actually changes the rendered table order, not just that clicking it
+    doesn't crash.
+
+    Deliberately does not assert strict alphabetical/numeric ordering --
+    diagnosed live 2026-09-11 (Tests/reverify_2026_09_11/dashboard/
+    diagnose_sort_direction.py) that the widget used here ("Alerts") shows
+    recent, live-changing data, so the exact sort key isn't guaranteed to
+    be the visible "Vehicle" column, and a strict-order assertion would be
+    flaky against real-time data changes between the two save operations.
+    The meaningful, non-flaky regression check is that Ascending and
+    Descending genuinely produce different results -- i.e. the control has
+    a real effect, rather than being a no-op (confirmed live to be a real
+    risk here: the *other* sort mechanism on this dashboard -- clicking a
+    table column header directly via click_column_header_to_sort() --
+    was diagnosed as a complete no-op, see retest_bug_report.md).
+    """
+    dashboard_page = login_and_open_dashboard(page, config, credentials)
+    target = "Alerts"
+    column = "Vehicle"
+    if not dashboard_page.card_is_visible(target):
+        pytest.skip(f"'{target}' card not present on this dashboard")
+    if dashboard_page.get_card_table_row_count(target) < 2:
+        pytest.skip(f"'{target}' card has fewer than 2 rows -- not enough to observe a sort effect")
+
+    dashboard_page.click_card_edit(target)
+    dashboard_page.set_sort_direction("Ascending")
+    dashboard_page.click_save_settings()
+    ascending_values = dashboard_page.get_card_column_values(target, column)
+
+    dashboard_page.click_card_edit(target)
+    dashboard_page.set_sort_direction("Descending")
+    dashboard_page.click_save_settings()
+    descending_values = dashboard_page.get_card_column_values(target, column)
+
+    assert ascending_values, "Ascending sort produced no rows to compare"
+    assert descending_values, "Descending sort produced no rows to compare"
+    assert ascending_values != descending_values, (
+        f"Ascending and Descending sort produced identical table order/content "
+        f"({ascending_values!r}) -- the Sorting control appears to have no real effect."
+    )

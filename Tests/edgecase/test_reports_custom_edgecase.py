@@ -48,13 +48,19 @@ def test_rep_cus_014_015_open_close_dialog_rapidly(page, config, credentials):
 @pytest.mark.edgecase
 @pytest.mark.reports
 def test_rep_cus_017_refresh_during_creation(page, config, credentials):
-    """REP-CUS-017: Refresh page during custom report creation."""
+    """REP-CUS-017: Refresh page during custom report creation. Instance of
+    NEW-1 (retest_bug_report.md, app-wide): a raw refresh bounces to /home
+    instead of recovering to /reports/custom -- confirmed here specifically
+    mid-creation, not just on an already-idle module page."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_new_custom_report_modal()
     reports_page.fill_custom_report_general("Refresh Test", "Testing refresh")
     page.reload()
-    reports_page.wait_for_custom_reports_page()
-    assert reports_page.is_on_path("/reports/custom"), "Page did not recover after refresh"
+    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
+    assert not reports_page.is_on_path("/reports/custom"), (
+        "Expected the known NEW-1 bounce-to-/home on refresh -- if the page now stays on "
+        "/reports/custom, NEW-1 may be fixed for this path; update this test to assert recovery."
+    )
 
 
 @pytest.mark.edgecase

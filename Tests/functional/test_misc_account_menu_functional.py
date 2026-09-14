@@ -182,30 +182,51 @@ def test_misc_012_account_menu_responsive_tablet(account_menu):
 @pytest.mark.misc
 @pytest.mark.responsive
 @pytest.mark.negative
-def test_misc_012b_bug34_account_menu_unreachable_at_mobile_width(account_menu):
-    """Regression pin for Bug #34 (Bug_Report.md, Miscellaneous Pages
-    Module): at a phone-sized viewport (390x844), the account_circle
-    trigger becomes invisible and no alternative control (hamburger menu,
-    "Actions" panel) reaches My Profile/Support/Change Password/Language/
-    Sign Out. This asserts the confirmed-broken (unreachable) state; it
-    should start failing -- and be flipped to assert the menu IS reachable
-    -- once the app is fixed.
+def test_misc_012b_bug34_account_menu_reachable_at_mobile_width(account_menu):
+    """Regression pin for Bug_Report.md #34 (Miscellaneous Pages Module).
+    Reverified live (2026-09-13): FIXED -- at a phone-sized viewport
+    (390x844), the account_circle trigger is visible and opening it
+    reaches My Profile, Support, Change Password, and Sign Out. Confirmed
+    each is a real, visible, clickable `<a>` link (not a `role="button"`
+    element like the desktop layout uses) -- that's why an earlier check
+    using button-role locators found nothing; this checks by link text
+    instead, matching the real mobile markup.
     """
     page = account_menu.page
     original_size = page.viewport_size
     try:
         page.set_viewport_size({"width": 390, "height": 844})
         page.wait_for_timeout(800)
-        assert not account_menu.menu_trigger.is_visible(), (
-            "Bug #34: the Account menu trigger should currently (still) be invisible at mobile width. "
-            "If it's now visible, the app has been fixed and this test should be flipped."
+        assert account_menu.menu_trigger.is_visible(), (
+            "Bug #34 regression: expected the Account menu trigger to (still) be visible at mobile width."
         )
-        body_text = page.locator("body").inner_text()
-        for missing_item in ["My Profile", "Support", "Change Password", "Sign Out"]:
-            assert missing_item not in body_text, (
-                f"Bug #34: '{missing_item}' should currently (still) be unreachable at mobile width, "
-                f"but it appeared in the page text -- the app may have been fixed."
+
+        for label, expected_path in [
+            ("My Profile", "/profile"),
+            ("Support", "/profile/support"),
+            ("Change Password", "/profile/change-password"),
+        ]:
+            account_menu.menu_trigger.click()
+            page.wait_for_timeout(800)
+            item = page.get_by_text(label, exact=True)
+            assert item.count() > 0 and item.first.is_visible(), (
+                f"Bug #34 regression: expected '{label}' to (still) be reachable at mobile width."
             )
+            item.first.click()
+            page.wait_for_timeout(1500)
+            assert expected_path in page.url, (
+                f"Bug #34 regression: expected clicking '{label}' to navigate to a URL containing "
+                f"{expected_path!r}, got {page.url!r}"
+            )
+            page.go_back()
+            page.wait_for_timeout(800)
+
+        account_menu.menu_trigger.click()
+        page.wait_for_timeout(800)
+        sign_out = page.get_by_text("Sign Out", exact=True)
+        assert sign_out.count() > 0 and sign_out.first.is_visible(), (
+            "Bug #34 regression: expected 'Sign Out' to (still) be reachable at mobile width."
+        )
     finally:
         if original_size:
             page.set_viewport_size(original_size)

@@ -133,12 +133,20 @@ def test_vt_046_search_special_characters(vt_alert_page):
 @pytest.mark.functional
 @pytest.mark.video_telematics
 def test_vt_047_rows_per_page(vt_alert_page):
-    """VT-047: Changing rows-per-page changes the number of rows shown."""
-    vt_alert_page.rows_per_page_select.select_option(label=" 5 ")
+    """VT-047: Changing rows-per-page changes the number of rows shown.
+
+    Fixed 2026-09-14: select_option(label=" 5 ") reliably timed out
+    ("did not find some options") even though the option's own
+    inner_text() is exactly " 5 " -- Playwright's label matching
+    compares against the <option>'s label HTML attribute, not its text
+    content, and this app doesn't set one. Selecting by value (the
+    option's real value attribute, confirmed live as "0: 5"/"2: 20")
+    sidesteps this entirely."""
+    vt_alert_page.rows_per_page_select.select_option(value="0: 5")
     vt_alert_page.page.wait_for_timeout(800)
     assert vt_alert_page.rows().count() == 5
 
-    vt_alert_page.rows_per_page_select.select_option(label=" 20 ")
+    vt_alert_page.rows_per_page_select.select_option(value="2: 20")
     vt_alert_page.page.wait_for_timeout(800)
     assert vt_alert_page.rows().count() == 20
 

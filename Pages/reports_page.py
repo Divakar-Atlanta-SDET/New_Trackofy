@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from playwright.sync_api import Locator, Page
 from Pages.base_page import BasePage
+from components.navbar import Navbar
 from data.reports import STANDARD_REPORT_NAMES, STANDARD_REPORTS
 
 class ReportsPage(BasePage):
@@ -24,39 +25,83 @@ class ReportsPage(BasePage):
         self.generate_buttons = self.page.get_by_role("button", name=re.compile(r"^Generate(?: report)?$"))
         self.new_button = self.page.get_by_role("button", name="New")
         self.report_search_box = self.page.get_by_placeholder(re.compile(r"Search Report|Search reports", re.IGNORECASE))
-        self.result_table = self.page.get_by_role("table")
+        # Scoped to the real Angular Material results table (class mat-mdc-table),
+        # NOT get_by_role("table") alone. Confirmed live (2026-09-12): Fleet Summary
+        # keeps a second, unrelated plain <table> permanently on the page (an
+        # "Operational Exceptions" live health widget, fleet-wide issue count that
+        # changes on its own over time, unrelated to whatever report was actually
+        # generated or its filters). An unscoped .last previously grabbed whichever
+        # of the two happened to be last in the DOM -- correct most of the time by
+        # accident, but wrong after certain interactions (e.g. the report search
+        # box) reordered the DOM, producing false "row count changed"/"column has
+        # no effect" findings that were actually just reading the wrong table. See
+        # the retraction notes for NEW-7/NEW-8 in retest_bug_report.md.
+        self.result_table = self.page.locator("table.mat-mdc-table")
         self.no_data_text = self.page.get_by_text("No data", exact=False)
     
+    def _ensure_on_reports_module(self):
+        """Enter the Reports module via the header nav link if not already
+        somewhere under /reports -- a direct page.goto("/reports/...") does
+        not work on this app (NEW-1, see retest_bug_report.md): it
+        silently bounces back to /home. Once inside the module, switching
+        between Standard/Custom/Schedule is a normal in-SPA tab click and
+        works fine either way.
+        """
+        if "/reports" in self.page.url:
+            return
+        Navbar(self.page).go_to("Reports")
+        self.wait_for_loading_to_finish()
+
     def go_to_reports(self):
-        self.page.goto("/reports/standard")
+        self._ensure_on_reports_module()
+        if not self.is_on_path("/reports/standard"):
+            self.standard_tab.click()
         self.wait_for_reports_page()
 
     def open_standard_reports(self):
-        self.page.goto("/reports/standard")
+        self._ensure_on_reports_module()
+        if not self.is_on_path("/reports/standard"):
+            self.standard_tab.click()
         self.wait_for_reports_page()
 
     def open_custom_reports(self):
-        self.page.goto("/reports/custom")
+        self._ensure_on_reports_module()
+        if not self.is_on_path("/reports/custom"):
+            self.custom_tab.click()
         self.expect_path("/reports/custom")
         self.wait_for_visible(self.new_button)
         self.wait_for_custom_reports_page()
 
     def open_schedule_reports(self):
         if self.is_on_path("/reports/scheduled"):
-            self.page.reload()
+            # A plain reload lands on /home (NEW-1) -- re-enter via the tab
+            # click instead, which achieves the same "fresh list" intent.
+            self._ensure_on_reports_module()
+            self.schedule_tab.click()
         else:
-            self.page.goto("/reports/scheduled")
+            self._ensure_on_reports_module()
+            self.schedule_tab.click()
         self.expect_path("/reports/scheduled")
         self.wait_for_schedule_reports_page()
         self.wait_for_schedule_list_loaded()
 
     def refresh_schedule_reports(self):
-        self.page.reload()
+        # A plain page.reload() lands on /home (NEW-1, see
+        # retest_bug_report.md), not back on /reports/scheduled -- re-enter
+        # via the nav link + tab click instead, which still gives a fresh
+        # list fetch (the actual intent here).
+        Navbar(self.page).go_to("Reports")
+        self.schedule_tab.click()
         self.expect_path("/reports/scheduled")
         self.wait_for_schedule_reports_page()
         self.wait_for_schedule_list_loaded()
 
     def refresh(self):
+        # A plain page.reload() lands on /home (NEW-1) -- callers that need
+        # "fresh state" should re-enter via _ensure_on_reports_module()
+        # instead. Kept as a thin wrapper (rather than removed) since some
+        # callers may deliberately want to observe the actual reload
+        # behavior (e.g. a NEW-1 regression test).
         self.page.reload()
         self.wait_until_ready()
 
@@ -611,6 +656,26 @@ class ReportsPage(BasePage):
     def has_missing_option_data(self) -> bool:
         return self.contains_any_text(["No Data Found"])
 
+    def _type_date_textbox(self, textbox_name: str, value: str):
+        """Type a date into the Custom-schedule From/To Date fields via real
+        keystrokes + Tab. Confirmed live: .fill() (even with a synthetic
+        input/change/blur dispatch) leaves this Angular datepicker's own
+        reformat-on-blur validation from ever firing, so the field keeps
+        showing the raw typed string and the form is stuck thinking it's
+        incomplete (Schedule stays disabled with no field-level error).
+        This was a test-script gap, not a product bug -- real keystrokes
+        trigger it correctly, matching how a human would actually fill the
+        field. (The genuine product bug found alongside this is NEW-6 in
+        retest_bug_report.md: a same-day From/To range still blocks Submit
+        even once the fields are filled this correctly.)"""
+        textbox = self.page.get_by_role("textbox", name=textbox_name)
+        self.wait_for_visible(textbox)
+        textbox.click()
+        textbox.fill("")
+        textbox.type(value, delay=30)
+        self.page.keyboard.press("Tab")
+        self.wait_for_loading_to_finish()
+
     def _fill_textbox(self, textbox_name: str, value: str):
         textbox = self.page.get_by_role("textbox", name=textbox_name)
         self.wait_for_visible(textbox)
@@ -693,8 +758,8 @@ class ReportsPage(BasePage):
         self._select_option(frequency)
 
         if frequency == "Custom":
-            self._fill_textbox("From", from_date or "")
-            self._fill_textbox("To", to_date or "")
+            self._type_date_textbox("From", from_date or "")
+            self._type_date_textbox("To", to_date or "")
         elif schedule_till_day_name:
             self.page.get_by_role("button", name="Open calendar").click()
             target_day = int(schedule_till_day_name)
@@ -939,7 +1004,12 @@ class ReportsPage(BasePage):
         self.wait_for_reports_page()
 
     def wait_for_table(self):
-        result = self.page.get_by_role("table").or_(self.page.get_by_text("info", exact=True)).or_(self.page.get_by_text("No data", exact=False))
+        # Uses self.result_table (scoped to table.mat-mdc-table), not a bare
+        # get_by_role("table") -- Fleet Summary keeps an unrelated plain
+        # <table> permanently on the page (see self.result_table's comment),
+        # which would satisfy an unscoped wait immediately without actually
+        # waiting for Generate's real result to render.
+        result = self.result_table.or_(self.page.get_by_text("info", exact=True)).or_(self.page.get_by_text("No data", exact=False))
         result.first.wait_for(state="visible", timeout=45000)
         return True
 
@@ -1115,6 +1185,13 @@ class ReportsPage(BasePage):
 
     # ─── Table Pagination Methods ───────────────────────────────────────
 
+    def _report_pagination_group(self):
+        """The report results table's own pagination controls, scoped to
+        avoid strict-mode collisions with the identically-named Next/
+        Previous page buttons in the left-hand fleet vehicle list, which
+        stays mounted behind the report view."""
+        return self.page.get_by_role("group", name="Report table pagination")
+
     def change_rows_per_page(self, value: str):
         """Change the rows-per-page selector to the given value.
 
@@ -1134,39 +1211,39 @@ class ReportsPage(BasePage):
 
     def click_next_page(self):
         """Click the Next page pagination button."""
-        btn = self.page.get_by_role("button", name="Next page")
+        btn = self._report_pagination_group().get_by_label("Next page")
         self.wait_for_visible(btn)
         btn.click()
         self.wait_for_loading_to_finish()
 
     def click_previous_page(self):
         """Click the Previous page pagination button."""
-        btn = self.page.get_by_role("button", name="Previous page")
+        btn = self._report_pagination_group().get_by_label("Previous page")
         self.wait_for_visible(btn)
         btn.click()
         self.wait_for_loading_to_finish()
 
     def click_first_page(self):
         """Click the First page pagination button."""
-        btn = self.page.get_by_role("button", name="First page")
+        btn = self._report_pagination_group().get_by_label("First page")
         self.wait_for_visible(btn)
         btn.click()
         self.wait_for_loading_to_finish()
 
     def click_last_page(self):
         """Click the Last page pagination button."""
-        btn = self.page.get_by_role("button", name="Last page")
+        btn = self._report_pagination_group().get_by_label("Last page")
         self.wait_for_visible(btn)
         btn.click()
         self.wait_for_loading_to_finish()
 
     def is_next_page_enabled(self) -> bool:
         """Check if Next page button is enabled."""
-        return self.page.get_by_role("button", name="Next page").is_enabled()
+        return self._report_pagination_group().get_by_label("Next page").is_enabled()
 
     def is_previous_page_enabled(self) -> bool:
         """Check if Previous page button is enabled."""
-        return self.page.get_by_role("button", name="Previous page").is_enabled()
+        return self._report_pagination_group().get_by_label("Previous page").is_enabled()
 
     def get_pagination_info(self) -> str:
         """Get pagination text like '1 – 10 of 36'."""
@@ -1210,7 +1287,10 @@ class ReportsPage(BasePage):
 
     def sort_table_by_column(self, column_name: str):
         """Click a column header to sort by that column."""
-        header = self.result_table.last.locator("thead").get_by_text(column_name, exact=True).first
+        # exact=True can miss a real header cell whose text node is wrapped
+        # alongside a sort-icon element (confirmed live for "Vehicle No" on
+        # Fleet Summary) -- match on contained text instead.
+        header = self.result_table.last.locator("thead").get_by_text(column_name, exact=False).first
         self.wait_for_visible(header)
         header.click()
         self.wait_for_loading_to_finish()
@@ -1250,20 +1330,34 @@ class ReportsPage(BasePage):
         btn.click()
 
     def export_buttons_visible(self) -> list[str]:
-        """Return names of visible export buttons."""
+        """Return names of visible export buttons.
+
+        Confirmed live 2026-09-12: these buttons can render a beat after
+        the results table itself (wait_for_table()'s own signal), so an
+        immediate, unwaited check right after generating a report can
+        catch them not-yet-mounted -- poll briefly instead of one snapshot.
+        """
         export_names = ["Excel", "CSV", "PDF"]
-        visible = []
-        for name in export_names:
-            btn = self.page.get_by_role("button", name=re.compile(rf"Export report to {name}", re.I))
-            if btn.count() > 0 and btn.first.is_visible():
-                visible.append(name)
-        return visible
+        deadline = time.monotonic() + 5
+        while True:
+            visible = []
+            for name in export_names:
+                btn = self.page.get_by_role("button", name=re.compile(rf"Export report to {name}", re.I))
+                if btn.count() > 0 and btn.first.is_visible():
+                    visible.append(name)
+            if visible or time.monotonic() >= deadline:
+                return visible
+            self.page.wait_for_timeout(250)
 
     # ─── Downloads Page Methods ─────────────────────────────────────────
 
     def open_downloads_page(self):
-        """Navigate to the Downloads page (/profile/downloads)."""
-        self.page.goto("/profile/downloads")
+        """Navigate to the Downloads page (/profile/downloads) via the
+        Account menu -- a direct page.goto() does not work on this app
+        (NEW-1, see retest_bug_report.md)."""
+        from Pages.account_menu_page import AccountMenuPage
+
+        AccountMenuPage(self.page).open_downloads()
         self.expect_path("/profile/downloads")
         # get_by_text("Downloads", exact=True) can match a hidden duplicate label;
         # the results table is a more reliable visible-content signal.

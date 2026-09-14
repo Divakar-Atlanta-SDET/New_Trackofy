@@ -1,3 +1,5 @@
+import re
+
 from playwright.sync_api import Page
 
 from Pages.base_page import BasePage
@@ -19,13 +21,18 @@ class LoginPage(BasePage):
         super().__init__(page)
         self.config = config
         # locators
-        self.heading = page.get_by_role("heading", name="Sign in to you account")
+        # Bug #48 (Bug_Report.md) fixed 2026-09-14: the heading typo
+        # ("Sign in to you account") is corrected to "your account" --
+        # matches loosely so this locator survives either wording.
+        self.heading = page.get_by_role("heading", name="Sign in to y", exact=False)
         self.username_input = page.get_by_placeholder("Enter username or email")
         self.password_input = page.get_by_placeholder("Enter password")
         self.login_btn = page.get_by_role("button", name="Sign in", exact=True)
-        # Confirmed live: real aria-label, but tabindex="-1" (Bug #49,
-        # Bug_Report.md) makes it unreachable via Tab despite this.
-        self.password_toggle_btn = page.get_by_role("button", name="Toggle password visibility")
+        # Bug #49 (Bug_Report.md) fixed 2026-09-14: aria-label changed
+        # from "Toggle password visibility" to "Show password"/"Hide
+        # password" (toggles with state), and tabindex="-1" is gone --
+        # genuinely Tab-reachable now. Matches loosely for both states.
+        self.password_toggle_btn = page.get_by_role("button", name=re.compile("password", re.I))
         self.terms_checkbox = page.get_by_role("checkbox")
         self.forgot_password_link = page.get_by_role("link", name="Forgot password?")
         self.help_center_link = page.get_by_role("link", name="Help Center")

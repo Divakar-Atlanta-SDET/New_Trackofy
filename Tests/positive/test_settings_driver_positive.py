@@ -104,7 +104,7 @@ def test_set_049_edit_driver(driver_page):
         driver_page.update_driver_btn.click()
         driver_page.wait_for_dialog_closed()
 
-        driver_page.page.reload()
+        driver_page.page.reload(); driver_page.reopen()
         driver_page.wait_for_loading_to_finish()
         driver_page.search_and_wait(name)
         row = driver_page.row_containing(name)
@@ -126,7 +126,7 @@ def test_set_050_delete_driver(driver_page):
     expect(driver_page.row_containing(name)).to_be_visible()
 
     driver_page.delete_driver(name)
-    driver_page.page.reload()
+    driver_page.page.reload(); driver_page.reopen()
     driver_page.wait_for_loading_to_finish()
     driver_page.search_and_wait(name)
     expect(driver_page.row_containing(name)).to_have_count(0)
@@ -134,7 +134,13 @@ def test_set_050_delete_driver(driver_page):
 
 @pytest.mark.positive
 def test_set_053_change_driver_assigned_unit(driver_page):
-    """SET-053: Change a driver's assigned unit; driver is associated with the new unit."""
+    """SET-053: Change a driver's assigned unit. Confirmed live
+    (2026-09-13) the correct flow is unassign-then-reassign, not a direct
+    vehicle swap via "Update Assignment" while already assigned (that's
+    rejected as "already assigned" -- expected, not a bug, per
+    Pages/driver_page.py's assign_vehicle() docstring). The full
+    assign -> unassign -> reassign cycle works correctly end-to-end.
+    """
     name = _unique_name("ReassignDrv")
     driver_page.open_add_driver_form()
     _fill_valid_driver_form(driver_page, name)
@@ -152,12 +158,27 @@ def test_set_053_change_driver_assigned_unit(driver_page):
         options.nth(0).click()
         driver_page._submit_assignment_if_needed()
 
+        driver_page.unassign_vehicle(name)
+        toast_text = driver_page.page.locator("app-toast").inner_text()
+        assert "unassign" in toast_text.lower() and "success" in toast_text.lower(), (
+            f"expected a success toast confirming the unassignment, got: {toast_text!r}"
+        )
+
+        driver_page.page.reload(); driver_page.reopen()
+        driver_page.wait_for_loading_to_finish()
+        driver_page.search_and_wait(name)
+        assert first_vehicle not in driver_page.row_containing(name).inner_text(), (
+            f"expected {first_vehicle} to be genuinely cleared from this driver's row after Unassign."
+        )
+
+        # reassign to a different vehicle -- pick from the end of the list,
+        # less likely to collide with another test driver's assignment
         driver_page.assign_unit_button(name).click()
         driver_page.wait_for_visible(driver_page.assignment_vehicle_select)
         driver_page.assignment_vehicle_select.click()
         options = driver_page.page.get_by_role("option")
         second_vehicle = None
-        for i in range(options.count()):
+        for i in reversed(range(options.count())):
             text = options.nth(i).inner_text().strip()
             if text != first_vehicle:
                 second_vehicle = text
@@ -165,9 +186,10 @@ def test_set_053_change_driver_assigned_unit(driver_page):
                 break
         if second_vehicle is None:
             pytest.skip("No other vehicle available on this account to reassign to")
+        expect(driver_page.assign_vehicle_btn).to_be_visible()
         driver_page._submit_assignment_if_needed()
 
-        driver_page.page.reload()
+        driver_page.page.reload(); driver_page.reopen()
         driver_page.wait_for_loading_to_finish()
         driver_page.search_and_wait(name)
         expect(driver_page.row_containing(name)).to_contain_text(second_vehicle)
@@ -196,7 +218,7 @@ def test_set_052_assign_driver_to_unit(driver_page):
         first_option.click()
         driver_page._submit_assignment_if_needed()
 
-        driver_page.page.reload()
+        driver_page.page.reload(); driver_page.reopen()
         driver_page.wait_for_loading_to_finish()
         driver_page.search_and_wait(name)
         expect(driver_page.row_containing(name)).to_contain_text(vehicle_name)

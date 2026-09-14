@@ -126,16 +126,17 @@ class AccountMenuPage(BasePage):
 
     def sign_out(self):
         """Opens the confirmation dialog and confirms -- Sign Out is a
-        two-step flow, confirmed live ("Are you sure you want to
-        logout?" / Cancel / Logout)."""
+        two-step flow. Confirmed live (2026-09-13): the dialog's wording
+        changed from "Are you sure you want to logout?" / Cancel / Logout
+        to "Are you sure you want to sign out?" / Cancel / Sign out."""
         self.open()
         self.sign_out_item.click()
         self.wait_for_visible(self.sign_out_confirm_dialog())
-        self.sign_out_confirm_dialog().get_by_role("button", name="Logout", exact=True).click()
+        self.sign_out_confirm_dialog().get_by_role("button", name="Sign out", exact=True).click()
         self.page.wait_for_timeout(1000)
 
     def sign_out_confirm_dialog(self) -> Locator:
-        return self.page.locator(".cdk-overlay-container .cdk-overlay-pane").filter(has_text="Are you sure you want to logout")
+        return self.page.locator(".cdk-overlay-container .cdk-overlay-pane").filter(has_text="Are you sure you want to sign out")
 
     def cancel_sign_out(self):
         self.open()

@@ -68,7 +68,7 @@ def test_set_071_edit_group(vehicle_group_page):
         name = new_name  # cleanup must target the renamed row from here on,
         # regardless of whether the assertions below pass
 
-        vehicle_group_page.page.reload()
+        vehicle_group_page.page.reload(); vehicle_group_page.reopen()
         vehicle_group_page.wait_for_loading_to_finish()
         vehicle_group_page.page.wait_for_timeout(1500)
         expect(vehicle_group_page.row_containing(new_name)).to_be_visible()
@@ -94,7 +94,7 @@ def test_set_072_delete_group(vehicle_group_page):
     expect(vehicle_group_page.row_containing(name)).to_be_visible()
 
     vehicle_group_page.delete_group(name)
-    vehicle_group_page.page.reload()
+    vehicle_group_page.page.reload(); vehicle_group_page.reopen()
     vehicle_group_page.wait_for_loading_to_finish()
     expect(vehicle_group_page.row_containing(name)).to_have_count(0)
 
@@ -110,7 +110,7 @@ def test_set_074_group_assignment_persists_after_refresh(vehicle_group_page):
     vehicle_group_page.wait_for_dialog_closed()
 
     try:
-        vehicle_group_page.page.reload()
+        vehicle_group_page.page.reload(); vehicle_group_page.reopen()
         vehicle_group_page.wait_for_loading_to_finish()
         vehicle_group_page.view_button(name).click()
         vehicle_group_page.wait_for_loading_to_finish()

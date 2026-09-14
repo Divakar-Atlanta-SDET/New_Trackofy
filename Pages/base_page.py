@@ -37,6 +37,54 @@ class BasePage:
             loading_indicators.first.wait_for(state="hidden", timeout=self.SHORT_TIMEOUT_MS)
         except TimeoutError:
             pass
+        self.hide_feedback_widget()
+
+    def hide_feedback_widget(self):
+        """Bug_Report.md #76: a fixed-position "FEEDBACK" widget (present on
+        at least Dashboard, Unit, and Settings) can sit on top of real row
+        controls that happen to render near 40% viewport height, blocking
+        real clicks with no visual indication anything is in the way --
+        confirmed live it blocks Settings row action buttons (Location,
+        Vehicle Performance, Alert Configuration) whenever a target row
+        lands there. force=True does not help (Playwright still reports the
+        widget as the actionability blocker). A one-shot hide isn't enough
+        -- Angular can re-render the widget later in the same page's life --
+        so this installs a MutationObserver (once per page/navigation, via
+        an id guard) that keeps re-hiding it. Called from
+        wait_for_loading_to_finish(), already invoked before nearly every
+        interaction across the framework, so this fixes every call site at
+        once instead of patching each one individually.
+
+        NOT applied on /profile/* pages: confirmed live this exact widget
+        is the legitimate Feedback-prompt trigger there (Pages/feedback_page.py),
+        not a stray overlay -- hiding it there would silently break a real
+        feature instead of fixing a bug.
+        """
+        if "/profile" in self.page.url:
+            return
+        try:
+            self.page.evaluate(
+                """
+                () => {
+                    if (document.getElementById('__qa_hide_feedback_widget')) return;
+                    const marker = document.createElement('meta');
+                    marker.id = '__qa_hide_feedback_widget';
+                    document.head.appendChild(marker);
+                    const hideIt = () => {
+                        document.querySelectorAll('div.fixed').forEach(el => {
+                            const cls = el.className || '';
+                            if (cls.includes('top-[40vh]') && cls.includes('right-0')) {
+                                el.style.display = 'none';
+                            }
+                        });
+                    };
+                    hideIt();
+                    new MutationObserver(hideIt).observe(document.body, {childList: true, subtree: true});
+                }
+                """
+            )
+        except Exception:
+            pass
 
     def type_into(self, locator: Locator, text: str, delay: int = 15):
         # Confirmed live: some Angular-bound fields (e.g. the Raise Ticket

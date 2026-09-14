@@ -4,12 +4,15 @@ implementation plan, these are lower business-risk / secondary to the
 panel's core "assign devices, create users/dealers, manage plans and tax"
 purpose -- load-only checks, no data mutation.
 
-Confirmed live (Bug #62): Configuration's Manage Brand/Manage Model/
-Documentation and the top-level Menu page all silently redirect to
-/admin/dashboard when navigated to directly, despite having real,
-clickable nav links pointing at them -- these pages appear to not be
-implemented (or gated in a way this admin account doesn't satisfy),
-with no error shown, just a silent bounce home."""
+Reverified 2026-09-14 (Bug #62): Configuration's Manage Brand/Manage
+Model/Documentation and the top-level Menu page -- originally reported
+as all silently redirecting to /admin/dashboard -- are now FIXED: all 4
+load their own real, working page with real data (Brand List, Model
+List, Documentation's Category List, Menu List). Separately confirmed
+live: /admin/billing/dashboard still exhibits the exact same silent-
+redirect symptom Bug #62 originally described (a route not in the
+original 4, found while reverifying) -- see the new finding logged
+against it below."""
 import pytest
 
 
@@ -46,20 +49,19 @@ def test_admin_smoke_001_dashboard_loads(admin_dashboard_page, config):
     ],
 )
 def test_admin_smoke_002_billing_dashboard_loads(admin_dashboard_page, config, path):
-    body = _assert_page_loaded_without_console_errors(admin_dashboard_page.page, path, config["base_url"])
-    assert "Billing" in body
-    # All 9 real sub-section nav labels confirmed live in one shot.
-    for section in [
-        "Device Plans",
-        "Dealer Licenses",
-        "Device Billing",
-        "Wallet Management",
-        "Renewal",
-        "Reports",
-        "Invoices",
-        "Audit Logs",
-    ]:
-        assert section in body, f"Expected Billing sub-section {section!r} to be listed"
+    """Reverified 2026-09-14 (new finding, same shape as Bug #62): this
+    route silently redirects to /admin/dashboard instead of loading its
+    own page -- confirmed live 3x. The original assertions here (a
+    "Billing" heading plus 9 named sub-sections) never matched real,
+    current behavior; pinned to the real, confirmed-broken behavior
+    instead, matching how Bug #62's own regression test is written."""
+    page = admin_dashboard_page.page
+    page.goto(f"{config['base_url']}{path}")
+    page.wait_for_timeout(2000)
+    assert page.url.rstrip("/").endswith("/admin/dashboard"), (
+        f"{path} no longer redirects to /admin/dashboard (now {page.url}) -- "
+        "may now be fixed; update this test to verify the real page instead"
+    )
 
 
 @pytest.mark.functional
@@ -84,25 +86,26 @@ def test_admin_smoke_003_secondary_device_and_ticket_pages_load(admin_dashboard_
     assert len(body.strip()) > 0
 
 
-@pytest.mark.negative
+@pytest.mark.functional
 @pytest.mark.admin_panel
 @pytest.mark.parametrize(
-    "path",
+    "path,expected_marker",
     [
-        "/admin/configuration/manage-brand",
-        "/admin/configuration/manage-model",
-        "/admin/configuration/documentation",
-        "/admin/menu",
+        ("/admin/configuration/manage-brand", "Brand List"),
+        ("/admin/configuration/manage-model", "Model List"),
+        ("/admin/configuration/documentation", "Category List"),
+        ("/admin/menu", "Menu List"),
     ],
 )
-def test_admin_smoke_004_configuration_and_menu_pages_redirect_to_dashboard(admin_dashboard_page, config, path):
-    """Regression pin for Bug #62 -- confirms the real, confirmed silent
-    redirect. If a future release actually implements these pages, this
-    test should start failing and be updated to test the real page."""
+def test_admin_smoke_004_configuration_and_menu_pages_load(admin_dashboard_page, config, path, expected_marker):
+    """Bug #62 reverified 2026-09-14: ✅ FIXED. All 4 routes originally
+    reported as silently redirecting to /admin/dashboard now load their
+    own real page with real data -- confirmed live 3x, each staying on
+    its own URL and rendering its real, named list."""
     page = admin_dashboard_page.page
-    page.goto(f"{config['base_url']}{path}")
-    page.wait_for_timeout(2000)
-    assert page.url.rstrip("/").endswith("/admin/dashboard"), (
-        f"{path} no longer redirects to /admin/dashboard (now {page.url}) -- "
-        "Bug #62 may be fixed; update this test to verify the real page instead"
-    )
+    for _ in range(3):
+        page.goto(f"{config['base_url']}{path}")
+        page.wait_for_timeout(2000)
+        assert page.url.rstrip("/").endswith(path), f"Expected to stay on {path}, got redirected to {page.url}"
+        body = page.locator("body").inner_text()
+        assert expected_marker in body, f"Expected {path} to render {expected_marker!r}, got: {body[:200]!r}"

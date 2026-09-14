@@ -36,8 +36,14 @@ def test_tc016_handle_settings_api_failure(unit_settings):
     unit_settings_page.page.wait_for_timeout(1500)
 
     unit_settings_page.page.unroute("**/api/**")
+    # A plain page.reload() lands on /home, not back on /unit -- confirmed
+    # live 2026-09-11, app-wide SPA routing defect (retest_bug_report.md,
+    # NEW-1), unrelated to this test's actual intent. Still perform a real
+    # reload (to verify server-persisted state, not just Angular's client
+    # cache) but recover via the nav-link workaround afterward instead of
+    # asserting on the URL a reload doesn't actually land on.
     unit_settings_page.page.reload()
-    unit_page.wait_for_unit_page_ready()
+    unit_page.open_unit_list()
     unit_page.open_unit_settings_by_index(0)
     unit_settings_page.wait_for_modal_open()
     unit_settings_page.switch_tab("General")
