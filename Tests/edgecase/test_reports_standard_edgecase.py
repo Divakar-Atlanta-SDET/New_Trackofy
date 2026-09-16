@@ -148,10 +148,14 @@ def test_rep_rel_001_002_003_rapid_report_switching(page, config, credentials):
 @pytest.mark.edgecase
 @pytest.mark.reports
 def test_rep_page_refresh_mid_workflow_recovers(page, config, credentials):
-    """Refresh mid-workflow. Instance of NEW-1 (retest_bug_report.md, app-wide):
-    a raw refresh bounces to /home instead of recovering to the reports page.
-    Not a CSV-numbered case (REP-REL-008/009 are actually about out-of-order/
-    concurrent requests, not refresh -- see
+    """Refresh mid-workflow.
+
+    Was an instance of NEW-1 (retest_bug_report.md, app-wide): a raw refresh
+    used to bounce to /home instead of recovering to the reports page.
+    Confirmed live 2026-09-16: NEW-1 appears fixed app-wide -- refresh now
+    correctly stays on the reports page. Flipped to assert the fixed
+    behavior. Not a CSV-numbered case (REP-REL-008/009 are actually about
+    out-of-order/concurrent requests, not refresh -- see
     test_rep_rel_008_009_stale_response_does_not_win below; this test
     previously mislabeled itself with those IDs)."""
     reports_page = login_and_open_reports(page, config, credentials)
@@ -159,10 +163,10 @@ def test_rep_page_refresh_mid_workflow_recovers(page, config, credentials):
     reports_page.select_vehicle(REPORT_TEST_VEHICLE_NAME)
     # Refresh mid-workflow
     reports_page.refresh()
-    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
-    assert not reports_page.standard_catalog_visible(), (
-        "Expected the known NEW-1 bounce-to-/home on refresh -- if still on a usable reports "
-        "page, NEW-1 may be fixed for this path; update this test to assert recovery."
+    reports_page.wait_until_ready()
+    assert reports_page.standard_catalog_visible(), (
+        "Expected refresh to recover to a usable reports page (NEW-1 fixed) -- if it now bounces "
+        "to /home again, NEW-1 has regressed."
     )
 
 

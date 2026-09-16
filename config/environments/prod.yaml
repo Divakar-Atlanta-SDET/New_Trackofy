@@ -1,7 +1,7 @@
-base_url: "https://new.trackofy.com"
+base_url: "https://v6.trackofy.com"
 
 browser: "chromium"
-headless: true
-# headless: false
+# headless: true
+headless: false
 
 default_timeout: 10000

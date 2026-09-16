@@ -48,18 +48,22 @@ def test_rep_cus_014_015_open_close_dialog_rapidly(page, config, credentials):
 @pytest.mark.edgecase
 @pytest.mark.reports
 def test_rep_cus_017_refresh_during_creation(page, config, credentials):
-    """REP-CUS-017: Refresh page during custom report creation. Instance of
-    NEW-1 (retest_bug_report.md, app-wide): a raw refresh bounces to /home
-    instead of recovering to /reports/custom -- confirmed here specifically
-    mid-creation, not just on an already-idle module page."""
+    """REP-CUS-017: Refresh page during custom report creation.
+
+    Was an instance of NEW-1 (retest_bug_report.md, app-wide): a raw refresh
+    used to bounce to /home instead of recovering to /reports/custom.
+    Confirmed live 2026-09-16: NEW-1 appears fixed app-wide -- refresh now
+    correctly stays on the current page instead of redirecting. Flipped to
+    assert the fixed behavior (any in-progress unsaved form state is a
+    separate, real "not preserved" edge case, not asserted here)."""
     reports_page = login_and_open_reports(page, config, credentials)
     reports_page.open_new_custom_report_modal()
     reports_page.fill_custom_report_general("Refresh Test", "Testing refresh")
     page.reload()
-    page.wait_for_url(re.compile(rf"{re.escape(config['base_url'])}/home/?$"), timeout=15000)
-    assert not reports_page.is_on_path("/reports/custom"), (
-        "Expected the known NEW-1 bounce-to-/home on refresh -- if the page now stays on "
-        "/reports/custom, NEW-1 may be fixed for this path; update this test to assert recovery."
+    reports_page.wait_until_ready()
+    assert reports_page.is_on_path("/reports/custom"), (
+        "Expected refresh to stay on /reports/custom (NEW-1 fixed) -- if it now bounces to "
+        "/home again, NEW-1 has regressed."
     )
 
 

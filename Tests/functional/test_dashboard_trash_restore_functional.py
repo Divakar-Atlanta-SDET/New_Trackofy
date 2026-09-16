@@ -21,21 +21,28 @@ def test_dash_trs_004_restored_card_retains_settings(page, config, credentials):
     if not titles: pytest.skip()
     orig = titles[0]
     new_name = "TrashSettings_Test"
-    
-    dashboard_page.click_card_edit(orig)
-    dashboard_page.set_card_name(new_name)
-    dashboard_page.click_save_settings()
-    
-    dashboard_page.click_add_to_trash(new_name)
-    dashboard_page.open_trash_store()
-    dashboard_page.restore_from_trash(new_name)
-    
-    assert dashboard_page.card_is_visible(new_name)
-    
-    # cleanup
-    dashboard_page.click_card_edit(new_name)
-    dashboard_page.set_card_name(orig)
-    dashboard_page.click_save_settings()
+
+    # The rename-back cleanup MUST run even if the assertion below fails --
+    # confirmed live 2026-09-16: it previously ran only on the success path,
+    # so a single failed assertion left a real dashboard card permanently
+    # stuck under this test-only name (found it still sitting on the live
+    # dashboard from an earlier run, well after that run had ended).
+    try:
+        dashboard_page.click_card_edit(orig)
+        dashboard_page.set_card_name(new_name)
+        dashboard_page.click_save_settings()
+
+        dashboard_page.click_add_to_trash(new_name)
+        dashboard_page.open_trash_store()
+        dashboard_page.restore_from_trash(new_name)
+        page.wait_for_timeout(1500)  # let the restored card finish re-rendering before checking
+
+        assert dashboard_page.card_is_visible(new_name)
+    finally:
+        if dashboard_page.card_is_visible(new_name):
+            dashboard_page.click_card_edit(new_name)
+            dashboard_page.set_card_name(orig)
+            dashboard_page.click_save_settings()
 
 @pytest.mark.functional
 @pytest.mark.dashboard

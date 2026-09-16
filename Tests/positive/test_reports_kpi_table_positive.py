@@ -57,7 +57,7 @@ def test_rep_kpi_positive_ignition_on_percentage(page, config, credentials):
 def test_rep_kpi_positive_table_has_data(page, config, credentials):
     """Verify the generated report table has at least one row of data."""
     reports_page = login_and_generate_fleet_summary(page, config, credentials)
-    assert reports_page.has_results_table(), "Results table not visible"
+    assert reports_page.wait_for_results_table(), "Results table not visible"
     row_count = reports_page.result_row_count()
     assert row_count > 0, f"Table has {row_count} rows, expected at least 1"
 

@@ -76,7 +76,7 @@ def test_admin_e2e_001_tax_then_plan_then_user_workflow(
         last_page = admin_user_page.page.get_by_role("button", name="Last Page")
         if last_page.is_enabled():
             last_page.click()
-            admin_user_page.page.wait_for_timeout(2000)
+            admin_user_page.wait_for_skeleton_rows_to_clear()
         user_row = admin_user_page.rows().filter(has_text=user_mobile)
         assert user_row.count() == 1, f"Transaction 3 failed: user (mobile {user_mobile}) did not appear"
         created_user = True
@@ -87,7 +87,7 @@ def test_admin_e2e_001_tax_then_plan_then_user_workflow(
             last_page = admin_user_page.page.get_by_role("button", name="Last Page")
             if last_page.is_enabled():
                 last_page.click()
-                admin_user_page.page.wait_for_timeout(2000)
+                admin_user_page.wait_for_skeleton_rows_to_clear()
             row = admin_user_page.rows().filter(has_text=user_mobile)
             if row.count() > 0:
                 admin_user_page.request_delete(row.first, reason="QA automation cleanup - E2E workflow test")

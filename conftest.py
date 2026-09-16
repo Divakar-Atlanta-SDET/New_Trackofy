@@ -3,6 +3,7 @@ import re
 import time
 from pathlib import Path
 
+import allure
 import pytest
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
@@ -79,6 +80,31 @@ def _assert_no_server_errors(request, errors):
     assert not errors, "Application API returned Internal Server Error during test:\n\n" + "\n\n".join(errors)
 
 
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """Stash each phase's result on the item so fixture teardowns (which run
+    after the test body but can't see its outcome any other way) can tell
+    whether the test failed and attach Allure evidence accordingly."""
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, f"rep_{rep.when}", rep)
+
+
+def _attach_failure_evidence(request, page):
+    """Best-effort Allure screenshot/URL/console-log attachment for a failed
+    test. Called from every page-yielding fixture's teardown, right before
+    context.close() -- centralized here so each fixture stays a one-liner
+    instead of duplicating capture logic five times."""
+    failed = getattr(request.node, "rep_call", None) is not None and request.node.rep_call.failed
+    if not failed:
+        return
+    try:
+        allure.attach(page.screenshot(full_page=True), name="failure-screenshot", attachment_type=allure.attachment_type.PNG)
+        allure.attach(page.url, name="failure-url", attachment_type=allure.attachment_type.TEXT)
+    except Exception:
+        pass
+
+
 class NetworkMonitor:
     def __init__(self, page):
         self.page = page
@@ -150,6 +176,18 @@ def pytest_addoption(parser):
             "needed."
         ),
     )
+    parser.addoption(
+        "--browser-engine",
+        action="store",
+        choices=["chromium", "firefox", "webkit"],
+        default=None,
+        help=(
+            "Playwright engine to launch. Defaults to the environment yaml's "
+            "`browser:` key (itself defaulting to chromium) -- previously this key "
+            "was declared in every environments/*.yaml but never actually read, so "
+            "the suite silently only ever ran on Chromium regardless of config."
+        ),
+    )
 
 
 @pytest.fixture(scope="session")
@@ -196,8 +234,10 @@ def config(request):
 
 
 @pytest.fixture(scope="session")
-def browser(playwright, config):
-    browser = playwright.chromium.launch(
+def browser(request, playwright, config):
+    engine_name = request.config.getoption("--browser-engine") or config.get("browser", "chromium")
+    engine = getattr(playwright, engine_name)
+    browser = engine.launch(
         headless=config["headless"]
     )
 
@@ -226,12 +266,13 @@ def page(request, browser, config, session_mode):
 
     yield page
 
+    _attach_failure_evidence(request, page)
     context.close()
     _assert_no_server_errors(request, errors)
 
 
 @pytest.fixture(scope="session")
-def auth_storage_state(worker_id, playwright, config, credentials):
+def auth_storage_state(request, worker_id, playwright, config, credentials):
     """One real UI login per pytest-xdist worker, cached to a worker-specific
     file so tests reuse the session instead of logging in through the UI every
     time. Keyed by worker_id (xdist gives each worker its own process/file, so
@@ -243,7 +284,8 @@ def auth_storage_state(worker_id, playwright, config, credentials):
     if state_path.exists() and time.time() - state_path.stat().st_mtime < AUTH_STATE_MAX_AGE_SECONDS:
         return state_path
 
-    browser = playwright.chromium.launch(headless=config["headless"])
+    engine_name = request.config.getoption("--browser-engine") or config.get("browser", "chromium")
+    browser = getattr(playwright, engine_name).launch(headless=config["headless"])
     context = browser.new_context(base_url=config["base_url"])
     page = context.new_page()
     login_page = LoginPage(page, config)
@@ -280,6 +322,7 @@ def authenticated_page(request, browser, config, credentials, session_mode):
 
     yield page
 
+    _attach_failure_evidence(request, page)
     context.close()
     _assert_no_server_errors(request, errors)
 
@@ -312,6 +355,7 @@ def vt_authenticated_page(request, browser, config, adas_credentials):
 
     yield page
 
+    _attach_failure_evidence(request, page)
     context.close()
     _assert_no_server_errors(request, errors)
 
@@ -673,6 +717,7 @@ def admin_authenticated_page(request, browser, config, admin_credentials):
 
     yield page
 
+    _attach_failure_evidence(request, page)
     context.close()
     _assert_no_server_errors(request, errors)
 
@@ -743,6 +788,7 @@ def can_authenticated_page(request, browser, config, can_credentials):
 
     yield page
 
+    _attach_failure_evidence(request, page)
     context.close()
     _assert_no_server_errors(request, errors)
 

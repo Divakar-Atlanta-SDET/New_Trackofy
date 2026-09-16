@@ -35,6 +35,11 @@ class TrackingPage(BasePage):
 
         # Shared Vehicle/Split-Screen controls (one tab's form renders at a time)
         self.split_screen_select = page.get_by_role("combobox", name="Split Screen")
+        # Confirmed live 2026-09-16: once tracking starts, the whole config
+        # panel (including split_screen_select) collapses into a minimized
+        # bottom bar to give the map more room -- it isn't gone, just
+        # hidden, and this button reveals it again.
+        self.expand_bottom_panel_button = page.get_by_title("Expand bottom panel")
         self.vehicle_select = page.get_by_role("combobox", name="Select Vehicle")
         # Named "Select Vehicle(s)" -- disambiguates from the Split Screen
         # listbox, which can otherwise linger in the DOM and confuse a bare
@@ -304,3 +309,13 @@ class TrackingPage(BasePage):
 
     def vehicle_marker_on_map(self, vehicle_name: str):
         return self.page.get_by_role("button", name=vehicle_name, exact=True)
+
+    def map_overlay_shows_vehicle(self, vehicle_name: str) -> bool:
+        """The bottom-left map overlay badge (vehicle icon + name + playback
+        status) stays mounted regardless of whether the filter panel is
+        expanded or collapsed into the mini player bar -- confirmed live
+        2026-09-16 this is the reliable way to check which vehicle's data is
+        actually loaded/showing, since the filter/select panel itself gets
+        replaced by player controls once Load Playback succeeds."""
+        badge = self.page.get_by_text(vehicle_name, exact=True)
+        return badge.count() > 0 and badge.first.is_visible()

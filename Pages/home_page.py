@@ -33,9 +33,6 @@ class HomePage(BasePage):
 
     FLEET_STATUS_FILTERS = ["Active", "Running", "Idle", "Stopped", "No Data", "BMS", "Video"]
     GROUP_STATUS_FILTERS = ["Active", "Running", "Idle", "Stopped", "No Data"]
-    # Confirmed live -- these are this account's real groups (matches the
-    # design doc's example exactly).
-    KNOWN_GROUPS = ["Default", "Delhi", "Bhopal", "Dwarka"]
 
     def __init__(self, page: Page):
         super().__init__(page)
@@ -471,6 +468,21 @@ class HomePage(BasePage):
         # nothing even though "commute" is really the card's first line).
         return self.page.locator("article").filter(has_text="commute")
 
+    def real_group_names(self) -> list[str]:
+        """Discovers the account's actual current groups from the live page
+        instead of a hardcoded list -- group names (and how many exist) vary
+        by environment/account and drift over time as groups are created/
+        renamed, so any fixed list goes stale. Call after open_groups_tab().
+        Line 0 of each card is the "commute" icon text, line 1 is the name
+        (see group_vehicle_count() for the same layout assumption)."""
+        names = []
+        cards = self.group_cards()
+        for i in range(cards.count()):
+            lines = [line.strip() for line in cards.nth(i).inner_text().splitlines() if line.strip()]
+            if len(lines) > 1:
+                names.append(lines[1])
+        return names
+
     def group_card(self, group_name: str) -> Locator:
         return self.group_cards().filter(has_text=group_name).first
 
@@ -689,8 +701,17 @@ class HomePage(BasePage):
         )
 
     def geolinks_count(self) -> int:
-        match = re.search(r"(\d+)\s*links?", self.geolinks_dialog().inner_text())
-        return int(match.group(1)) if match else 0
+        # The dialog can render before its own "X links" count text has
+        # populated (confirmed live: reading immediately after open/reload
+        # sometimes returns no match at all, misread as 0 even when the real
+        # count is nonzero) -- poll briefly for the text to actually appear
+        # rather than trusting a single read the instant the dialog opens.
+        for _ in range(10):
+            match = re.search(r"(\d+)\s*links?", self.geolinks_dialog().inner_text())
+            if match:
+                return int(match.group(1))
+            self.page.wait_for_timeout(300)
+        return 0
 
     def geolink_row(self, title: str) -> Locator:
         return self.geolinks_dialog().locator("tr, [role='row']").filter(has_text=title)

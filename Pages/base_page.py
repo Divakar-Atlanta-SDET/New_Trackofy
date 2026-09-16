@@ -39,6 +39,40 @@ class BasePage:
             pass
         self.hide_feedback_widget()
 
+    def wait_for_skeleton_rows_to_clear(self, timeout_ms: int = 15000):
+        """Admin Panel's PrimeNG tables render `.p-skeleton` placeholder
+        rows while real data loads -- confirmed live on Manage User (which
+        has accumulated 26,000+ rows from repeated test-data creation
+        across this whole engagement) a table refresh/pagination click can
+        leave skeleton rows on screen for 5+ seconds, well past a short
+        fixed wait. Reading row text while skeletons are still showing
+        returns blank cells, which looks like "record not found" even
+        though the record is really there -- wait on this instead.
+
+        Confirmed live 2026-09-16: skeleton rows don't render immediately
+        on click (measured ~100ms delay) -- waiting for state="hidden"
+        alone, called right after the click, sees zero matching elements
+        and returns instantly (Playwright treats "no element" as already
+        hidden), missing the real loading window entirely. Wait for them
+        to actually appear first (a quick, best-effort check -- if the
+        table responds fast enough that skeletons never show, that's fine
+        too), then wait for them to clear."""
+        skeleton = self.page.locator(".p-skeleton")
+        try:
+            skeleton.first.wait_for(state="visible", timeout=500)
+        except TimeoutError:
+            return
+        try:
+            skeleton.first.wait_for(state="hidden", timeout=timeout_ms)
+        except TimeoutError:
+            pass
+        # Confirmed live: an immediate interaction right as the last
+        # skeleton clears can still hit one more Angular re-render (e.g.
+        # a delete-icon click reporting "element was detached from the
+        # DOM, retrying" until it times out) -- a short settle wait avoids
+        # racing that final paint.
+        self.page.wait_for_timeout(400)
+
     def hide_feedback_widget(self):
         """Bug_Report.md #76: a fixed-position "FEEDBACK" widget (present on
         at least Dashboard, Unit, and Settings) can sit on top of real row

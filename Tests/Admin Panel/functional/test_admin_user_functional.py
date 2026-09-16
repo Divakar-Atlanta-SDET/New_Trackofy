@@ -38,7 +38,7 @@ def dummy_user(admin_user_page):
     last_page = admin_user_page.page.get_by_role("button", name="Last Page")
     if last_page.is_enabled():
         last_page.click()
-        admin_user_page.page.wait_for_timeout(2000)
+        admin_user_page.wait_for_skeleton_rows_to_clear()
     row = admin_user_page.rows().filter(has_text=mobile)
     if row.count() > 0:
         admin_user_page.request_delete(row.first, reason="QA automation cleanup - dummy test record")
@@ -47,11 +47,19 @@ def dummy_user(admin_user_page):
 def _find_row_by_mobile(admin_user_page, mobile: str, max_pages: int = 3):
     """Confirmed live: the search box doesn't filter (Bug #56), and a
     freshly created record consistently appears on the Last Page -- walk
-    backward a few pages from there in case pagination shifted."""
+    backward a few pages from there in case pagination shifted.
+
+    Confirmed live 2026-09-16: this account's Manage User table has grown
+    to 26,000+ rows (accumulated test data across this whole engagement),
+    and a pagination click's PrimeNG `.p-skeleton` placeholder rows can now
+    take 5+ seconds to clear -- reading row text before that finishes sees
+    blank skeleton cells, which looks identical to "record not found".
+    wait_for_skeleton_rows_to_clear() replaces the old fixed timeouts that
+    were tuned for a much smaller row count and started flaking here."""
     last_page = admin_user_page.page.get_by_role("button", name="Last Page")
     if last_page.is_enabled():
         last_page.click()
-        admin_user_page.page.wait_for_timeout(2000)
+        admin_user_page.wait_for_skeleton_rows_to_clear()
     row = admin_user_page.rows().filter(has_text=mobile)
     tries = 0
     while row.count() == 0 and tries < max_pages:
@@ -59,7 +67,7 @@ def _find_row_by_mobile(admin_user_page, mobile: str, max_pages: int = 3):
         if not prev.is_enabled():
             break
         prev.click()
-        admin_user_page.page.wait_for_timeout(1500)
+        admin_user_page.wait_for_skeleton_rows_to_clear()
         row = admin_user_page.rows().filter(has_text=mobile)
         tries += 1
     return row

@@ -37,6 +37,15 @@ class AccountMenuPage(BasePage):
         self.appearance_item = page.get_by_role("button", name=re.compile("Appearance"))
         self.language_item = page.get_by_role("button", name=re.compile("Language"))
         self.sign_out_item = page.get_by_role("button", name=re.compile("Sign Out"))
+        # Language-independent alternative: the "Sign Out" label text
+        # translates away under a non-English language selection (that's
+        # the whole point of the translation tests that need this), but its
+        # icon carries Google Translate's own `notranslate` class and a
+        # stable "logout" ligature -- same icon-based pattern already used
+        # for menu_trigger above. Use this one under an active translation.
+        self.sign_out_item_any_language = page.get_by_role("button").filter(
+            has=page.locator("mat-icon.notranslate", has_text="logout")
+        ).first
 
     def open(self):
         # Confirmed intermittent under sustained test-session load (the
@@ -88,8 +97,17 @@ class AccountMenuPage(BasePage):
         # Appearance sits in the PREFERENCES section, below My Profile/
         # Downloads/Support/Change Password -- confirmed live this can
         # still be rendering when open()'s wait (scoped to My Profile
-        # only) resolves, so wait for this specific button too.
-        self.wait_for_visible(self.appearance_item)
+        # only) resolves, so wait for this specific button too. Confirmed
+        # live 2026-09-16 (flaky: ~2 of 3 runs) that the plain wait alone
+        # isn't always enough -- apply the same reload-and-retry self-heal
+        # open() itself already uses for my_profile_item.
+        try:
+            self.wait_for_visible(self.appearance_item, timeout=8000)
+        except Exception:
+            self.page.reload()
+            self.wait_until_ready()
+            self.open()
+            self.wait_for_visible(self.appearance_item)
         self.appearance_item.click()
         self.page.wait_for_timeout(500)
 
@@ -130,6 +148,17 @@ class AccountMenuPage(BasePage):
         changed from "Are you sure you want to logout?" / Cancel / Logout
         to "Are you sure you want to sign out?" / Cancel / Sign out."""
         self.open()
+        # Sign Out sits even further down the menu than Appearance (see
+        # toggle_appearance()'s comment for the same underlying race) and
+        # was confirmed live 2026-09-16 to intermittently time out with no
+        # explicit wait at all -- same self-heal.
+        try:
+            self.wait_for_visible(self.sign_out_item, timeout=8000)
+        except Exception:
+            self.page.reload()
+            self.wait_until_ready()
+            self.open()
+            self.wait_for_visible(self.sign_out_item)
         self.sign_out_item.click()
         self.wait_for_visible(self.sign_out_confirm_dialog())
         self.sign_out_confirm_dialog().get_by_role("button", name="Sign out", exact=True).click()

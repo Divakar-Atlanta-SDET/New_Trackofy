@@ -272,7 +272,13 @@ class AdminUserPage(BasePage):
         # PIN Code above) -- reached by their real placeholder text
         # instead, and filled BEFORE the generic bulk-fill loop below so
         # that loop's blunt "100001" never overwrites them.
-        saler_person = dialog.get_by_placeholder("Saler Person")
+        # Confirmed live (2026-09-16): the locator here was "Saler Person"
+        # (a typo) against a real placeholder of "Enter Sales Person Name"
+        # -- get_by_placeholder's substring match never hit, so this field
+        # was silently left empty. Sales Person Name is now a required
+        # field (Next stayed disabled with no visible reason), surfacing
+        # the long-standing typo. Fixed to match the real placeholder.
+        saler_person = dialog.get_by_placeholder("Sales Person Name")
         if saler_person.count() > 0:
             saler_person.fill("AutoQA Sales Contact")
         sales_contact = dialog.get_by_placeholder("Sales Person Contact")
@@ -354,6 +360,13 @@ class AdminUserPage(BasePage):
             self.page.locator(".bg-white\\/65").first.wait_for(state="hidden", timeout=10000)
             self.wait_for_loading_to_finish()
             self.page.wait_for_timeout(1500)
+            # Confirmed live 2026-09-16: on this account's now 26,000+-row
+            # Manage User table, the list behind the just-closed dialog can
+            # still be showing PrimeNG skeleton placeholder rows for
+            # several seconds after submit -- callers that immediately look
+            # for the new row (e.g. Last Page) need real data rendered, not
+            # just the dialog gone.
+            self.wait_for_skeleton_rows_to_clear()
 
     # ------------------------------------------------------------- delete (request-based, async)
     # Confirmed live: unlike Tax's p-confirmpopup, Manage User/Dealer's

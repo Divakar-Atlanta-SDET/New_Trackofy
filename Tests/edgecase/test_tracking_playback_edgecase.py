@@ -9,6 +9,15 @@ def _fmt(d: datetime.date) -> str:
     return d.strftime("%d/%m/%Y")
 
 
+def _fmt_input(d: datetime.date) -> str:
+    """Bug_Report.md #6: whatever is typed/filled into From/To Date is
+    parsed as MM/DD/YYYY even though the field DISPLAYS as DD/MM/YYYY --
+    use this (not the plain DD/MM _fmt() above) whenever the goal is to
+    actually land on date `d`, not just produce some string. Matches the
+    already-working pattern in test_tracking_playback_positive.py."""
+    return d.strftime("%m/%d/%Y")
+
+
 @pytest.mark.edgecase
 def test_trk_play_005_playback_no_vehicles(tracking):
     """TRK-PLAY-005: Edge Case - Playback vehicle list empty state."""
@@ -22,9 +31,18 @@ def test_trk_play_005_playback_no_vehicles(tracking):
 
 @pytest.mark.edgecase
 def test_trk_play_013_todays_date(tracking):
-    """TRK-PLAY-013: Edge Case - Select today's date; handled correctly."""
+    """TRK-PLAY-013: Edge Case - Select today's date; handled correctly.
+
+    Uses _fmt_input() (MM/DD/YYYY), not the plain DD/MM _fmt() above, to
+    actually type today's real date -- confirmed live 2026-09-16 that using
+    _fmt() here typed e.g. "16/09/2026" for Sept 16, which Bug_Report.md #6
+    means gets parsed as month=16 (invalid), correctly triggering
+    aria-invalid and blocking Load Playback with "This field is required."
+    errors. That was this test tripping over an already-known product
+    quirk via the wrong input format, not a new bug about today's date
+    specifically."""
     tracking.switch_to_playback_tracking()
-    today = _fmt(datetime.date.today())
+    today = _fmt_input(datetime.date.today())
     tracking.set_date_input(tracking.from_date_input, today)
     tracking.set_date_input(tracking.to_date_input, today)
     assert tracking.from_date_input.get_attribute("aria-invalid") != "true"
@@ -147,7 +165,18 @@ def test_trk_play_055_rapid_load_playback_clicks(tracking):
 @pytest.mark.edgecase
 @pytest.mark.allow_server_error
 def test_trk_play_056_057_playback_network_recovery(tracking):
-    """TRK-PLAY-056, 057: Edge Case - Backend failure during playback load terminates safely and can recover."""
+    """TRK-PLAY-056, 057: Edge Case - Backend failure during playback load terminates safely and can recover.
+
+    Confirmed live 2026-09-16: `Locator.is_enabled()` on a locator that
+    currently resolves to zero elements doesn't return False instantly --
+    it polls up to the default timeout (30s here), so the original
+    `if load_playback_btn.is_enabled():` guard could hang for 30s instead
+    of just skipping. This matters here specifically because a successful
+    recovery legitimately makes the button disappear entirely (replaced by
+    real playback player controls -- play/pause, speed selector -- once
+    data loads), which is the expected happy path, not a bug. Check
+    `.count() > 0` first so that success case is a fast, correct no-op.
+    """
     tracking.switch_to_playback_tracking()
     if tracking.available_vehicle_count() == 0:
         pytest.skip("No vehicles available on this account")
@@ -155,14 +184,14 @@ def test_trk_play_056_057_playback_network_recovery(tracking):
 
     tracking.page.route("**/api/**", lambda route: route.abort())
     tracking.page.route("**/trackofy_api_new/**", lambda route: route.abort())
-    if tracking.load_playback_btn.is_enabled():
+    if tracking.load_playback_btn.count() > 0 and tracking.load_playback_btn.is_enabled():
         tracking.load_playback_btn.click()
     tracking.page.wait_for_timeout(2000)
     expect(tracking.map_region).to_be_visible()  # must terminate safely, not hang/crash
 
     tracking.page.unroute("**/api/**")
     tracking.page.unroute("**/trackofy_api_new/**")
-    if tracking.load_playback_btn.is_enabled():
+    if tracking.load_playback_btn.count() > 0 and tracking.load_playback_btn.is_enabled():
         tracking.load_playback_btn.click()
         tracking.wait_for_loading_to_finish()
     expect(tracking.map_region).to_be_visible()

@@ -47,11 +47,7 @@ def test_home_0003_fleet_tab(home_page):
 def test_home_0004_groups_tab(home_page):
     """HOME-0004: Clicking Groups makes it active and group cards are displayed."""
     home_page.open_groups_tab()
-    group_names = home_page.group_cards().all_inner_texts()
-    for known_group in home_page.KNOWN_GROUPS:
-        assert any(known_group in text for text in group_names), (
-            f"Expected group '{known_group}' not found in Groups tab: {group_names}"
-        )
+    assert home_page.group_cards().count() > 0, "Groups tab active but no group cards displayed"
 
 
 @pytest.mark.functional

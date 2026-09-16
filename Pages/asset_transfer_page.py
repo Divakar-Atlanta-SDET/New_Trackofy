@@ -1,5 +1,7 @@
 from playwright.sync_api import Page
 from components.search import SearchComponent
+from components.export import ExportComponent
+from components.pagination import PaginationComponent
 
 class AssetTransferPage:
     def __init__(self, page: Page):

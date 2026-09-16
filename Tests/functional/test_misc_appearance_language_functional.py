@@ -310,7 +310,13 @@ def test_misc_162_dialog_translation(account_menu):
     under a selected language."""
     account_menu.select_language("French")
     account_menu.open()
-    account_menu.sign_out_item.click()
+    # sign_out_item is located by its English "Sign Out" text, which
+    # translates away under French -- exactly the scenario this test
+    # exercises, so it can no longer be found by that locator here. Use
+    # the icon-based, language-independent locator instead (confirmed live
+    # 2026-09-16: the icon carries Google Translate's own `notranslate`
+    # class, so it never changes regardless of selected language).
+    account_menu.sign_out_item_any_language.click()
     account_menu.wait_for_visible(account_menu.sign_out_confirm_dialog())
     translated_text = account_menu.sign_out_confirm_dialog().inner_text()
     assert translated_text.strip() != "", "Expected the sign-out confirmation dialog to render some content"
@@ -332,23 +338,32 @@ def test_misc_162_dialog_translation(account_menu):
 @pytest.mark.misc
 @pytest.mark.negative
 def test_misc_163_validation_translation(account_menu, credentials, config):
-    """MISC-163: A real, reliably-reproducible validation/error message
-    (Change Password's "Unable to verify password" toast) is still shown
+    """MISC-163: A real, reliably-reproducible feedback message (Change
+    Password's Stage 1 "Current password verified." toast) is still shown
     -- translated where the app's translation coverage extends to it --
-    under a selected language, not silently swallowed."""
+    under a selected language, not silently swallowed.
+
+    Originally used the "Unable to verify password" error, back when Stage
+    1 rejected even the correct password (Bug_Report.md #37, original
+    symptom). Confirmed live 2026-09-16: Verify now does a real check and
+    the correct password succeeds ("Current password verified."), so that
+    error no longer exists to check -- the success toast is the new
+    reliable, reproducible message this test can exercise instead. Never
+    proceeds to Stage 2 / Update Password -- only checks Stage 1 feedback,
+    to avoid any risk to the shared account's real credentials."""
     cpp = ChangePasswordPage(account_menu.page)
     cpp.open(config["base_url"])
     cpp.verify_current_password(credentials["password"])
-    english_error = cpp.contains_any_text(["Unable to verify password"])
-    assert english_error, "Expected the baseline English error to appear first"
+    english_success = cpp.contains_any_text(["Current password verified"])
+    assert english_success, "Expected the baseline English success message to appear first"
 
     account_menu.select_language("French")
     cpp2 = ChangePasswordPage(account_menu.page)
     cpp2.open(config["base_url"])
     cpp2.verify_current_password(credentials["password"])
-    error_text = cpp2.page.locator("body").inner_text()
-    assert "error" in error_text.lower() or "unable" in error_text.lower() or account_menu.is_page_translated(), (
-        "Expected some error/validation feedback to still render under a non-English language"
+    success_text = cpp2.page.locator("body").inner_text()
+    assert "verified" in success_text.lower() or "verifi" in success_text.lower() or account_menu.is_page_translated(), (
+        "Expected some verification feedback to still render under a non-English language"
     )
     account_menu.select_language("English")
 

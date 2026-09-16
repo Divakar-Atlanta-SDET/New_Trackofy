@@ -1,5 +1,7 @@
+import io
 import re
 import pytest
+import openpyxl
 from config.config import REPORT_END_DATE, REPORT_START_DATE, REPORT_TEST_VEHICLE_NAME
 
 from Pages.login_page import LoginPage
@@ -141,7 +143,13 @@ def test_rep_dl_113_work_hour_download_matches_filters(page, config, credentials
     assert download_url, "Done download entry has no download link to verify"
     response = page.request.get(download_url)
     assert response.ok, f"Downloading the Work Hour file failed: {response.status}"
-    body_text = response.text()
-    assert REPORT_TEST_VEHICLE_NAME in body_text, (
+    # WHReport.xlsx is a real binary (ZIP-based) Excel file, not plain text --
+    # confirmed live 2026-09-16 that .text() raises UnicodeDecodeError trying
+    # to UTF-8-decode it directly. Parse it properly with openpyxl instead.
+    workbook = openpyxl.load_workbook(io.BytesIO(response.body()), read_only=True)
+    cell_values = " ".join(
+        str(cell) for sheet in workbook.worksheets for row in sheet.iter_rows(values_only=True) for cell in row if cell is not None
+    )
+    assert REPORT_TEST_VEHICLE_NAME in cell_values, (
         f"Downloaded Work Hour file does not contain the filtered vehicle '{REPORT_TEST_VEHICLE_NAME}'"
     )

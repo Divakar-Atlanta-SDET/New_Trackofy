@@ -27,11 +27,58 @@ class CreateInstallationWizard:
         '''Select an asset from the dropdown.'''
         self.select_asset_dropdown.click()
         self.page.get_by_role("option", name=asset_name).click()
+
+    def select_first_asset(self) -> str:
+        '''Select whichever asset the account actually has first in the
+        dropdown, and return its name -- avoids hardcoding a specific
+        asset name that may not exist on every environment/account.'''
+        self.select_asset_dropdown.click()
+        option = self.page.get_by_role("option").first
+        option.wait_for(state="visible", timeout=10000)
+        name = option.inner_text().strip()
+        option.click()
+        return name
+
+    def select_first_unassigned_asset(self) -> str:
+        '''Select the first asset that is NOT already installed on another
+        vehicle and is NOT a Tyre (confirmed live 2026-09-15: Tyre-type
+        assets need extra conditional fields -- axle code, tyre position --
+        this wizard doesn't model, and submitting without them fails with
+        HTTP 422 "The axle code field is required"), and return its name.
+        An already-installed asset also triggers a separate "Confirm
+        Vehicle Assignment Change" reassignment flow -- picking a free,
+        non-Tyre asset keeps a plain "create a new installation" test on
+        its simple, intended path.'''
+        self.select_asset_dropdown.click()
+        options = self.page.get_by_role("option")
+        options.first.wait_for(state="visible", timeout=10000)
+        names = [options.nth(i).inner_text().strip() for i in range(options.count())]
+        for name in names:
+            if "| Tyre |" in name:
+                continue
+            self.page.keyboard.press("Escape")
+            self.select_asset_dropdown.click()
+            self.page.get_by_role("option", name=name, exact=True).click()
+            self.page.wait_for_timeout(500)
+            if self.page.locator("text=Currently installed in:").count() == 0:
+                return name
+        raise AssertionError("Every non-Tyre asset in the dropdown is either a Tyre or already installed elsewhere -- none free to test with")
     
     def select_vehicle(self, vehicle_name: str):
         '''Select a vehicle from the dropdown.'''
         self.vehicle_dropdown.click()
         self.page.get_by_role("option", name=vehicle_name).click()
+
+    def select_first_vehicle(self) -> str:
+        '''Select whichever vehicle the account actually has first in the
+        dropdown, and return its name -- avoids hardcoding a specific
+        vehicle name that may not exist on every environment/account.'''
+        self.vehicle_dropdown.click()
+        option = self.page.get_by_role("option").first
+        option.wait_for(state="visible", timeout=10000)
+        name = option.inner_text().strip()
+        option.click()
+        return name
 
     def open_asset_options(self):
         self.select_asset_dropdown.click()

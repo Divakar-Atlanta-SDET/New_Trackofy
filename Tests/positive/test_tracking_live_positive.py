@@ -88,6 +88,10 @@ def test_trk_live_025_start_tracking_custom_split_screen(tracking):
     tracking.select_vehicle_by_index(0)
     tracking.start_tracking_btn.click()
     tracking.wait_for_loading_to_finish()
+    # The config panel (including split_screen_select) collapses into a
+    # minimized bottom bar once tracking starts -- confirmed live 2026-09-16
+    # it isn't gone, just hidden; expand it before checking the value.
+    tracking.expand_bottom_panel_button.click()
     expect(tracking.split_screen_select).to_contain_text("Yes")
 
 

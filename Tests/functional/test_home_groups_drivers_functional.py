@@ -8,7 +8,9 @@ from playwright.sync_api import expect
 def test_home_0108_groups_tab_shows_all_real_groups(home_page):
     """HOME-0108: All of the account's real groups are shown with a vehicle count."""
     home_page.open_groups_tab()
-    for group_name in home_page.KNOWN_GROUPS:
+    group_names = home_page.real_group_names()
+    assert group_names, "Expected at least one real group card on the Groups tab"
+    for group_name in group_names:
         card = home_page.group_card(group_name)
         assert card.is_visible(), f"Group '{group_name}' card not visible on Groups tab"
         count = home_page.group_vehicle_count(group_name)
@@ -17,11 +19,12 @@ def test_home_0108_groups_tab_shows_all_real_groups(home_page):
 
 @pytest.mark.functional
 @pytest.mark.home
-@pytest.mark.parametrize("group_name", ["Default", "Delhi", "Bhopal", "Dwarka"])
-def test_home_0109_0117_group_status_filters_reconcile_with_fleet(home_page, group_name):
+def test_home_0109_0117_group_status_filters_reconcile_with_fleet(home_page):
     """HOME-0109 to 0117: Clicking a group's status chip (e.g. 'Idle (2)')
     filters Fleet to that group+status combination, and the resulting Fleet
-    count matches the chip's own count exactly.
+    count matches the chip's own count exactly. Exercised across every real
+    group the account currently has (discovered live -- group names/counts
+    vary by account and drift over time, so this no longer hardcodes them).
 
     Excludes 'Active' and 'No Data' -- see Bug #22 in Bug_Report.md
     (regression-pinned separately below): both chips always filter to zero
@@ -29,26 +32,30 @@ def test_home_0109_0117_group_status_filters_reconcile_with_fleet(home_page, gro
     genuinely working statuses (Running/Idle/Stopped) can.
     """
     home_page.open_groups_tab()
+    group_names = home_page.real_group_names()
+    assert group_names, "Expected at least one real group to test against"
     real_statuses = [s for s in home_page.GROUP_STATUS_FILTERS if s not in ("Active", "No Data")]
-    for status_name in real_statuses:
-        chip = home_page.group_status_filter(group_name, status_name)
-        chip_text = chip.inner_text()
-        import re
-
-        match = re.search(r"\((\d+)\)", chip_text)
-        chip_count = int(match.group(1)) if match else 0
-        if chip_count == 0:
-            continue  # nothing to reconcile for an empty category -- try the next status
-        home_page.apply_group_status_filter(group_name, status_name)
-        home_page.page.wait_for_timeout(500)
-        fleet_count = home_page.fleet_result_count()
-        assert fleet_count == chip_count, (
-            f"Group '{group_name}' status '{status_name}' chip shows {chip_count} but filtering "
-            f"Fleet to it shows {fleet_count} vehicles"
-        )
-        home_page.open_groups_tab()  # reset for the next status in this group
-        return
-    pytest.skip(f"Group '{group_name}' currently has 0 vehicles in every real status -- nothing to reconcile")
+    reconciled_any = False
+    for group_name in group_names:
+        for status_name in real_statuses:
+            chip = home_page.group_status_filter(group_name, status_name)
+            chip_text = chip.inner_text()
+            match = re.search(r"\((\d+)\)", chip_text)
+            chip_count = int(match.group(1)) if match else 0
+            if chip_count == 0:
+                continue  # nothing to reconcile for an empty category -- try the next status
+            home_page.apply_group_status_filter(group_name, status_name)
+            home_page.page.wait_for_timeout(500)
+            fleet_count = home_page.fleet_result_count()
+            assert fleet_count == chip_count, (
+                f"Group '{group_name}' status '{status_name}' chip shows {chip_count} but filtering "
+                f"Fleet to it shows {fleet_count} vehicles"
+            )
+            home_page.open_groups_tab()  # reset for the next group/status
+            reconciled_any = True
+            break  # one reconciled status per group is enough, move to the next group
+    if not reconciled_any:
+        pytest.skip("No group currently has a non-zero real-status count -- nothing to reconcile")
 
 
 @pytest.mark.functional
@@ -97,17 +104,21 @@ def test_home_0116_no_data_group_filter_reconciles(home_page):
 @pytest.mark.home
 def test_home_0118_group_expand_collapse(home_page):
     """HOME-0118: A group can be expanded to show its constituent vehicles
-    and collapsed back."""
+    and collapsed back. Uses whichever real group the account currently has
+    (discovered live) rather than a hardcoded name."""
     home_page.open_groups_tab()
-    home_page.expand_group("Delhi")
+    group_names = home_page.real_group_names()
+    assert group_names, "Expected at least one real group to test against"
+    group_name = group_names[0]
+    home_page.expand_group(group_name)
     home_page.page.wait_for_timeout(500)
     expanded_text = home_page.page.locator("body").inner_text()
     assert "Driver: Not assigned" in expanded_text or home_page.vehicle_cards().count() > 0, (
-        "Expanding 'Delhi' should reveal its constituent vehicle cards"
+        f"Expanding '{group_name}' should reveal its constituent vehicle cards"
     )
-    home_page.collapse_group("Delhi")
+    home_page.collapse_group(group_name)
     home_page.page.wait_for_timeout(500)
-    assert home_page.group_card("Delhi").is_visible(), "'Delhi' group card should still be visible after collapsing"
+    assert home_page.group_card(group_name).is_visible(), f"'{group_name}' group card should still be visible after collapsing"
 
 
 @pytest.mark.functional
@@ -323,18 +334,23 @@ def test_home_0171_change_assignment_persists_new_vehicle(home_page):
 
 @pytest.mark.functional
 @pytest.mark.home
-@pytest.mark.parametrize("group_name", ["Default", "Delhi", "Bhopal", "Dwarka"])
 @pytest.mark.parametrize("status", ["Active", "Running", "Idle", "Stopped", "No Data"])
-def test_home_0112_0131_every_group_status_count(home_page, group_name, status):
-    """Exercise all 20 group/status pairs, including zero-result categories."""
+def test_home_0112_0131_every_group_status_count(home_page, status):
+    """Exercise every real group's count for each status, including
+    zero-result categories. Groups are discovered live rather than
+    hardcoded -- their names and how many exist vary by account."""
     home_page.open_groups_tab()
-    text = home_page.group_status_filter(group_name, status).inner_text()
-    match = re.search(r"\((\d+)\)", text)
-    assert match, f"Missing count on {group_name}/{status} chip"
-    expected = int(match.group(1))
-    home_page.apply_group_status_filter(group_name, status)
-    home_page.page.wait_for_timeout(700)
-    assert home_page.fleet_result_count() == expected, f"{group_name}/{status}: expected {expected}, got {home_page.fleet_result_count()}"
+    group_names = home_page.real_group_names()
+    assert group_names, "Expected at least one real group to test against"
+    for group_name in group_names:
+        text = home_page.group_status_filter(group_name, status).inner_text()
+        match = re.search(r"\((\d+)\)", text)
+        assert match, f"Missing count on {group_name}/{status} chip"
+        expected = int(match.group(1))
+        home_page.apply_group_status_filter(group_name, status)
+        home_page.page.wait_for_timeout(700)
+        assert home_page.fleet_result_count() == expected, f"{group_name}/{status}: expected {expected}, got {home_page.fleet_result_count()}"
+        home_page.open_groups_tab()  # reset for the next group
 
 
 @pytest.mark.functional

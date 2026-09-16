@@ -351,6 +351,15 @@ class ReportsPage(BasePage):
         for report_name in sorted(STANDARD_REPORT_NAMES, key=len, reverse=True):
             if report_name in body_text:
                 return report_name
+        # ADAS Alarm Report is structurally different from every other
+        # standard report (confirmed live 2026-09-16): generating it
+        # navigates to a dedicated "/alarm_report" page with its own
+        # "Alarm Report Detail" heading, not the shared "Configure report
+        # filters" drawer the text-matching above relies on -- and the
+        # report's own name doesn't appear as literal text anywhere on that
+        # page either. Fall back to the URL for this one known case.
+        if "/alarm_report" in self.page.url and "ADAS Alarm Report" in STANDARD_REPORT_NAMES:
+            return "ADAS Alarm Report"
         return ""
 
     def _report_fields(self, report_name: str) -> list[str]:
@@ -1009,8 +1018,12 @@ class ReportsPage(BasePage):
         # <table> permanently on the page (see self.result_table's comment),
         # which would satisfy an unscoped wait immediately without actually
         # waiting for Generate's real result to render.
+        # Timeout raised from 45s to 75s -- confirmed live 2026-09-16: Driver
+        # Performance genuinely takes ~60s to render (same class of real,
+        # repeatable slowness already documented for Driver Report elsewhere
+        # in this suite, not a hang), so 45s wasn't always enough.
         result = self.result_table.or_(self.page.get_by_text("info", exact=True)).or_(self.page.get_by_text("No data", exact=False))
-        result.first.wait_for(state="visible", timeout=45000)
+        result.first.wait_for(state="visible", timeout=75000)
         return True
 
     def standard_catalog_visible(self) -> bool:
@@ -1030,6 +1043,22 @@ class ReportsPage(BasePage):
 
     def has_results_table(self) -> bool:
         return self.result_table.count() > 0 and self.result_table.first.is_visible()
+
+    def wait_for_results_table(self, timeout_ms: int = 6000) -> bool:
+        """Like has_results_table(), but polls briefly instead of a single
+        instant check -- confirmed live 2026-09-16: the table can still not
+        be in the DOM at all for a moment right after generate_standard_
+        report() returns, which a single has_results_table() check reads as
+        "no table" even though it renders a beat later. Only use this where
+        a table is actually expected; has_results_table() itself stays a
+        fast, single check for negative/either-way callers that shouldn't
+        pay a multi-second wait to correctly conclude "no table"."""
+        deadline_polls = max(1, timeout_ms // 300)
+        for _ in range(deadline_polls):
+            if self.has_results_table():
+                return True
+            self.page.wait_for_timeout(300)
+        return self.has_results_table()
 
     def has_no_data_message(self) -> bool:
         return self.no_data_text.count() > 0 and self.no_data_text.first.is_visible()
@@ -1274,16 +1303,26 @@ class ReportsPage(BasePage):
         self.wait_for_loading_to_finish()
 
     def get_table_column_headers(self) -> list[str]:
-        """Get all visible column headers from the report results table."""
-        if not self.has_results_table():
-            return []
-        headers = self.result_table.last.locator("thead th, thead td")
-        names = []
-        for i in range(headers.count()):
-            text = headers.nth(i).inner_text().strip()
-            if text:
-                names.append(text)
-        return names
+        """Get all visible column headers from the report results table.
+
+        Two distinct races confirmed live 2026-09-16, both against the same
+        symptom (misread as "no headers" for a report that clearly has
+        them): (1) the table container itself isn't even in the DOM yet
+        immediately after generate_standard_report() returns -- the earlier
+        version of this method bailed out on the very first
+        has_results_table() check before ever getting a chance to poll, so
+        it never actually helped; (2) even once the table container exists,
+        its own `thead` cells can still populate a moment later. Poll for
+        both, not just the second one.
+        """
+        for _ in range(20):
+            if self.wait_for_results_table(timeout_ms=300):
+                headers = self.result_table.last.locator("thead th, thead td")
+                names = [text for text in (headers.nth(i).inner_text().strip() for i in range(headers.count())) if text]
+                if names:
+                    return names
+            self.page.wait_for_timeout(300)
+        return []
 
     def sort_table_by_column(self, column_name: str):
         """Click a column header to sort by that column."""

@@ -10,3 +10,5 @@ downloads/*
 venv1/
 venv/
 .venv/
+allure-results/
+allure-report/

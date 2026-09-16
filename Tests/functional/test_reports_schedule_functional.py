@@ -13,36 +13,43 @@ from Pages.reports_page import ReportsPage
 
 
 def _wait_for_scheduled_report_email(subject_contains: str, after: datetime, timeout_seconds: int = 420, poll_seconds: int = 20):
-    """Poll the real test inbox (IMAP) for an email whose subject contains
-    `subject_contains` and whose internal date is after `after`. Returns the
-    matching email.message.Message, or None if it never arrives within
-    timeout_seconds. Requires TEST_RECIPIENT_EMAIL/TEST_RECIPIENT_EMAIL_PASSWORD
-    (a Gmail App Password) in .env.
+    """Poll the real test inbox (IMAP) -- INBOX and Spam -- for an email whose
+    subject contains `subject_contains` and whose internal date is after
+    `after`. Checking Spam too matters here: a delivered-but-spam-filtered
+    report would otherwise read as "never delivered" (a false AS-219 repro)
+    when the real defect, if any, is deliverability/sender-reputation, not
+    non-delivery. Returns (message, folder) for the first match, or (None,
+    None) if it never arrives in either folder within timeout_seconds.
+    Requires TEST_RECIPIENT_EMAIL/TEST_RECIPIENT_EMAIL_PASSWORD (a Gmail App
+    Password) in .env.
     """
     deadline = time.monotonic() + timeout_seconds
+    since = after.strftime("%d-%b-%Y")
     while time.monotonic() < deadline:
         conn = imaplib.IMAP4_SSL("imap.gmail.com")
         try:
             conn.login(TEST_RECIPIENT_EMAIL, TEST_RECIPIENT_EMAIL_PASSWORD)
-            conn.select("INBOX")
-            since = after.strftime("%d-%b-%Y")
-            status, data = conn.search(None, f'(SINCE "{since}")')
-            ids = data[0].split() if data and data[0] else []
-            for msg_id in reversed(ids):
-                status, msg_data = conn.fetch(msg_id, "(RFC822)")
-                if not msg_data or not msg_data[0]:
+            for folder in ("INBOX", "[Gmail]/Spam"):
+                status, _ = conn.select(folder)
+                if status != "OK":
                     continue
-                message = email.message_from_bytes(msg_data[0][1])
-                subject = message.get("Subject", "") or ""
-                if subject_contains.lower() in subject.lower():
-                    return message
+                status, data = conn.search(None, f'(SINCE "{since}")')
+                ids = data[0].split() if data and data[0] else []
+                for msg_id in reversed(ids):
+                    status, msg_data = conn.fetch(msg_id, "(RFC822)")
+                    if not msg_data or not msg_data[0]:
+                        continue
+                    message = email.message_from_bytes(msg_data[0][1])
+                    subject = message.get("Subject", "") or ""
+                    if subject_contains.lower() in subject.lower():
+                        return message, folder
         finally:
             try:
                 conn.logout()
             except Exception:
                 pass
         time.sleep(poll_seconds)
-    return None
+    return None, None
 
 
 def login_and_open_reports(page, config, credentials):
@@ -172,19 +179,25 @@ def test_rep_sch_030b_scheduled_report_actually_delivered_to_email(page, config,
     reports_page.save_schedule_report(previous_count=before_count)
 
     try:
-        message = _wait_for_scheduled_report_email(
+        message, folder = _wait_for_scheduled_report_email(
             subject_contains="Fleet Summary",
             after=created_at,
             timeout_seconds=360,
             poll_seconds=20,
         )
         assert message is not None, (
-            f"No email containing 'Fleet Summary' arrived at {TEST_RECIPIENT_EMAIL} within 6 minutes"
-            f"of the {schedule_time} scheduled delivery time -- AS-219 still reproduces."
+            f"No email containing 'Fleet Summary' arrived at {TEST_RECIPIENT_EMAIL} (checked INBOX and Spam) "
+            f"within 6 minutes of the {schedule_time} scheduled delivery time -- AS-219 still reproduces."
         )
         assert message.is_multipart() and any(
             part.get_filename() for part in message.walk()
-        ), "Scheduled report email arrived but has no attachment"
+        ), f"Scheduled report email arrived (in {folder}) but has no attachment"
+        if folder != "INBOX":
+            print(
+                f"NOTE: scheduled report email was delivered but landed in {folder}, not INBOX -- "
+                f"delivery itself works (AS-219 does not reproduce), but this points at a separate "
+                f"deliverability/spam-classification issue worth a follow-up bug report."
+            )
     finally:
         reports_page.open_schedule_reports()
         entries = reports_page.schedule_entries()
